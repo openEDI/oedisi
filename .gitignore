@@ -1,0 +1,19 @@
+push.sh
+sync.sh
+deploy.sh
+localSettings.php
+f-login.php
+
+# IDE generated files
+.settings
+.project
+.buildpath
+.vscode
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
