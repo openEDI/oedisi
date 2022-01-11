@@ -1,0 +1,124 @@
+{
+"inputs":
+ {
+  "admittance_matrix":
+    {
+	    "required": True,
+	    "units": "Siemens",
+	    "type": List(List(Complex)),
+	    "static": False,
+	    "data":
+	    [ [(0.1,0.1), (0.1,0.1), (0.1, 0.1)],
+	      [(0.1,0.1), (0.1,0.1), (0.1, 0.1)],
+	      [(0.1,0.1), (0.1,0.1), (0.1, 0.1)]
+	    ],
+	    "labels": ["node1", "node2", "node3"]
+    },
+
+    "regulator_steps":
+    {
+	    "required": False,
+	    "units": None,
+	    "type": List(Integer),
+	    "static": False,
+	    "data": [1],
+	    "labels":["regulator_1"]
+    },
+  
+    "switch_states":
+    {
+	    "required": False,
+	    "units": None,
+	    "static": False,
+	    "type": List(Boolean),
+	    "data": [0,1],
+	    "labels":["switch_1", "switch_2"]
+    },
+
+    "capacitor_states":
+    {
+	    "required": False,
+	    "units": None,
+	    "static": False,
+	    "type": List(Boolean),
+	    "data": [0],
+	    "labels":["capacitor_1"]
+    },
+
+    "measurement_models":
+    {
+	    "required"": True,
+	    "units": None,
+	    "static": True,
+	    "type": List(Measurement_Model),
+	    "data": 
+	    [ {"measurement_type": voltage_magnitude, "is_flow": False, "standard_devation": 1.0},
+		  	{"measurement_type": voltage_angle, "is_flow": False, "standard_devation": 1.0}
+	    ],
+	    "labels":
+	    ["node_1_voltage_magnitude",
+	     "node_1_voltage_angle"
+	    ]
+    },
+
+    "timeseries_values":
+    {
+	    "required": True,
+	    "units": None,
+	    "static": False,
+	    "type": List(Timeseries_List),
+	    "data":
+	    [ [{"time": 1, "value": 12.47}, {"time": 2, "value": 12.50}, {"time": 3, "value": 12.52}],
+			  [{"time": 1, "value": 0.1}, {"time": 2, "value": 0.1}, {"time": 3, "value": 0.15}]
+	    ],
+	    "labels":
+	    [ "node_1_voltage_magnitude", 
+	      "node_1_voltage_angle"
+	    ]
+    }
+  }
+
+ "outputs":
+  {
+  "bus_voltage":
+   {
+	  "required": True,
+	  "units": "Volts",
+	  "static": False,
+	  "type": List(Complex),
+	  "data":
+	  [ (12.47, 0),
+	    (12.40, 0.1),
+	    (12.30, 0.2),
+	    (12.25, 0.22)
+	  ],
+	  "labels": 
+	  [ "node_1",
+	    "node_2",
+	    "node_3",
+	    "node_4"
+	  ]
+	 }
+
+  "bus_voltage_uncertainty":
+  {
+	  "required": True,
+	  "units": "Volts",
+	  "static": False,
+	  "type": List(Complex),
+	  "data":
+	  [ (0.1, 0.1),
+	    (0.1, 0.1),
+	    (0.1, 0.1),
+	    (0.1, 0.1)
+	  ],
+	  "labels":
+	  [ "node_1",
+	    "node_2",
+	    "node_3",
+	    "node_4"
+	  ]
+	}
+ }
+}
+

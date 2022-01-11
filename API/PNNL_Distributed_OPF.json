@@ -1,0 +1,250 @@
+{
+"inputs":
+ {
+  "admittance_matrix":
+    {
+	    "required": True,
+	    "units": "Siemens",
+	    "type": List(List(Complex)),
+	    "static": False,
+	    "data":
+	    [ [(0.1,0.1), (0.1,0.1), (0.1, 0.1)],
+	      [(0.1,0.1), (0.1,0.1), (0.1, 0.1)],
+	      [(0.1,0.1), (0.1,0.1), (0.1, 0.1)]
+	    ],
+	    "labels": ["node1", "node2", "node3"]
+    },
+
+    "regulator_steps":
+    {
+	    "required": False,
+	    "units": None,
+	    "type": List(Integer),
+	    "static": False,
+	    "data": [1],
+	    "labels":["regulator_1"]
+    },
+  
+    "switch_states":
+    {
+	    "required": False,
+	    "units": None,
+	    "static": False,
+	    "type": List(Boolean),
+	    "data": [0,1],
+	    "labels":["switch_1", "switch_2"]
+    },
+
+    "capacitor_states":
+    {
+	    "required": False,
+	    "units": None,
+	    "static": False,
+	    "type": List(Boolean),
+	    "data": [0],
+	    "labels":["capacitor_1"]
+    },
+
+    "demand_data":
+    {
+	    "required": True,
+	    "units": "kVA",
+	    "static": False,
+	    "type": List(Complex),
+	    "data": 
+	    [ (3.0,1.0), 
+		  (4.0, 1.5)
+		],
+	    "labels":
+	    ["load_1",
+	     "load_2"
+	    ]
+    },
+
+    "generator_data":
+    {
+	    "required": True,
+	    "units": "kVA",
+	    "static": False,
+	    "type": List(Complex),
+	    "data": 
+	    [ (5.0,1.0)	],
+	    "labels":
+	    ["generator_1" ]
+    },
+
+    "PV_data":
+    {
+	    "required": True,
+	    "units": "kVA",
+	    "static": False,
+	    "type": List(Complex),
+	    "data": 
+	    [ (1.0,0.0)	],
+	    "labels":
+	    ["pv_1" ]
+    },
+    "storage_data":
+    {
+	    "required": True,
+	    "units": "kVA",
+	    "static": False,
+	    "type": List(Complex),
+	    "data": 
+	    [ (2.0,0.0)	],
+	    "labels":
+	    ["storage_1" ]
+    },	
+	
+	"load_cost_functions":
+	{
+		"required": True,
+		"units": "$/kwh",
+		"type": List(List(Complex)),
+		"data":
+		[ [ (1,1), (2,2)],
+		  [(1,1), (3,3) ]
+		]
+		"labels":
+		[  "load_1",
+		   "load_2"
+		]
+	},
+	
+	
+	"generator_cost_functions":
+	{
+		"required": True,
+		"units": "$/kwh",
+		"type": List(List(Complex)),
+		"data": [ [ (1,1), (2,2)] ]
+		"labels": ["generator_1"]
+	},
+	
+	"pv_cost_functions":
+	{
+		"required": True,
+		"units": "$/kwh",
+		"type": List(List(Complex)),
+		"data": [ [ (1,1), (2,2), (3,4)] ]
+		"labels": ["pv_1"]
+	},
+	
+	"storage_cost_functions":
+	{
+		"required": True,
+		"units": "$/kwh",
+		"type": List(List(Complex)),
+		"data": [ [ (1,1), (2,2), (3,3)] ]
+		"labels": ["storage_1"]
+	},
+	
+	
+    "wholesale_prices":
+    {
+	    "required": True,
+	    "units": None,
+	    "static": False,
+	    "type": List(Timeseries_List),
+	    "data":
+	    [ [{"time": 1, "value": 5}, {"time": 2, "value": 6}, {"time": 3, "value": 7}],
+		  [{"time": 1, "value": 1}, {"time": 2, "value": 2}, {"time": 3, "value": 3}]
+		
+	    ],
+	    "labels":
+	    [ "real_wholesale_prices", 
+	      "reactive_wholesale_prices"
+	    ]
+    }
+  }
+
+ "outputs":
+  {
+  "bus_voltage":
+   {
+	  "required": True,
+	  "units": "Volts",
+	  "static": False,
+	  "type": List(Complex),
+	  "data":
+	  [ (12.47, 0),
+	    (12.40, 0.1),
+	    (12.30, 0.2),
+	    (12.25, 0.22)
+	  ],
+	  "labels": 
+	  [ "node_1",
+	    "node_2",
+	    "node_3",
+	    "node_4"
+	  ]
+	},
+
+  "line_flow":
+  {
+	  "required": True,
+	  "units": "kVA",
+	  "static": False,
+	  "type": List(Complex),
+	  "data":
+	  [ (40, 0.1),
+	    (50 0.1),
+	    (60, 0.1)
+	  ],
+	  "labels":
+	  [ "line_1",
+	    "line_2",
+	    "line_3"
+	  ]
+  },
+  "generator_setpoints":{
+	  "required": True,
+	  "units": "kVA",
+	  "static": False,
+	  "type": List(Complex),
+	  "data": [ (3,1)],
+	  "labels": ["generator_1"]
+  },
+    "generator_operational_costs":{
+	  "required": False,
+	  "units": "$",
+	  "static": False,
+	  "type": List(Float),
+	  "data": [100],
+	  "labels": ["generator_1"]
+  },
+  
+   "pv_curtailment":{
+	  "required": False,
+	  "units": "kVA",
+	  "static": False,
+	  "type": List(Complex),
+	  "data": [ (0.1,0)],
+	  "labels": ["pv_1"]
+  },
+    "load_curtailment":{
+	  "required": False,
+	  "units": "kVA",
+	  "static": False,
+	  "type": List(Complex),
+	  "data":
+	  [ (0.2,0.1),
+        (0.3, 0.05)
+	  ],
+	  "labels":
+	  [  "load_1",
+		 "load_2"
+	  ]
+  },
+  "storage_state_of_charge":{
+	  "required": True,
+	  "units": "Percent",
+	  "static": False,
+	  "type": List(Float),
+	  "data": [ 50 ],
+	  "labels": ["storage_1"]
+  },
+  
+ }
+}
+
