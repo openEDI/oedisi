@@ -1,0 +1,6 @@
+{
+    "directory": "test_component_type",
+    "execute_function": "python test_component_type.py",
+    "inputs": ["test1"],
+    "outputs": ["test2"]
+}
