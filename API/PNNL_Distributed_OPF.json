@@ -1,250 +1,612 @@
 {
-"inputs":
- {
-  "admittance_matrix":
-    {
-	    "required": True,
-	    "units": "Siemens",
-	    "type": List(List(Complex)),
-	    "static": False,
-	    "data":
-	    [ [(0.1,0.1), (0.1,0.1), (0.1, 0.1)],
-	      [(0.1,0.1), (0.1,0.1), (0.1, 0.1)],
-	      [(0.1,0.1), (0.1,0.1), (0.1, 0.1)]
-	    ],
-	    "labels": ["node1", "node2", "node3"]
+  "title": "PNNL_Distributed_OPF",
+  "type": "object",
+  "properties": {
+    "Static_Inputs": {
+      "$ref": "#/definitions/Static_Inputs"
     },
-
-    "regulator_steps":
-    {
-	    "required": False,
-	    "units": None,
-	    "type": List(Integer),
-	    "static": False,
-	    "data": [1],
-	    "labels":["regulator_1"]
+    "Dynamic_Inputs": {
+      "$ref": "#/definitions/Dynamic_Inputs"
     },
-  
-    "switch_states":
-    {
-	    "required": False,
-	    "units": None,
-	    "static": False,
-	    "type": List(Boolean),
-	    "data": [0,1],
-	    "labels":["switch_1", "switch_2"]
+    "Dynamic_Outputs": {
+      "$ref": "#/definitions/Dynamic_Outputs"
+    }
+  },
+  "required": [
+    "Static_Inputs",
+    "Dynamic_Inputs",
+    "Dynamic_Outputs"
+  ],
+  "definitions": {
+    "Static_Inputs": {
+      "title": "Static_Inputs",
+      "type": "object",
+      "properties": {}
     },
-
-    "capacitor_states":
-    {
-	    "required": False,
-	    "units": None,
-	    "static": False,
-	    "type": List(Boolean),
-	    "data": [0],
-	    "labels":["capacitor_1"]
+    "Complex": {
+      "title": "Complex",
+      "type": "object",
+      "properties": {
+        "real": {
+          "title": "Real",
+          "type": "number"
+        },
+        "imag": {
+          "title": "Imag",
+          "type": "number"
+        }
+      },
+      "required": [
+        "real",
+        "imag"
+      ]
     },
-
-    "demand_data":
-    {
-	    "required": True,
-	    "units": "kVA",
-	    "static": False,
-	    "type": List(Complex),
-	    "data": 
-	    [ (3.0,1.0), 
-		  (4.0, 1.5)
-		],
-	    "labels":
-	    ["load_1",
-	     "load_2"
-	    ]
+    "admittance_matrix_type": {
+      "title": "admittance_matrix_type",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Complex"
+            }
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "units": {
+          "title": "Units",
+          "default": "Siemens",
+          "type": "string"
+        },
+        "CIM_name": {
+          "title": "Cim Name",
+          "default": "",
+          "type": "string"
+        }
+      },
+      "required": [
+        "data",
+        "label"
+      ]
     },
-
-    "generator_data":
-    {
-	    "required": True,
-	    "units": "kVA",
-	    "static": False,
-	    "type": List(Complex),
-	    "data": 
-	    [ (5.0,1.0)	],
-	    "labels":
-	    ["generator_1" ]
+    "regulator_steps_type": {
+      "title": "regulator_steps_type",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "units": {
+          "title": "Units",
+          "type": "null"
+        },
+        "CIM_name": {
+          "title": "Cim Name",
+          "default": "",
+          "type": "string"
+        }
+      },
+      "required": [
+        "data",
+        "label",
+        "units"
+      ]
     },
-
-    "PV_data":
-    {
-	    "required": True,
-	    "units": "kVA",
-	    "static": False,
-	    "type": List(Complex),
-	    "data": 
-	    [ (1.0,0.0)	],
-	    "labels":
-	    ["pv_1" ]
+    "switch_states_type": {
+      "title": "switch_states_type",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "type": "boolean"
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "units": {
+          "title": "Units",
+          "type": "null"
+        },
+        "CIM_name": {
+          "title": "Cim Name",
+          "default": "",
+          "type": "string"
+        }
+      },
+      "required": [
+        "data",
+        "label",
+        "units"
+      ]
     },
-    "storage_data":
-    {
-	    "required": True,
-	    "units": "kVA",
-	    "static": False,
-	    "type": List(Complex),
-	    "data": 
-	    [ (2.0,0.0)	],
-	    "labels":
-	    ["storage_1" ]
-    },	
-	
-	"load_cost_functions":
-	{
-		"required": True,
-		"units": "$/kwh",
-		"type": List(List(Complex)),
-		"data":
-		[ [ (1,1), (2,2)],
-		  [(1,1), (3,3) ]
-		]
-		"labels":
-		[  "load_1",
-		   "load_2"
-		]
-	},
-	
-	
-	"generator_cost_functions":
-	{
-		"required": True,
-		"units": "$/kwh",
-		"type": List(List(Complex)),
-		"data": [ [ (1,1), (2,2)] ]
-		"labels": ["generator_1"]
-	},
-	
-	"pv_cost_functions":
-	{
-		"required": True,
-		"units": "$/kwh",
-		"type": List(List(Complex)),
-		"data": [ [ (1,1), (2,2), (3,4)] ]
-		"labels": ["pv_1"]
-	},
-	
-	"storage_cost_functions":
-	{
-		"required": True,
-		"units": "$/kwh",
-		"type": List(List(Complex)),
-		"data": [ [ (1,1), (2,2), (3,3)] ]
-		"labels": ["storage_1"]
-	},
-	
-	
-    "wholesale_prices":
-    {
-	    "required": True,
-	    "units": None,
-	    "static": False,
-	    "type": List(Timeseries_List),
-	    "data":
-	    [ [{"time": 1, "value": 5}, {"time": 2, "value": 6}, {"time": 3, "value": 7}],
-		  [{"time": 1, "value": 1}, {"time": 2, "value": 2}, {"time": 3, "value": 3}]
-		
-	    ],
-	    "labels":
-	    [ "real_wholesale_prices", 
-	      "reactive_wholesale_prices"
-	    ]
+    "capacitor_states_type": {
+      "title": "capacitor_states_type",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "type": "boolean"
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "units": {
+          "title": "Units",
+          "type": "null"
+        },
+        "CIM_name": {
+          "title": "Cim Name",
+          "default": "",
+          "type": "string"
+        }
+      },
+      "required": [
+        "data",
+        "label",
+        "units"
+      ]
+    },
+    "power_data_type": {
+      "title": "power_data_type",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Complex"
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "units": {
+          "title": "Units",
+          "default": "kVA",
+          "type": "string"
+        },
+        "CIM_name": {
+          "title": "Cim Name",
+          "default": "",
+          "type": "string"
+        }
+      },
+      "required": [
+        "data",
+        "label"
+      ]
+    },
+    "real_cost_functions_type": {
+      "title": "real_cost_functions_type",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "units": {
+          "title": "Units",
+          "default": "$/kWh",
+          "type": "string"
+        },
+        "CIM_name": {
+          "title": "Cim Name",
+          "default": "",
+          "type": "string"
+        }
+      },
+      "required": [
+        "data",
+        "label"
+      ]
+    },
+    "reactive_cost_functions_type": {
+      "title": "reactive_cost_functions_type",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "units": {
+          "title": "Units",
+          "default": "$/kVAh",
+          "type": "string"
+        },
+        "CIM_name": {
+          "title": "Cim Name",
+          "default": "",
+          "type": "string"
+        }
+      },
+      "required": [
+        "data",
+        "label"
+      ]
+    },
+    "Timeseries_Value": {
+      "title": "Timeseries_Value",
+      "type": "object",
+      "properties": {
+        "time": {
+          "title": "Time",
+          "type": "string",
+          "format": "time"
+        },
+        "value": {
+          "title": "Value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "time",
+        "value"
+      ]
+    },
+    "real_wholesale_prices_type": {
+      "title": "real_wholesale_prices_type",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Timeseries_Value"
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "units": {
+          "title": "Units",
+          "default": "$/kWh",
+          "type": "string"
+        },
+        "CIM_name": {
+          "title": "Cim Name",
+          "default": "",
+          "type": "string"
+        }
+      },
+      "required": [
+        "data",
+        "label"
+      ]
+    },
+    "reactive_wholesale_prices_type": {
+      "title": "reactive_wholesale_prices_type",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Timeseries_Value"
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "units": {
+          "title": "Units",
+          "default": "$/kVAh",
+          "type": "string"
+        },
+        "CIM_name": {
+          "title": "Cim Name",
+          "default": "",
+          "type": "string"
+        }
+      },
+      "required": [
+        "data",
+        "label"
+      ]
+    },
+    "Dynamic_Inputs": {
+      "title": "Dynamic_Inputs",
+      "type": "object",
+      "properties": {
+        "admittance_matrix": {
+          "$ref": "#/definitions/admittance_matrix_type"
+        },
+        "regulator_steps": {
+          "$ref": "#/definitions/regulator_steps_type"
+        },
+        "switch_states": {
+          "$ref": "#/definitions/switch_states_type"
+        },
+        "capacitor_states": {
+          "$ref": "#/definitions/capacitor_states_type"
+        },
+        "generator_data": {
+          "$ref": "#/definitions/power_data_type"
+        },
+        "pv_data": {
+          "$ref": "#/definitions/power_data_type"
+        },
+        "storage_data": {
+          "$ref": "#/definitions/power_data_type"
+        },
+        "demand_data": {
+          "$ref": "#/definitions/power_data_type"
+        },
+        "real_load_cost_functions": {
+          "$ref": "#/definitions/real_cost_functions_type"
+        },
+        "reactive_load_cost_functions": {
+          "$ref": "#/definitions/reactive_cost_functions_type"
+        },
+        "real_generator_cost_functions": {
+          "$ref": "#/definitions/real_cost_functions_type"
+        },
+        "reactive_generator_cost_functions": {
+          "$ref": "#/definitions/reactive_cost_functions_type"
+        },
+        "real_pv_cost_functions": {
+          "$ref": "#/definitions/real_cost_functions_type"
+        },
+        "reactive_pv_cost_functions": {
+          "$ref": "#/definitions/reactive_cost_functions_type"
+        },
+        "real_storage_cost_functions": {
+          "$ref": "#/definitions/real_cost_functions_type"
+        },
+        "reactive_storage_cost_functions": {
+          "$ref": "#/definitions/reactive_cost_functions_type"
+        },
+        "real_wholesale_prices": {
+          "$ref": "#/definitions/real_wholesale_prices_type"
+        },
+        "reactive_wholesale_prices": {
+          "$ref": "#/definitions/reactive_wholesale_prices_type"
+        }
+      },
+      "required": [
+        "admittance_matrix",
+        "demand_data",
+        "real_load_cost_functions",
+        "reactive_load_cost_functions"
+      ]
+    },
+    "bus_voltages_type": {
+      "title": "bus_voltages_type",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Complex"
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "units": {
+          "title": "Units",
+          "default": "kV",
+          "type": "string"
+        },
+        "CIM_name": {
+          "title": "Cim Name",
+          "default": "",
+          "type": "string"
+        }
+      },
+      "required": [
+        "data",
+        "label"
+      ]
+    },
+    "line_flows_type": {
+      "title": "line_flows_type",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Complex"
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "units": {
+          "title": "Units",
+          "default": "Amps",
+          "type": "string"
+        },
+        "CIM_name": {
+          "title": "Cim Name",
+          "default": "",
+          "type": "string"
+        }
+      },
+      "required": [
+        "data",
+        "label"
+      ]
+    },
+    "state_of_charge_type": {
+      "title": "state_of_charge_type",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "units": {
+          "title": "Units",
+          "default": "Percent",
+          "type": "string"
+        },
+        "CIM_name": {
+          "title": "Cim Name",
+          "default": "",
+          "type": "string"
+        }
+      },
+      "required": [
+        "data",
+        "label"
+      ]
+    },
+    "operational_costs_type": {
+      "title": "operational_costs_type",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "units": {
+          "title": "Units",
+          "default": "$",
+          "type": "string"
+        },
+        "CIM_name": {
+          "title": "Cim Name",
+          "default": "",
+          "type": "string"
+        }
+      },
+      "required": [
+        "data",
+        "label"
+      ]
+    },
+    "Dynamic_Outputs": {
+      "title": "Dynamic_Outputs",
+      "type": "object",
+      "properties": {
+        "bus_voltage_values": {
+          "$ref": "#/definitions/bus_voltages_type"
+        },
+        "line_flows": {
+          "$ref": "#/definitions/line_flows_type"
+        },
+        "pv_curtailment": {
+          "$ref": "#/definitions/power_data_type"
+        },
+        "load_curtailment": {
+          "$ref": "#/definitions/power_data_type"
+        },
+        "generator_setpoints": {
+          "$ref": "#/definitions/power_data_type"
+        },
+        "state_of_charge": {
+          "$ref": "#/definitions/state_of_charge_type"
+        },
+        "operational_cost": {
+          "$ref": "#/definitions/operational_costs_type"
+        }
+      },
+      "required": [
+        "bus_voltage_values",
+        "line_flows"
+      ]
     }
   }
-
- "outputs":
-  {
-  "bus_voltage":
-   {
-	  "required": True,
-	  "units": "Volts",
-	  "static": False,
-	  "type": List(Complex),
-	  "data":
-	  [ (12.47, 0),
-	    (12.40, 0.1),
-	    (12.30, 0.2),
-	    (12.25, 0.22)
-	  ],
-	  "labels": 
-	  [ "node_1",
-	    "node_2",
-	    "node_3",
-	    "node_4"
-	  ]
-	},
-
-  "line_flow":
-  {
-	  "required": True,
-	  "units": "kVA",
-	  "static": False,
-	  "type": List(Complex),
-	  "data":
-	  [ (40, 0.1),
-	    (50 0.1),
-	    (60, 0.1)
-	  ],
-	  "labels":
-	  [ "line_1",
-	    "line_2",
-	    "line_3"
-	  ]
-  },
-  "generator_setpoints":{
-	  "required": True,
-	  "units": "kVA",
-	  "static": False,
-	  "type": List(Complex),
-	  "data": [ (3,1)],
-	  "labels": ["generator_1"]
-  },
-    "generator_operational_costs":{
-	  "required": False,
-	  "units": "$",
-	  "static": False,
-	  "type": List(Float),
-	  "data": [100],
-	  "labels": ["generator_1"]
-  },
-  
-   "pv_curtailment":{
-	  "required": False,
-	  "units": "kVA",
-	  "static": False,
-	  "type": List(Complex),
-	  "data": [ (0.1,0)],
-	  "labels": ["pv_1"]
-  },
-    "load_curtailment":{
-	  "required": False,
-	  "units": "kVA",
-	  "static": False,
-	  "type": List(Complex),
-	  "data":
-	  [ (0.2,0.1),
-        (0.3, 0.05)
-	  ],
-	  "labels":
-	  [  "load_1",
-		 "load_2"
-	  ]
-  },
-  "storage_state_of_charge":{
-	  "required": True,
-	  "units": "Percent",
-	  "static": False,
-	  "type": List(Float),
-	  "data": [ 50 ],
-	  "labels": ["storage_1"]
-  },
-  
- }
 }
-

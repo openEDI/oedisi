@@ -1,169 +1,335 @@
 {
-  "inputs":
-  {
-	  "opendss_model":
-	  {
-		  "required": True,
-		  "units": None,
-		  "type": String,
-		  "static": True,
-		  "data": "OEDI/path/to/Master.dss",
-		  "label": "Sample OpenDSS File"
-	  },
-	  "timeseries_profiles":
-	  {
-		  "required": False,
-		  "units": None,
-		  "type": String,
-		  "static": True,
-		  "data": "OEDI/path/to/profile/location",
-		  "label": "Sample Timeseries Profile Location"
-	  },
-	  
-	  "timesteps":
-	  {
-		  "required": False,
-		  "units": None,
-		  "type": List(Integer),
-		  "static": False,
-		  "data": [ 1,2,3,4],
-		  "label": ["2022-01-01-1:00", "2022-01-01-2:00", "2022-01-01-3:00", "2022-01-01-4:00" ]
-	  }
-
+  "title": "NREL_Powerflow_Simulation",
+  "type": "object",
+  "properties": {
+    "Static_Inputs": {
+      "$ref": "#/definitions/Static_Inputs"
+    },
+    "Dynamic_Inputs": {
+      "$ref": "#/definitions/Dynamic_Inputs"
+    },
+    "Dynamic_Outputs": {
+      "$ref": "#/definitions/Dynamic_Outputs"
+    }
   },
-  "outputs":
-  {
-   "bus_voltage":
-   {
-	  "required": True,
-	  "units": "Volts",
-	  "static": False,
-	  "type": List(Complex),
-	  "data":
-	  [ (12.47, 0),
-		(12.40, 0.1),
-		(12.30, 0.2),
-		(12.25, 0.22)
-	  ],
-	  "labels": 
-	  [ "node_1",
-		"node_2",
-		"node_3",
-		"node_4"
-	  ]
-	},
-
-  "line_flow":
-  {
-	  "required": True,
-	  "units": "kVA",
-	  "static": False,
-	  "type": List(Complex),
-	  "data":
-	  [ (40, 0.1),
-		(50 0.1),
-		(60, 0.1)
-	  ],
-	  "labels":
-	  [ "line_1",
-		"line_2",
-		"line_3"
-	  ]
-  },
-  "admittance_matrix":
-  {
-	"required": True,
-	    "units": "Siemens",
-	    "type": List(List(Complex)),
-	    "static": False,
-	    "data":
-	    [ [(0.1,0.1), (0.1,0.1), (0.1, 0.1)],
-	      [(0.1,0.1), (0.1,0.1), (0.1, 0.1)],
-	      [(0.1,0.1), (0.1,0.1), (0.1, 0.1)]
-	    ],
-	    "labels": ["node1", "node2", "node3"]  
-  },
-  "regulator_steps":
-    {
-	    "required": False,
-	    "units": None,
-	    "type": List(Integer),
-	    "static": False,
-	    "data": [1],
-	    "labels":["regulator_1"]
+  "required": [
+    "Static_Inputs",
+    "Dynamic_Inputs",
+    "Dynamic_Outputs"
+  ],
+  "definitions": {
+    "path_type": {
+      "title": "path_type",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "units": {
+          "title": "Units",
+          "type": "string"
+        },
+        "CIM_name": {
+          "title": "Cim Name",
+          "default": "",
+          "type": "string"
+        }
+      },
+      "required": [
+        "data",
+        "label"
+      ]
     },
-  
-    "switch_states":
-    {
-	    "required": False,
-	    "units": None,
-	    "static": False,
-	    "type": List(Boolean),
-	    "data": [0,1],
-	    "labels":["switch_1", "switch_2"]
+    "Static_Inputs": {
+      "title": "Static_Inputs",
+      "type": "object",
+      "properties": {
+        "opendss_model": {
+          "$ref": "#/definitions/path_type"
+        },
+        "timeseries_folder": {
+          "$ref": "#/definitions/path_type"
+        }
+      },
+      "required": [
+        "opendss_model",
+        "timeseries_folder"
+      ]
     },
-
-    "capacitor_states":
-    {
-	    "required": False,
-	    "units": None,
-	    "static": False,
-	    "type": List(Boolean),
-	    "data": [0],
-	    "labels":["capacitor_1"]
+    "Dynamic_Inputs": {
+      "title": "Dynamic_Inputs",
+      "type": "object",
+      "properties": {}
     },
-
-    "demand_data":
-    {
-	    "required": True,
-	    "units": "kVA",
-	    "static": False,
-	    "type": List(Complex),
-	    "data": 
-	    [ (3.0,1.0), 
-		  (4.0, 1.5)
-		],
-	    "labels":
-	    ["load_1",
-	     "load_2"
-	    ]
+    "Complex": {
+      "title": "Complex",
+      "type": "object",
+      "properties": {
+        "real": {
+          "title": "Real",
+          "type": "number"
+        },
+        "imag": {
+          "title": "Imag",
+          "type": "number"
+        }
+      },
+      "required": [
+        "real",
+        "imag"
+      ]
     },
-
-    "generator_data":
-    {
-	    "required": True,
-	    "units": "kVA",
-	    "static": False,
-	    "type": List(Complex),
-	    "data": 
-	    [ (5.0,1.0)	],
-	    "labels":
-	    ["generator_1" ]
+    "bus_voltages_type": {
+      "title": "bus_voltages_type",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Complex"
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "units": {
+          "title": "Units",
+          "default": "kV",
+          "type": "string"
+        },
+        "CIM_name": {
+          "title": "Cim Name",
+          "default": "",
+          "type": "string"
+        }
+      },
+      "required": [
+        "data",
+        "label"
+      ]
     },
-
-    "PV_data":
-    {
-	    "required": True,
-	    "units": "kVA",
-	    "static": False,
-	    "type": List(Complex),
-	    "data": 
-	    [ (1.0,0.0)	],
-	    "labels":
-	    ["pv_1" ]
+    "line_flows_type": {
+      "title": "line_flows_type",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Complex"
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "units": {
+          "title": "Units",
+          "default": "Amps",
+          "type": "string"
+        },
+        "CIM_name": {
+          "title": "Cim Name",
+          "default": "",
+          "type": "string"
+        }
+      },
+      "required": [
+        "data",
+        "label"
+      ]
     },
-    "storage_data":
-    {
-	    "required": True,
-	    "units": "kVA",
-	    "static": False,
-	    "type": List(Complex),
-	    "data": 
-	    [ (2.0,0.0)	],
-	    "labels":
-	    ["storage_1" ]
-    }	
-  
+    "admittance_matrix_type": {
+      "title": "admittance_matrix_type",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Complex"
+            }
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "units": {
+          "title": "Units",
+          "default": "Siemens",
+          "type": "string"
+        },
+        "CIM_name": {
+          "title": "Cim Name",
+          "default": "",
+          "type": "string"
+        }
+      },
+      "required": [
+        "data",
+        "label"
+      ]
+    },
+    "switch_states_type": {
+      "title": "switch_states_type",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "type": "boolean"
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "units": {
+          "title": "Units",
+          "type": "null"
+        },
+        "CIM_name": {
+          "title": "Cim Name",
+          "default": "",
+          "type": "string"
+        }
+      },
+      "required": [
+        "data",
+        "label",
+        "units"
+      ]
+    },
+    "capacitor_states_type": {
+      "title": "capacitor_states_type",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "type": "boolean"
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "units": {
+          "title": "Units",
+          "type": "null"
+        },
+        "CIM_name": {
+          "title": "Cim Name",
+          "default": "",
+          "type": "string"
+        }
+      },
+      "required": [
+        "data",
+        "label",
+        "units"
+      ]
+    },
+    "power_data_type": {
+      "title": "power_data_type",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Complex"
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "units": {
+          "title": "Units",
+          "default": "kVA",
+          "type": "string"
+        },
+        "CIM_name": {
+          "title": "Cim Name",
+          "default": "",
+          "type": "string"
+        }
+      },
+      "required": [
+        "data",
+        "label"
+      ]
+    },
+    "Dynamic_Outputs": {
+      "title": "Dynamic_Outputs",
+      "type": "object",
+      "properties": {
+        "bus_voltage_values": {
+          "$ref": "#/definitions/bus_voltages_type"
+        },
+        "line_flows": {
+          "$ref": "#/definitions/line_flows_type"
+        },
+        "admittance_matrix": {
+          "$ref": "#/definitions/admittance_matrix_type"
+        },
+        "switch_states": {
+          "$ref": "#/definitions/switch_states_type"
+        },
+        "capacitor_states": {
+          "$ref": "#/definitions/capacitor_states_type"
+        },
+        "demand_data": {
+          "$ref": "#/definitions/power_data_type"
+        },
+        "pv_data": {
+          "$ref": "#/definitions/power_data_type"
+        },
+        "storage_data": {
+          "$ref": "#/definitions/power_data_type"
+        }
+      },
+      "required": [
+        "bus_voltage_values",
+        "line_flows",
+        "admittance_matrix",
+        "switch_states",
+        "capacitor_states",
+        "demand_data",
+        "pv_data",
+        "storage_data"
+      ]
+    }
   }
-	
 }
