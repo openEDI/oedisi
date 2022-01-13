@@ -1,15 +1,15 @@
 {
-  "title": "PNNL_Distributed_State_Estimation",
+  "title": "PNNLDistributedStateEstimation",
   "type": "object",
   "properties": {
     "Static_Inputs": {
-      "$ref": "#/definitions/Static_Inputs"
+      "$ref": "#/definitions/StaticInputs"
     },
     "Dynamic_Inputs": {
-      "$ref": "#/definitions/Dynamic_Inputs"
+      "$ref": "#/definitions/DynamicInputs"
     },
     "Dynamic_Outputs": {
-      "$ref": "#/definitions/Dynamic_Outputs"
+      "$ref": "#/definitions/DynamicOutputs"
     }
   },
   "required": [
@@ -18,8 +18,8 @@
     "Dynamic_Outputs"
   ],
   "definitions": {
-    "Measurement_Type": {
-      "title": "Measurement_Type",
+    "MeasurementType": {
+      "title": "MeasurementType",
       "description": "An enumeration.",
       "enum": [
         "voltage_magnitude",
@@ -29,12 +29,12 @@
       ],
       "type": "string"
     },
-    "Measurement_Model": {
-      "title": "Measurement_Model",
+    "MeasurementModel": {
+      "title": "MeasurementModel",
       "type": "object",
       "properties": {
         "Measurement_Type": {
-          "$ref": "#/definitions/Measurement_Type"
+          "$ref": "#/definitions/MeasurementType"
         },
         "is_flow": {
           "title": "Is Flow",
@@ -50,15 +50,15 @@
         "standard_deviation"
       ]
     },
-    "measurement_models_type": {
-      "title": "measurement_models_type",
+    "MeasurementModels": {
+      "title": "MeasurementModels",
       "type": "object",
       "properties": {
         "data": {
           "title": "Data",
           "type": "array",
           "items": {
-            "$ref": "#/definitions/Measurement_Model"
+            "$ref": "#/definitions/MeasurementModel"
           }
         },
         "label": {
@@ -67,29 +67,19 @@
           "items": {
             "type": "string"
           }
-        },
-        "units": {
-          "title": "Units",
-          "type": "null"
-        },
-        "CIM_name": {
-          "title": "Cim Name",
-          "default": "",
-          "type": "string"
         }
       },
       "required": [
         "data",
-        "label",
-        "units"
+        "label"
       ]
     },
-    "Static_Inputs": {
-      "title": "Static_Inputs",
+    "StaticInputs": {
+      "title": "StaticInputs",
       "type": "object",
       "properties": {
         "measurement_models": {
-          "$ref": "#/definitions/measurement_models_type"
+          "$ref": "#/definitions/MeasurementModels"
         }
       },
       "required": [
@@ -114,8 +104,9 @@
         "imag"
       ]
     },
-    "admittance_matrix_type": {
-      "title": "admittance_matrix_type",
+    "AdmittanceMatrix": {
+      "title": "AdmittanceMatrix",
+      "description": "CIM_NAME: ",
       "type": "object",
       "properties": {
         "data": {
@@ -134,25 +125,17 @@
           "items": {
             "type": "string"
           }
-        },
-        "units": {
-          "title": "Units",
-          "default": "Siemens",
-          "type": "string"
-        },
-        "CIM_name": {
-          "title": "Cim Name",
-          "default": "",
-          "type": "string"
         }
       },
       "required": [
         "data",
         "label"
-      ]
+      ],
+      "units": ""
     },
-    "regulator_steps_type": {
-      "title": "regulator_steps_type",
+    "RegulatorSteps": {
+      "title": "RegulatorSteps",
+      "description": "CIM_NAME: ",
       "type": "object",
       "properties": {
         "data": {
@@ -168,25 +151,16 @@
           "items": {
             "type": "string"
           }
-        },
-        "units": {
-          "title": "Units",
-          "type": "null"
-        },
-        "CIM_name": {
-          "title": "Cim Name",
-          "default": "",
-          "type": "string"
         }
       },
       "required": [
         "data",
-        "label",
-        "units"
-      ]
+        "label"
+      ],
+      "units": ""
     },
-    "switch_states_type": {
-      "title": "switch_states_type",
+    "SwitchStates": {
+      "title": "SwitchStates",
       "type": "object",
       "properties": {
         "data": {
@@ -202,25 +176,15 @@
           "items": {
             "type": "string"
           }
-        },
-        "units": {
-          "title": "Units",
-          "type": "null"
-        },
-        "CIM_name": {
-          "title": "Cim Name",
-          "default": "",
-          "type": "string"
         }
       },
       "required": [
         "data",
-        "label",
-        "units"
+        "label"
       ]
     },
-    "capacitor_states_type": {
-      "title": "capacitor_states_type",
+    "CapacitorStates": {
+      "title": "CapacitorStates",
       "type": "object",
       "properties": {
         "data": {
@@ -236,25 +200,15 @@
           "items": {
             "type": "string"
           }
-        },
-        "units": {
-          "title": "Units",
-          "type": "null"
-        },
-        "CIM_name": {
-          "title": "Cim Name",
-          "default": "",
-          "type": "string"
         }
       },
       "required": [
         "data",
-        "label",
-        "units"
+        "label"
       ]
     },
-    "Timeseries_Value": {
-      "title": "Timeseries_Value",
+    "TimeseriesValue": {
+      "title": "TimeseriesValue",
       "type": "object",
       "properties": {
         "time": {
@@ -272,15 +226,15 @@
         "value"
       ]
     },
-    "timeseries_values_type": {
-      "title": "timeseries_values_type",
+    "TimeseriesValues": {
+      "title": "TimeseriesValues",
       "type": "object",
       "properties": {
         "data": {
           "title": "Data",
           "type": "array",
           "items": {
-            "$ref": "#/definitions/Timeseries_Value"
+            "$ref": "#/definitions/TimeseriesValue"
           }
         },
         "label": {
@@ -289,41 +243,31 @@
           "items": {
             "type": "string"
           }
-        },
-        "units": {
-          "title": "Units",
-          "type": "null"
-        },
-        "CIM_name": {
-          "title": "Cim Name",
-          "default": "",
-          "type": "string"
         }
       },
       "required": [
         "data",
-        "label",
-        "units"
+        "label"
       ]
     },
-    "Dynamic_Inputs": {
-      "title": "Dynamic_Inputs",
+    "DynamicInputs": {
+      "title": "DynamicInputs",
       "type": "object",
       "properties": {
         "admittance_matrix": {
-          "$ref": "#/definitions/admittance_matrix_type"
+          "$ref": "#/definitions/AdmittanceMatrix"
         },
         "regulator_steps": {
-          "$ref": "#/definitions/regulator_steps_type"
+          "$ref": "#/definitions/RegulatorSteps"
         },
         "switch_states": {
-          "$ref": "#/definitions/switch_states_type"
+          "$ref": "#/definitions/SwitchStates"
         },
         "capacitor_states": {
-          "$ref": "#/definitions/capacitor_states_type"
+          "$ref": "#/definitions/CapacitorStates"
         },
         "timeseries_values": {
-          "$ref": "#/definitions/timeseries_values_type"
+          "$ref": "#/definitions/TimeseriesValues"
         }
       },
       "required": [
@@ -331,8 +275,8 @@
         "timeseries_values"
       ]
     },
-    "bus_voltages_type": {
-      "title": "bus_voltages_type",
+    "BusVoltages": {
+      "title": "BusVoltages",
       "type": "object",
       "properties": {
         "data": {
@@ -348,32 +292,23 @@
           "items": {
             "type": "string"
           }
-        },
-        "units": {
-          "title": "Units",
-          "default": "kV",
-          "type": "string"
-        },
-        "CIM_name": {
-          "title": "Cim Name",
-          "default": "",
-          "type": "string"
         }
       },
       "required": [
         "data",
         "label"
-      ]
+      ],
+      "units": "kV"
     },
-    "Dynamic_Outputs": {
-      "title": "Dynamic_Outputs",
+    "DynamicOutputs": {
+      "title": "DynamicOutputs",
       "type": "object",
       "properties": {
         "bus_voltage_values": {
-          "$ref": "#/definitions/bus_voltages_type"
+          "$ref": "#/definitions/BusVoltages"
         },
         "bus_voltage_uncertanties": {
-          "$ref": "#/definitions/bus_voltages_type"
+          "$ref": "#/definitions/BusVoltages"
         }
       },
       "required": [

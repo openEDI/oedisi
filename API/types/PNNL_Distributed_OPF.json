@@ -1,25 +1,25 @@
 {
-  "title": "PNNL_Distributed_OPF",
+  "title": "PNNLDistributedOPF",
   "type": "object",
   "properties": {
-    "Static_Inputs": {
-      "$ref": "#/definitions/Static_Inputs"
+    "static_inputs": {
+      "$ref": "#/definitions/StaticInputs"
     },
-    "Dynamic_Inputs": {
-      "$ref": "#/definitions/Dynamic_Inputs"
+    "dynamic_inputs": {
+      "$ref": "#/definitions/DynamicInputs"
     },
-    "Dynamic_Outputs": {
-      "$ref": "#/definitions/Dynamic_Outputs"
+    "dynamic_outputs": {
+      "$ref": "#/definitions/DynamicOutputs"
     }
   },
   "required": [
-    "Static_Inputs",
-    "Dynamic_Inputs",
-    "Dynamic_Outputs"
+    "static_inputs",
+    "dynamic_inputs",
+    "dynamic_outputs"
   ],
   "definitions": {
-    "Static_Inputs": {
-      "title": "Static_Inputs",
+    "StaticInputs": {
+      "title": "StaticInputs",
       "type": "object",
       "properties": {}
     },
@@ -41,8 +41,9 @@
         "imag"
       ]
     },
-    "admittance_matrix_type": {
-      "title": "admittance_matrix_type",
+    "AdmittanceMatrix": {
+      "title": "AdmittanceMatrix",
+      "description": "CIM_NAME: ",
       "type": "object",
       "properties": {
         "data": {
@@ -61,25 +62,17 @@
           "items": {
             "type": "string"
           }
-        },
-        "units": {
-          "title": "Units",
-          "default": "Siemens",
-          "type": "string"
-        },
-        "CIM_name": {
-          "title": "Cim Name",
-          "default": "",
-          "type": "string"
         }
       },
       "required": [
         "data",
         "label"
-      ]
+      ],
+      "units": ""
     },
-    "regulator_steps_type": {
-      "title": "regulator_steps_type",
+    "RegulatorSteps": {
+      "title": "RegulatorSteps",
+      "description": "CIM_NAME: ",
       "type": "object",
       "properties": {
         "data": {
@@ -95,25 +88,16 @@
           "items": {
             "type": "string"
           }
-        },
-        "units": {
-          "title": "Units",
-          "type": "null"
-        },
-        "CIM_name": {
-          "title": "Cim Name",
-          "default": "",
-          "type": "string"
         }
       },
       "required": [
         "data",
-        "label",
-        "units"
-      ]
+        "label"
+      ],
+      "units": ""
     },
-    "switch_states_type": {
-      "title": "switch_states_type",
+    "SwitchStates": {
+      "title": "SwitchStates",
       "type": "object",
       "properties": {
         "data": {
@@ -129,25 +113,15 @@
           "items": {
             "type": "string"
           }
-        },
-        "units": {
-          "title": "Units",
-          "type": "null"
-        },
-        "CIM_name": {
-          "title": "Cim Name",
-          "default": "",
-          "type": "string"
         }
       },
       "required": [
         "data",
-        "label",
-        "units"
+        "label"
       ]
     },
-    "capacitor_states_type": {
-      "title": "capacitor_states_type",
+    "CapacitorStates": {
+      "title": "CapacitorStates",
       "type": "object",
       "properties": {
         "data": {
@@ -163,25 +137,15 @@
           "items": {
             "type": "string"
           }
-        },
-        "units": {
-          "title": "Units",
-          "type": "null"
-        },
-        "CIM_name": {
-          "title": "Cim Name",
-          "default": "",
-          "type": "string"
         }
       },
       "required": [
         "data",
-        "label",
-        "units"
+        "label"
       ]
     },
-    "power_data_type": {
-      "title": "power_data_type",
+    "PowerData": {
+      "title": "PowerData",
       "type": "object",
       "properties": {
         "data": {
@@ -197,25 +161,16 @@
           "items": {
             "type": "string"
           }
-        },
-        "units": {
-          "title": "Units",
-          "default": "kVA",
-          "type": "string"
-        },
-        "CIM_name": {
-          "title": "Cim Name",
-          "default": "",
-          "type": "string"
         }
       },
       "required": [
         "data",
         "label"
-      ]
+      ],
+      "units": "kVA"
     },
-    "real_cost_functions_type": {
-      "title": "real_cost_functions_type",
+    "RealCostFunctions": {
+      "title": "RealCostFunctions",
       "type": "object",
       "properties": {
         "data": {
@@ -234,25 +189,16 @@
           "items": {
             "type": "string"
           }
-        },
-        "units": {
-          "title": "Units",
-          "default": "$/kWh",
-          "type": "string"
-        },
-        "CIM_name": {
-          "title": "Cim Name",
-          "default": "",
-          "type": "string"
         }
       },
       "required": [
         "data",
         "label"
-      ]
+      ],
+      "units": "$/kWh"
     },
-    "reactive_cost_functions_type": {
-      "title": "reactive_cost_functions_type",
+    "ReactiveCostFunctions": {
+      "title": "ReactiveCostFunctions",
       "type": "object",
       "properties": {
         "data": {
@@ -271,25 +217,16 @@
           "items": {
             "type": "string"
           }
-        },
-        "units": {
-          "title": "Units",
-          "default": "$/kVAh",
-          "type": "string"
-        },
-        "CIM_name": {
-          "title": "Cim Name",
-          "default": "",
-          "type": "string"
         }
       },
       "required": [
         "data",
         "label"
-      ]
+      ],
+      "units": "$/kVarh"
     },
-    "Timeseries_Value": {
-      "title": "Timeseries_Value",
+    "TimeseriesValue": {
+      "title": "TimeseriesValue",
       "type": "object",
       "properties": {
         "time": {
@@ -307,15 +244,15 @@
         "value"
       ]
     },
-    "real_wholesale_prices_type": {
-      "title": "real_wholesale_prices_type",
+    "RealWholesalePrices": {
+      "title": "RealWholesalePrices",
       "type": "object",
       "properties": {
         "data": {
           "title": "Data",
           "type": "array",
           "items": {
-            "$ref": "#/definitions/Timeseries_Value"
+            "$ref": "#/definitions/TimeseriesValue"
           }
         },
         "label": {
@@ -324,32 +261,23 @@
           "items": {
             "type": "string"
           }
-        },
-        "units": {
-          "title": "Units",
-          "default": "$/kWh",
-          "type": "string"
-        },
-        "CIM_name": {
-          "title": "Cim Name",
-          "default": "",
-          "type": "string"
         }
       },
       "required": [
         "data",
         "label"
-      ]
+      ],
+      "units": "$/kWh"
     },
-    "reactive_wholesale_prices_type": {
-      "title": "reactive_wholesale_prices_type",
+    "ReactiveWholesalePrices": {
+      "title": "ReactiveWholesalePrices",
       "type": "object",
       "properties": {
         "data": {
           "title": "Data",
           "type": "array",
           "items": {
-            "$ref": "#/definitions/Timeseries_Value"
+            "$ref": "#/definitions/TimeseriesValue"
           }
         },
         "label": {
@@ -358,80 +286,71 @@
           "items": {
             "type": "string"
           }
-        },
-        "units": {
-          "title": "Units",
-          "default": "$/kVAh",
-          "type": "string"
-        },
-        "CIM_name": {
-          "title": "Cim Name",
-          "default": "",
-          "type": "string"
         }
       },
       "required": [
         "data",
         "label"
-      ]
+      ],
+      "units": "$/kVarh"
     },
-    "Dynamic_Inputs": {
-      "title": "Dynamic_Inputs",
+    "DynamicInputs": {
+      "title": "DynamicInputs",
       "type": "object",
       "properties": {
         "admittance_matrix": {
-          "$ref": "#/definitions/admittance_matrix_type"
+          "$ref": "#/definitions/AdmittanceMatrix"
         },
         "regulator_steps": {
-          "$ref": "#/definitions/regulator_steps_type"
+          "$ref": "#/definitions/RegulatorSteps"
         },
         "switch_states": {
-          "$ref": "#/definitions/switch_states_type"
+          "$ref": "#/definitions/SwitchStates"
         },
         "capacitor_states": {
-          "$ref": "#/definitions/capacitor_states_type"
+          "$ref": "#/definitions/CapacitorStates"
         },
         "generator_data": {
-          "$ref": "#/definitions/power_data_type"
+          "$ref": "#/definitions/PowerData"
         },
         "pv_data": {
-          "$ref": "#/definitions/power_data_type"
+          "$ref": "#/definitions/PowerData"
         },
         "storage_data": {
-          "$ref": "#/definitions/power_data_type"
+          "$ref": "#/definitions/PowerData"
         },
         "demand_data": {
-          "$ref": "#/definitions/power_data_type"
+          "$ref": "#/definitions/PowerData"
         },
         "real_load_cost_functions": {
-          "$ref": "#/definitions/real_cost_functions_type"
+          "$ref": "#/definitions/RealCostFunctions"
         },
         "reactive_load_cost_functions": {
-          "$ref": "#/definitions/reactive_cost_functions_type"
+          "$ref": "#/definitions/ReactiveCostFunctions"
         },
         "real_generator_cost_functions": {
-          "$ref": "#/definitions/real_cost_functions_type"
+          "$ref": "#/definitions/RealCostFunctions"
         },
         "reactive_generator_cost_functions": {
-          "$ref": "#/definitions/reactive_cost_functions_type"
+          "$ref": "#/definitions/ReactiveCostFunctions"
         },
         "real_pv_cost_functions": {
-          "$ref": "#/definitions/real_cost_functions_type"
+          "$ref": "#/definitions/RealCostFunctions"
         },
         "reactive_pv_cost_functions": {
-          "$ref": "#/definitions/reactive_cost_functions_type"
+          "$ref": "#/definitions/ReactiveCostFunctions"
         },
         "real_storage_cost_functions": {
-          "$ref": "#/definitions/real_cost_functions_type"
+          "$ref": "#/definitions/RealCostFunctions"
         },
         "reactive_storage_cost_functions": {
-          "$ref": "#/definitions/reactive_cost_functions_type"
+          "$ref": "#/definitions/ReactiveCostFunctions"
         },
         "real_wholesale_prices": {
-          "$ref": "#/definitions/real_wholesale_prices_type"
+          "$ref": "#/definitions/RealWholesalePrices"
         },
         "reactive_wholesale_prices": {
-          "$ref": "#/definitions/reactive_wholesale_prices_type"
+          "$ref": "#/definitions/ReactiveWholesalePrices"
         }
       },
       "required": [
@@ -441,8 +360,8 @@
         "reactive_load_cost_functions"
       ]
     },
-    "bus_voltages_type": {
-      "title": "bus_voltages_type",
+    "BusVoltages": {
+      "title": "BusVoltages",
       "type": "object",
       "properties": {
         "data": {
@@ -458,25 +377,16 @@
           "items": {
             "type": "string"
           }
-        },
-        "units": {
-          "title": "Units",
-          "default": "kV",
-          "type": "string"
-        },
-        "CIM_name": {
-          "title": "Cim Name",
-          "default": "",
-          "type": "string"
         }
       },
       "required": [
         "data",
         "label"
-      ]
+      ],
+      "units": "kV"
     },
-    "line_flows_type": {
-      "title": "line_flows_type",
+    "LineFlows": {
+      "title": "LineFlows",
       "type": "object",
       "properties": {
         "data": {
@@ -492,25 +402,16 @@
           "items": {
             "type": "string"
           }
-        },
-        "units": {
-          "title": "Units",
-          "default": "Amps",
-          "type": "string"
-        },
-        "CIM_name": {
-          "title": "Cim Name",
-          "default": "",
-          "type": "string"
         }
       },
       "required": [
         "data",
         "label"
-      ]
+      ],
+      "units": "Amps"
     },
-    "state_of_charge_type": {
-      "title": "state_of_charge_type",
+    "StateOfCharge": {
+      "title": "StateOfCharge",
       "type": "object",
       "properties": {
         "data": {
@@ -526,25 +427,16 @@
           "items": {
             "type": "string"
           }
-        },
-        "units": {
-          "title": "Units",
-          "default": "Percent",
-          "type": "string"
-        },
-        "CIM_name": {
-          "title": "Cim Name",
-          "default": "",
-          "type": "string"
         }
       },
       "required": [
         "data",
         "label"
-      ]
+      ],
+      "units": "%"
     },
-    "operational_costs_type": {
-      "title": "operational_costs_type",
+    "OperationalCosts": {
+      "title": "OperationalCosts",
       "type": "object",
       "properties": {
         "data": {
@@ -560,47 +452,38 @@
           "items": {
             "type": "string"
           }
-        },
-        "units": {
-          "title": "Units",
-          "default": "$",
-          "type": "string"
-        },
-        "CIM_name": {
-          "title": "Cim Name",
-          "default": "",
-          "type": "string"
         }
       },
       "required": [
         "data",
         "label"
-      ]
+      ],
+      "units": "$"
     },
-    "Dynamic_Outputs": {
-      "title": "Dynamic_Outputs",
+    "DynamicOutputs": {
+      "title": "DynamicOutputs",
       "type": "object",
       "properties": {
         "bus_voltage_values": {
-          "$ref": "#/definitions/bus_voltages_type"
+          "$ref": "#/definitions/BusVoltages"
         },
         "line_flows": {
-          "$ref": "#/definitions/line_flows_type"
+          "$ref": "#/definitions/LineFlows"
         },
         "pv_curtailment": {
-          "$ref": "#/definitions/power_data_type"
+          "$ref": "#/definitions/PowerData"
         },
         "load_curtailment": {
-          "$ref": "#/definitions/power_data_type"
+          "$ref": "#/definitions/PowerData"
         },
         "generator_setpoints": {
-          "$ref": "#/definitions/power_data_type"
+          "$ref": "#/definitions/PowerData"
         },
         "state_of_charge": {
-          "$ref": "#/definitions/state_of_charge_type"
+          "$ref": "#/definitions/StateOfCharge"
         },
         "operational_cost": {
-          "$ref": "#/definitions/operational_costs_type"
+          "$ref": "#/definitions/OperationalCosts"
         }
       },
       "required": [
