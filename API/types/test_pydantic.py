@@ -5,7 +5,8 @@ from typing import Generic, TypeVar, Optional, List, Literal
 from pydantic import BaseModel, validator, ValidationError
 from pydantic.generics import GenericModel
 
-Unit = TypeVar('Unit')
+Unit = TypeVar("Unit")
+
 
 class Complex(BaseModel):
     real: float
@@ -13,13 +14,14 @@ class Complex(BaseModel):
 
 
 class AdmittanceMatrix(BaseModel):
-    "CIM_NAME: "
+    "CIM_NAME:"
     data: List[List[Complex]]
     label: List[str]
 
     class Config:
         schema_extra = {
-            'unit': 'm/s',
+            "unit": "m/s",
         }
+
 
 print(AdmittanceMatrix.schema_json(indent=2))

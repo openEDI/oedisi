@@ -3,12 +3,15 @@ from pydantic import BaseModel, Field, create_model
 from typing import List, Optional
 from pathlib import Path
 
+
 class StaticInputs(BaseModel):
     opendss_model: Path
     timeseries_folder: Path
 
+
 class DynamicInputs(BaseModel):
     pass
+
 
 class DynamicOutputs(BaseModel):
     bus_voltage_values: BusVoltages
@@ -21,11 +24,10 @@ class DynamicOutputs(BaseModel):
     storage_data: PowerData
 
 
-
 class NRELPowerflowSimulation(BaseModel):
     StaticInputs: StaticInputs
     DynamicInputs: DynamicInputs
     DynamicOutputs: DynamicOutputs
 
-print(NRELPowerflowSimulation.schema_json(indent=2))
 
+print(NRELPowerflowSimulation.schema_json(indent=2))

@@ -27,23 +27,26 @@ class TestFederate:
             self.parameters = json.load(f)
 
         fedinfo = h.helicsCreateFederateInfo()
-        fedinfo.core_name = self.parameters['name']
+        fedinfo.core_name = self.parameters["name"]
         fedinfo.core_type = h.HELICS_CORE_TYPE_ZMQ
         fedinfo.core_init = "--federates=1"
 
-        self.fed = h.helicsCreateValueFederate(self.parameters['name'], fedinfo)
+        self.fed = h.helicsCreateValueFederate(self.parameters["name"], fedinfo)
         logger.info(f"Created federate {self.fed.name}")
-
 
         with open("inputs.json", "r") as f:
             port_mapping = json.load(f)
             self.subscriptions = {}
-            if 'test1' in port_mapping:
-                self.subscriptions['test1'] = self.fed.register_subscription(port_mapping['test1'])
+            if "test1" in port_mapping:
+                self.subscriptions["test1"] = self.fed.register_subscription(
+                    port_mapping["test1"]
+                )
             logging.debug("Loaded subscription test1 at {port_mapping['test1']}")
 
         self.publications = {}
-        self.publications["test2"] = self.fed.register_publication("test2", h.HELICS_DATA_TYPE_DOUBLE)
+        self.publications["test2"] = self.fed.register_publication(
+            "test2", h.HELICS_DATA_TYPE_DOUBLE
+        )
 
     def run(self):
         self.fed.enter_executing_mode()

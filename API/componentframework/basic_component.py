@@ -10,6 +10,7 @@ from .system_configuration import AnnotatedType
 from pydantic import BaseModel
 from typing import List, Any, Dict
 
+
 class ComponentDescription(BaseModel):
     directory: str
     execute_function: str
@@ -31,12 +32,14 @@ def basic_component(comp_desc: ComponentDescription, type_checker):
     """
     Uses data in component_definition to create a new component type
     """
+
     class BasicComponent(system_configuration.ComponentType):
         _origin_directory = comp_desc.directory
         _execute_function = comp_desc.execute_function
         _dynamic_inputs = types_to_dict(comp_desc.dynamic_inputs)
         _dynamic_outputs = types_to_dict(comp_desc.dynamic_outputs)
         _static_inputs = types_to_dict(comp_desc.static_inputs)
+
         def __init__(self, name, parameters: Dict[str, Any], directory: str):
             self._name = name
             self._directory = directory

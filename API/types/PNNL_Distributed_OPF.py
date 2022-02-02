@@ -2,8 +2,10 @@ from data_types import *
 from pydantic import BaseModel, Field, create_model
 from typing import List, Optional
 
+
 class StaticInputs(BaseModel):
     pass
+
 
 class DynamicInputs(BaseModel):
     admittance_matrix: AdmittanceMatrix
@@ -25,6 +27,7 @@ class DynamicInputs(BaseModel):
     real_wholesale_prices: Optional[RealWholesalePrices]
     reactive_wholesale_prices: Optional[ReactiveWholesalePrices]
 
+
 class DynamicOutputs(BaseModel):
     bus_voltage_values: BusVoltages
     line_flows: LineFlows
@@ -34,14 +37,14 @@ class DynamicOutputs(BaseModel):
     state_of_charge: Optional[StateOfCharge]
     operational_cost: Optional[OperationalCosts]
 
+
 class PNNLDistributedOPF(BaseModel):
     static_inputs: StaticInputs
     dynamic_inputs: DynamicInputs
     dynamic_outputs: DynamicOutputs
 
+
 print(PNNLDistributedOPF.schema_json(indent=2))
 
-#TODO: Add descriptions
-#TODO (Later): Add Validation methods for certain criteria
-
-
+# TODO: Add descriptions
+# TODO (Later): Add Validation methods for certain criteria

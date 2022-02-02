@@ -2,21 +2,19 @@
 from componentframework.basic_component import component_from_json
 from componentframework.system_configuration import (
     generate_runner_config,
-    WiringDiagram
+    WiringDiagram,
 )
 from componentframework.mock_component import MockComponent
+
 
 def bad_type_checker(x):
     return True
 
+
 TestComponent = component_from_json(
-    'test_component_type/component_definition.json',
-    bad_type_checker
+    "test_component_type/component_definition.json", bad_type_checker
 )
-component_types = {
-    "TestComponent": TestComponent,
-    "MockComponent": MockComponent
-}
+component_types = {"TestComponent": TestComponent, "MockComponent": MockComponent}
 
 wiring_diagram = WiringDiagram.parse_file("test_basic_system.json")
 runner_config = generate_runner_config(wiring_diagram, component_types)

@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 from devtools import debug
 
+
 class AnnotatedType(BaseModel):
     "Class for representing types"
     type: str
@@ -25,18 +26,16 @@ class ComponentDescription(BaseModel):
 
 
 static_inputs = [
-    AnnotatedType(type='Path', port_id='opendss_model'),
+    AnnotatedType(type="Path", port_id="opendss_model"),
 ]
 dynamic_inputs = []
-dynamic_outputs = [
-    AnnotatedType(type='SwitchStates')
-]
+dynamic_outputs = [AnnotatedType(type="SwitchStates")]
 
 test_component = ComponentDescription(
-    directory='',
-    execution_function='',
+    directory="",
+    execution_function="",
     static_inputs=static_inputs,
     dynamic_inputs=dynamic_inputs,
-    dynamic_outputs=dynamic_outputs
+    dynamic_outputs=dynamic_outputs,
 )
 debug(test_component)

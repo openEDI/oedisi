@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.DEBUG)
 
+
 class MockComponent(system_configuration.ComponentType):
     def __init__(self, name, parameters: Dict[str, Dict[str, str]], directory: str):
         self._name = name
@@ -26,15 +27,13 @@ class MockComponent(system_configuration.ComponentType):
 
     def process_parameters(self, parameters):
         self._dynamic_inputs = {
-            name: AnnotatedType(type='', port_id=name)
-            for name in parameters["inputs"]
+            name: AnnotatedType(type="", port_id=name) for name in parameters["inputs"]
         }
         self._dynamic_outputs = {
             name: AnnotatedType(type=type, port_id=name)
             for name, type in parameters["outputs"].items()
         }
         self.generate_helics_config(parameters["outputs"])
-
 
     def generate_helics_config(self, outputs):
         helics_config = {
