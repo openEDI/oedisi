@@ -1,0 +1,34 @@
+{
+    "components": [
+        {
+            "name": "testA",
+            "component_type": "MockComponent",
+            "parameters": {
+                "inputs": ["sub1"],
+                "outputs": {"pub1": "double"}
+            }
+        },
+        {
+            "name": "testB",
+            "component_type": "MockComponent",
+            "parameters": {
+                "inputs": ["sub1"],
+                "outputs": {"pub1": "double"}
+            }
+        }
+    ],
+    "links": [
+        {
+            "source": "testA",
+            "source_port": "pub1",
+            "target": "testB",
+            "target_port": "sub1"
+        },
+        {
+            "source": "testB",
+            "source_port": "pub1",
+            "target": "testA",
+            "target_port": "sub1"
+        }
+    ]
+}

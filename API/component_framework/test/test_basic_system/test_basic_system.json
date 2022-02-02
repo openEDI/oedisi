@@ -1,0 +1,25 @@
+{
+    "components": [
+        {
+            "name": "basic_component1",
+            "component_type": "TestComponent",
+            "parameters": {}
+        },
+        {
+            "name": "mock_component1",
+            "component_type": "MockComponent",
+            "parameters": {
+                "inputs": ["sub1"],
+                "outputs": {}
+            }
+        }
+    ],
+    "links": [
+        {
+            "source": "basic_component1",
+            "source_port": "test2",
+            "target": "mock_component1",
+            "target_port": "sub1"
+        }
+    ]
+}
