@@ -1,8 +1,9 @@
 {
+    "name": "test_mock_system",
     "components": [
         {
             "name": "testA",
-            "component_type": "MockComponent",
+            "type": "MockComponent",
             "parameters": {
                 "inputs": ["sub1"],
                 "outputs": {"pub1": "double"}
@@ -10,7 +11,7 @@
         },
         {
             "name": "testB",
-            "component_type": "MockComponent",
+            "type": "MockComponent",
             "parameters": {
                 "inputs": ["sub1"],
                 "outputs": {"pub1": "double"}

@@ -8,33 +8,35 @@ from typing import Dict
 import json
 import os
 from . import system_configuration
+from .system_configuration import AnnotatedType
 
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.DEBUG)
 
-
-def destroy_federate(fed):
-    _ = h.helicsFederateDisconnect(fed)
-    h.helicsFederateFree(fed)
-    h.helicsCloseLibrary()
-    logger.info("Federate finalized")
-
-
 class MockComponent(system_configuration.ComponentType):
     def __init__(self, name, parameters: Dict[str, Dict[str, str]], directory: str):
         self._name = name
-        self._inputs = parameters["inputs"]
-        self._outputs = parameters["outputs"]
         self._directory = directory
         self._execute_function = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "mock_component.sh"
         )
+        self.process_parameters(parameters)
 
-        self.generate_helics_config()
+    def process_parameters(self, parameters):
+        self._dynamic_inputs = {
+            name: AnnotatedType(type='', port_id=name)
+            for name in parameters["inputs"]
+        }
+        self._dynamic_outputs = {
+            name: AnnotatedType(type=type, port_id=name)
+            for name, type in parameters["outputs"].items()
+        }
+        self.generate_helics_config(parameters["outputs"])
 
-    def generate_helics_config(self):
+
+    def generate_helics_config(self, outputs):
         helics_config = {
             "name": self._name,
             "core_type": "zmq",
@@ -42,7 +44,7 @@ class MockComponent(system_configuration.ComponentType):
             "log_level": "warning",
             "terminate_on_error": True,
             "publications": [
-                {"key": key, "type": value} for key, value in self.outputs.items()
+                {"key": key, "type": value} for key, value in outputs.items()
             ],
         }
 
@@ -50,16 +52,16 @@ class MockComponent(system_configuration.ComponentType):
             json.dump(helics_config, f)
 
     def generate_input_mapping(self, links):
-        with open(os.path.join(self._directory, "subscriptions.json"), "w") as f:
+        with open(os.path.join(self._directory, "input_mapping.json"), "w") as f:
             json.dump(links, f)
 
     @property
-    def inputs(self):
-        return self._inputs
+    def dynamic_inputs(self):
+        return self._dynamic_inputs
 
     @property
-    def outputs(self):
-        return self._outputs
+    def dynamic_outputs(self):
+        return self._dynamic_outputs
 
     @property
     def execute_function(self):
@@ -70,13 +72,20 @@ def get_default_value(date_type: h.HelicsDataType):
     return 3.1415926536
 
 
+def destroy_federate(fed):
+    _ = h.helicsFederateDisconnect(fed)
+    h.helicsFederateFree(fed)
+    h.helicsCloseLibrary()
+    logger.info("Federate finalized")
+
+
 class MockFederate:
     def __init__(self):
         logger.info(f"Current Working Directory: {os.path.abspath(os.curdir)}")
         self.fed = h.helicsCreateValueFederateFromConfig("helics_config.json")
         logger.info(f"Created federate {self.fed.name}")
 
-        with open("subscriptions.json", "r") as f:
+        with open("input_mapping.json", "r") as f:
             port_mapping = json.load(f)
             self.subscriptions = {}
             for name, key in port_mapping.items():

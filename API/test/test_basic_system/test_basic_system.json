@@ -1,13 +1,14 @@
 {
+    "name": "basic_system",
     "components": [
         {
             "name": "basic_component1",
-            "component_type": "TestComponent",
+            "type": "TestComponent",
             "parameters": {}
         },
         {
             "name": "mock_component1",
-            "component_type": "MockComponent",
+            "type": "MockComponent",
             "parameters": {
                 "inputs": ["sub1"],
                 "outputs": {}
