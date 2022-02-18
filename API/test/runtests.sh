@@ -20,9 +20,15 @@ do
         }
     done
     echo "Running helics in $folder"
-    if run_helics || exit 2 | grep -q 'error'; then
-        echo "$folder helics contains error"; exit 3
-    fi
+    {
+        run_helics || exit 2
+    } | {
+        tee >( grep -q 'error' && {
+                   echo "$folder helics contains error"
+                   exit 3
+               }
+             )
+    }
 
     cd ..
 done
