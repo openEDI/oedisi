@@ -38,6 +38,7 @@ jobs:
         bash API/test/runtests.sh
     - name: Archive test logs
       uses: actions/upload-artifact@v2
+      if: always()
       with:
         name: testlogs
         path: |
