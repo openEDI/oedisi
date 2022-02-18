@@ -25,7 +25,7 @@ jobs:
       run: |
         pip install helics
         pip install helics-apps
-	pip install "git+git://github.com/GMLC-TDC/helics-cli.git@main"
+        pip install git+git://github.com/GMLC-TDC/helics-cli.git@main
         pip install pydantic
     - name: Install python package
       shell: bash -l {0}
