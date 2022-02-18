@@ -89,7 +89,7 @@ def initialize_federates(
     wiring_diagram: WiringDiagram,
     component_types: Dict[str, Type[ComponentType]],
     compatability_checker,
-):
+) -> List[Federate]:
     components = {}
     link_map = get_link_map(wiring_diagram)
     for component in wiring_diagram.components:
@@ -154,5 +154,11 @@ def generate_runner_config(
     federates = initialize_federates(
         wiring_diagram, component_types, compatability_checker
     )
-    config = RunnerConfig(name=wiring_diagram.name, federates=federates)
-    return config
+    broker_federate = Federate(
+        directory=".",
+        name="broker",
+        exec="helics_broker -f {len(federates)} --loglevel=warning",
+    )
+    return RunnerConfig(
+        name=wiring_diagram.name, federates=(federates + [broker_federate])
+    )

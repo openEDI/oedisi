@@ -23,7 +23,7 @@ def destroy_federate(fed):
 class TestFederate:
     def __init__(self):
         logger.info(f"Current Working Directory: {os.path.abspath(os.curdir)}")
-        with open("parameters.json") as f:
+        with open("static_inputs.json") as f:
             self.parameters = json.load(f)
 
         fedinfo = h.helicsCreateFederateInfo()
@@ -34,7 +34,7 @@ class TestFederate:
         self.fed = h.helicsCreateValueFederate(self.parameters["name"], fedinfo)
         logger.info(f"Created federate {self.fed.name}")
 
-        with open("inputs.json", "r") as f:
+        with open("input_mapping.json", "r") as f:
             port_mapping = json.load(f)
             self.subscriptions = {}
             if "test1" in port_mapping:
