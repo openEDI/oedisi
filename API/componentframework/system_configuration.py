@@ -157,7 +157,7 @@ def generate_runner_config(
     broker_federate = Federate(
         directory=".",
         name="broker",
-        exec="helics_broker -f {len(federates)} --loglevel=warning",
+        exec=f"helics_broker -f {len(federates)} --loglevel=warning",
     )
     return RunnerConfig(
         name=wiring_diagram.name, federates=(federates + [broker_federate])
