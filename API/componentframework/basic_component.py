@@ -20,7 +20,7 @@ class ComponentDescription(BaseModel):
 
 
 def types_to_dict(types: List[AnnotatedType]):
-    return {t.port_name: t for t in types}
+    return {t.port_id: t for t in types}
 
 
 def component_from_json(f, type_checker):
@@ -49,8 +49,8 @@ def basic_component(comp_desc: ComponentDescription, type_checker):
             self.generate_parameter_config()
 
         def check_parameters(self, parameters):
-            for parameter_type in self._static_inputs:
-                if parameter_type.port_name not in parameters:
+            for parameter_type in self._static_inputs.values():
+                if parameter_type.port_id not in parameters:
                     return False
                 if not type_checker(parameter_type.type):
                     return False
