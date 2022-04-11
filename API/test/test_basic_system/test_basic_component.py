@@ -7,7 +7,7 @@ from componentframework.system_configuration import (
 from componentframework.mock_component import MockComponent
 
 
-def bad_type_checker(x):
+def bad_type_checker(type, x):
     return True
 
 

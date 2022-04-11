@@ -12,6 +12,21 @@ from typing import List, Any, Dict
 
 
 class ComponentDescription(BaseModel):
+    """Component description for simple ComponentType
+
+    Parameters
+    ----------
+    directory :
+        where code is stored relative to where this is run
+    execute_function :
+        command to execute component
+    static_inputs :
+        List of types for the parameter
+    dynamic_inputs :
+        List of input types. Typically subscriptions.
+    dynamic_outputs :
+        List of output types. Typically publications.
+    """
     directory: str
     execute_function: str
     static_inputs: List[AnnotatedType]
@@ -20,7 +35,7 @@ class ComponentDescription(BaseModel):
 
 
 def types_to_dict(types: List[AnnotatedType]):
-    return {t.port_id: t for t in types}
+    return {t.port_name: t for t in types}
 
 
 def component_from_json(f, type_checker):
@@ -29,8 +44,18 @@ def component_from_json(f, type_checker):
 
 
 def basic_component(comp_desc: ComponentDescription, type_checker):
-    """
-    Uses data in component_definition to create a new component type
+    """Uses data in component_definition to create a new component type
+
+    Parameters
+    ----------
+    comp_desc : ComponentDescription
+         Simplified component representation usually from a JSON file
+    type_checker: function taking the type and value and returning a boolean
+
+    Returns
+    -------
+    BasicComponent(system_configuration.ComponentType) :
+         ComponentType from the description
     """
 
     class BasicComponent(system_configuration.ComponentType):
@@ -50,9 +75,12 @@ def basic_component(comp_desc: ComponentDescription, type_checker):
 
         def check_parameters(self, parameters):
             for parameter_type in self._static_inputs.values():
-                if parameter_type.port_id not in parameters:
+                if parameter_type.port_name not in parameters:
                     return False
-                if not type_checker(parameter_type.type):
+                if not type_checker(
+                        parameter_type.type,
+                        parameters[parameter_type.port_name]
+                ):
                     return False
             return True
 

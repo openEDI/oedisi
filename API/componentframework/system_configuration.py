@@ -1,5 +1,16 @@
 """
-Configuration Manager
+This module defines common types and methods for configuration.
+
+The final method `generate_runner_config` brings together
+a `WiringDiagram` and a dictionary of `ComponentTypes` with
+optional comparison using a compatability checking function.
+
+The `ComponentType` defines the common interface that component
+configuration must implement. By default, this can be instantiated
+using `basic_component.py`.
+
+The `WiringDiagram` configuration contains a list of components
+and the links between them.
 """
 
 from collections import defaultdict
@@ -12,7 +23,7 @@ from typing import List, Optional, Any, Dict
 
 
 class AnnotatedType(BaseModel):
-    "Class for representing types"
+    "Class for representing the types of components and their interfaces"
     type: str
     description: Optional[str]
     unit: Optional[str]
@@ -26,8 +37,32 @@ class AnnotatedType(BaseModel):
 
 
 class ComponentType(ABC):
+    """Abstract type for component configuration.
+
+    The components define the main restrictions on how components
+    can be configured. In the simplest case, the `basic_copmonent` function
+    constructs a type from a `ComponentDescription` which just write files.
+    There are no restrictions, so for example, one possibility is for the component type
+    to interact with a web service.
+
+    First, the class is initialized for each component using the
+    name, parameters, and target directory. The federate name
+    in HELICS should be the name initialized here.
+
+    Then the `dynamic_inputs` and `dynamic_outputs` are used to check types and verify
+    the links used between components. These can depend on the initialziation parameters.
+    The `dynamic_outputs` should be initialized under the prefix `name/`.
+
+    Next, `generate_input_mapping` is then called with a mapping
+    of the variable names to the HELICS subscription keys. The individual
+    federate should then use these names to subscribe at the right location.
+    This can also be used for endpoint targets less often.
+
+    Finally, the execute_function property defines the command
+    to run the component.
+    """
     @abstractmethod
-    def generate_input_mapping(self):
+    def generate_input_mapping(self, links: Dict[str, str]):
         pass
 
     @abstractproperty
@@ -44,6 +79,8 @@ class ComponentType(ABC):
 
 
 class Component(BaseModel):
+    """Component type used in WiringDiagram, includes name,
+    component type, and initial parameters"""
     name: str
     type: str
     parameters: Dict[str, Any]
@@ -57,6 +94,7 @@ class Link(BaseModel):
 
 
 class WiringDiagram(BaseModel):
+    "Cosimulation configuration. This may end up wrapped in another interface"
     name: str
     components: List[Component]
     links: List[Link]
@@ -79,6 +117,7 @@ class WiringDiagram(BaseModel):
 
 
 class Federate(BaseModel):
+    "Federate configuration for HELICS CLI"
     directory: str
     hostname = "localhost"
     name: str
@@ -90,6 +129,7 @@ def initialize_federates(
     component_types: Dict[str, Type[ComponentType]],
     compatability_checker,
 ) -> List[Federate]:
+    "Initialize all the federates"
     components = {}
     link_map = get_link_map(wiring_diagram)
     for component in wiring_diagram.components:
@@ -138,21 +178,54 @@ def get_link_map(wiring_diagram: WiringDiagram):
 
 
 class RunnerConfig(BaseModel):
+    """HELICS running config for the full simulation
+
+    Save to JSON
+    ```
+    with open(filename, "w") as f:
+        f.write(config.json())
+    ```
+
+    Run Simulation
+    ```
+    helics run --path=filename
+    ```
+    """
     name: str
     federates: List[Federate]
 
 
 def bad_compatability_checker(type1, type2):
+    "Basic compatability checker that says all types are compatible."
     return True
 
 
 def generate_runner_config(
     wiring_diagram: WiringDiagram,
     component_types: Dict[str, Type[ComponentType]],
-    compatability_checker=bad_compatability_checker,
+    compatibility_checker=bad_compatability_checker,
 ):
+    """Brings together a `WiringDiagram` and a dictionary of `ComponentTypes`
+    to create a helics run configuration.
+
+    Parameters
+    ----------
+    wiring_diagram : WiringDiagram
+        Configuration describing components, parameters, and links between them
+    component_types : Dict[str, Type[ComponentType]]
+        Dictionary for the wiring diagram component types
+        to Python component types
+    compatibility_checker: function of two types to the booleans
+        Each link uses the compatability_checker to ensure the link
+        is between compatible types.
+
+    Returns
+    -------
+    RunnerConfig
+        Configuration which can be used to run the cosimulation
+    """
     federates = initialize_federates(
-        wiring_diagram, component_types, compatability_checker
+        wiring_diagram, component_types, compatibility_checker
     )
     broker_federate = Federate(
         directory=".",

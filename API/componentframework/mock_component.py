@@ -1,5 +1,12 @@
-# -*- coding: utf-8 -*-
 """
+MockComponent and MockFederate allow you to instantiate a mock component
+with a specified set of inputs and outputs. The parameters dictionary
+should contain a list under "inputs" and "outputs". During implementation,
+the value pi is passed around every second until t=100.
+
+MockComponent defines the ComponentType for a simple testing component.
+
+MockFederate defines the corresponding implementation.
 """
 
 import helics as h
