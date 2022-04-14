@@ -1,8 +1,3 @@
-.. sgidal-componentframework documentation master file, created by
-   sphinx-quickstart on Mon Apr 11 13:34:09 2022.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Welcome to sgidal-componentframework's documentation!
 =====================================================
 
@@ -10,6 +5,9 @@ Welcome to sgidal-componentframework's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   getting_started.rst
+   examples.rst
+   design.rst
 
 
 Indices and tables

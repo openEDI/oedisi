@@ -43,9 +43,9 @@ setup(
     ],
     # test_suite="tests",
     install_requires=["helics-apps>=3.1.0", "helics>=3.1.0", "pydantic"],
-    # extras_require={
-    # "test": test_requires,
-    # "dev": test_requires + ["flake8", "pre-commit", "pylint"],
-    # },
+    extras_require={
+    #"plotting": ["networkx", "matplotlib"]
+    #"dev": test_requires + ["flake8", "pre-commit", "pylint"],
+    },
     # cmdclass={"develop": PostDevelopCommand},
 )
