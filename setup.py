@@ -19,7 +19,7 @@ description = (
 
 setup(
     name="componentframework",
-    # version="0.0.1",
+    version="0.0.1",
     description=description,
     # long_description=readme,
     author="Joseph McKinsey",
