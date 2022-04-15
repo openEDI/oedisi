@@ -180,16 +180,16 @@ def get_link_map(wiring_diagram: WiringDiagram):
 class RunnerConfig(BaseModel):
     """HELICS running config for the full simulation
 
+    Examples
+    --------
     Save to JSON
-    ```
-    with open(filename, "w") as f:
-        f.write(config.json())
-    ```
+    
+    >>> with open(filename, "w") as f:
+    ...    f.write(config.json())
 
     Run Simulation
-    ```
-    helics run --path=filename
-    ```
+    
+    `$ helics run --path=filename`
     """
     name: str
     federates: List[Federate]

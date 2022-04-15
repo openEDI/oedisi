@@ -18,7 +18,7 @@ description = (
 )
 
 setup(
-    name="componentversion",
+    name="componentframework",
     # version="0.0.1",
     description=description,
     # long_description=readme,
