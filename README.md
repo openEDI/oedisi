@@ -4,7 +4,17 @@ The component framework's primary purpose is to instantiate new components with 
 
 ## Documentation
 
-See [docs/_build](docs/_build/html/index.html).
+See [docs/index.rst](docs/index.rst).
+
+There's also a [getting started guide](docs/getting_started.rst).
+
+## Example
+
+The repository [`sgidal-example`](https://github.com/openEDI/sgidal-example/) contains a basic example including
+- OpenDSS federate
+- measuring federate
+- weighted least squares state estimator federate
+- recording federates
 
 ## Dependencies
 
