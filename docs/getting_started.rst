@@ -18,7 +18,7 @@ These can be installed using pip
 
 .. code-block:: bash
 
-    pip install helics==3.1.0
+    pip install helics==3.1.2.post7
     pip install helics-apps==3.1.0
     pip install git+https://github.com/GMLC-TDC/helics-cli.git@main
     pip install pydantic
@@ -154,6 +154,12 @@ Assuming you have the helics-cli package in your path:
 
    helics run --path=test_system_runner.json
 
+Troubleshooting
+---------------
+
+If the simulation fails, you may **need** to kill the `helics_broker` manually before you can start a new simulation.
+
+When debugging, you should check the `.log` files for errors. Error code `-9` usually occurs when it is killed by the broker as opposed to failing.
 
 Results
 -------

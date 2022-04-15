@@ -6,7 +6,7 @@ The component framework's primary purpose is to instantiate new components with 
 
 See [docs/index.rst](docs/index.rst).
 
-There's also a [getting started guide](docs/getting_started.rst).
+There's also a [getting started guide](docs/getting_started.rst) with a very basic example.
 
 ## Example
 
@@ -19,5 +19,5 @@ The repository [`sgidal-example`](https://github.com/openEDI/sgidal-example/) co
 ## Dependencies
 
 - `helics-apps` version >= 3.1.0 
-- `helics` version >= 3.1.0
+- `helics` version >= 3.1.0 (latest at present is 3.1.2post7)
 - `pydantic`
