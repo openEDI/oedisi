@@ -1,0 +1,320 @@
+{
+  "title": "PNNLDistributedStateEstimation",
+  "type": "object",
+  "properties": {
+    "Static_Inputs": {
+      "$ref": "#/definitions/StaticInputs"
+    },
+    "Dynamic_Inputs": {
+      "$ref": "#/definitions/DynamicInputs"
+    },
+    "Dynamic_Outputs": {
+      "$ref": "#/definitions/DynamicOutputs"
+    }
+  },
+  "required": [
+    "Static_Inputs",
+    "Dynamic_Inputs",
+    "Dynamic_Outputs"
+  ],
+  "definitions": {
+    "MeasurementType": {
+      "title": "MeasurementType",
+      "description": "An enumeration.",
+      "enum": [
+        "voltage_magnitude",
+        "voltage_angle",
+        "current_magnitude",
+        "current_angle"
+      ],
+      "type": "string"
+    },
+    "MeasurementModel": {
+      "title": "MeasurementModel",
+      "type": "object",
+      "properties": {
+        "Measurement_Type": {
+          "$ref": "#/definitions/MeasurementType"
+        },
+        "is_flow": {
+          "title": "Is Flow",
+          "type": "boolean"
+        },
+        "standard_deviation": {
+          "title": "Standard Deviation",
+          "type": "number"
+        }
+      },
+      "required": [
+        "is_flow",
+        "standard_deviation"
+      ]
+    },
+    "MeasurementModels": {
+      "title": "MeasurementModels",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MeasurementModel"
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "data",
+        "label"
+      ]
+    },
+    "StaticInputs": {
+      "title": "StaticInputs",
+      "type": "object",
+      "properties": {
+        "measurement_models": {
+          "$ref": "#/definitions/MeasurementModels"
+        }
+      },
+      "required": [
+        "measurement_models"
+      ]
+    },
+    "Complex": {
+      "title": "Complex",
+      "type": "object",
+      "properties": {
+        "real": {
+          "title": "Real",
+          "type": "number"
+        },
+        "imag": {
+          "title": "Imag",
+          "type": "number"
+        }
+      },
+      "required": [
+        "real",
+        "imag"
+      ]
+    },
+    "AdmittanceMatrix": {
+      "title": "AdmittanceMatrix",
+      "description": "CIM_NAME: ",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Complex"
+            }
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "data",
+        "label"
+      ],
+      "units": ""
+    },
+    "RegulatorSteps": {
+      "title": "RegulatorSteps",
+      "description": "CIM_NAME: ",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "data",
+        "label"
+      ],
+      "units": ""
+    },
+    "SwitchStates": {
+      "title": "SwitchStates",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "type": "boolean"
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "data",
+        "label"
+      ]
+    },
+    "CapacitorStates": {
+      "title": "CapacitorStates",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "type": "boolean"
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "data",
+        "label"
+      ]
+    },
+    "TimeseriesValue": {
+      "title": "TimeseriesValue",
+      "type": "object",
+      "properties": {
+        "time": {
+          "title": "Time",
+          "type": "string",
+          "format": "time"
+        },
+        "value": {
+          "title": "Value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "time",
+        "value"
+      ]
+    },
+    "TimeseriesValues": {
+      "title": "TimeseriesValues",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TimeseriesValue"
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "data",
+        "label"
+      ]
+    },
+    "DynamicInputs": {
+      "title": "DynamicInputs",
+      "type": "object",
+      "properties": {
+        "admittance_matrix": {
+          "$ref": "#/definitions/AdmittanceMatrix"
+        },
+        "regulator_steps": {
+          "$ref": "#/definitions/RegulatorSteps"
+        },
+        "switch_states": {
+          "$ref": "#/definitions/SwitchStates"
+        },
+        "capacitor_states": {
+          "$ref": "#/definitions/CapacitorStates"
+        },
+        "timeseries_values": {
+          "$ref": "#/definitions/TimeseriesValues"
+        }
+      },
+      "required": [
+        "admittance_matrix",
+        "timeseries_values"
+      ]
+    },
+    "BusVoltages": {
+      "title": "BusVoltages",
+      "type": "object",
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Complex"
+          }
+        },
+        "label": {
+          "title": "Label",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "data",
+        "label"
+      ],
+      "units": "kV"
+    },
+    "DynamicOutputs": {
+      "title": "DynamicOutputs",
+      "type": "object",
+      "properties": {
+        "bus_voltage_values": {
+          "$ref": "#/definitions/BusVoltages"
+        },
+        "bus_voltage_uncertanties": {
+          "$ref": "#/definitions/BusVoltages"
+        }
+      },
+      "required": [
+        "bus_voltage_values",
+        "bus_voltage_uncertanties"
+      ]
+    }
+  }
+}
