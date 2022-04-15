@@ -30,17 +30,16 @@ jobs:
     - name: Install python package
       shell: bash -l {0}
       run: |
-        cd API
         python setup.py develop
     - name: Run integration tests
       shell: bash -l {0}
       run: |
-        bash API/test/runtests.sh
+        bash test/runtests.sh
     - name: Archive test logs
       uses: actions/upload-artifact@v2
       if: always()
       with:
         name: testlogs
         path: |
-          API/test/test_basic_system/*.log
-          API/test/test_mock_system/*.log
+          test/test_basic_system/*.log
+          test/test_mock_system/*.log
