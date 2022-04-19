@@ -30,7 +30,7 @@ setup(
     # license="MIT",
     zip_safe=True,
     keywords="componentframework helics",
-    python_requires=">=3.7,<=3.10",
+    python_requires=">=3.8",
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Science/Research",
@@ -44,7 +44,6 @@ setup(
     # test_suite="tests",
     install_requires=["helics-apps>=3.1.0", "helics>=3.1.0", "pydantic"],
     extras_require={
-    #"plotting": ["networkx", "matplotlib"]
     #"dev": test_requires + ["flake8", "pre-commit", "pylint"],
     },
     # cmdclass={"develop": PostDevelopCommand},
