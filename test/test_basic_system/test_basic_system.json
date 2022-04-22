@@ -22,5 +22,6 @@
             "target": "mock_component1",
             "target_port": "sub1"
         }
-    ]
+    ],
+    "apiversion": "0.1.0"
 }

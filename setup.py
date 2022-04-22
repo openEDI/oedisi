@@ -14,12 +14,13 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 # test_requires = ["pytest>=5.2", ]
 description = (
-    "HELICS component framework to generate runner configs" "and map inputs to outputs"
+    "HELICS component framework to generate runner configs "
+    "and map inputs to outputs"
 )
 
 setup(
     name="componentframework",
-    version="0.0.1",
+    version="0.1.0",
     description=description,
     # long_description=readme,
     author="Joseph McKinsey",
@@ -34,7 +35,7 @@ setup(
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Science/Research",
-        "License :: OSI Approved :: MIT License",
+        #"License :: OSI Approved :: MIT License",
         "Natural Language :: English",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
