@@ -6,7 +6,6 @@ from typing import List,Optional
 ### Supporting Functions ###
 # TODO: Connect with CIM values
 
-
 class Complex(BaseModel):
     real: float
     imag: float
@@ -14,54 +13,114 @@ class Complex(BaseModel):
 class StateArray(BaseModel):
     values: List[int]
     ids: List[str]
-    state_type: StateType
     time: Optional[datetime.time]
+    allowed_types = [
+        "SwitchStates",
+        "CapacitorStates",
+        "RegulatorStates"
+    ]
+class SwitchStates(StateArray):
+    pass
 
-class StateType(str, Enum):
-    switch = "switch"
-    capacitor = "capacitor"
-    regulator = "regulator"
+class CapacitorStates(StateArray):
+    pass
+
+class RegulatorStates(StateArray):
+    pass
 
 class CostArray(BaseModel):
     values: List[List[float]]
     ids: List[str]
-    cost_type: CostType
     units: str
     time: Optional[datetime.time]
+    allowed_types = [
+        "RealCostFunctions",
+        "ReactiveCostFunctions",
+        "RealWholesalePrices",
+        "ReactiveWholesalePrices",
+        "OperationalCosts"
+    ]
 
-class CostType(BaseModel):
-    real_cost_function: "real_cost_function"
-    reactive_cost_function: "reactive_cost_function"
-    real_wholesale_prices: "real_wholesale_prices"
-    reactive_wholesale_prices: "reactive_wholesale_prices"
-    operational_cost: "operational_cost"
-    
+class RealCostFunctions(CostArray):
+    pass
+
+class ReactiveCostFunctions(CostArray):
+    pass
+
+class RealWholesalePrices(CostArray):
+    pass
+
+class ReactiveWholesalePrices(CostArray):
+    pass
+
+class OperationalCosts(CostArray):
+    pass
+
 class MeasurementArray(BaseModel):
     values: List[float]
     ids: List[str]
     units: str
-    measurement_type: MeasurementType
     time: Optional[datetime.time]
+    allowed_types = [
+        "VoltagesMagnitude",
+        "VoltagesAngle",
+        "VoltagesReal",
+        "VoltagesImaginary",
+        "CurrentsMagnitude",
+        "CurrentsAngle",
+        "CurrentsReal",
+        "CurrentsImaginary",
+        "PowersMagnitude",
+        "PowersAngle",
+        "PowersReal",
+        "PowersImaginary",
+        "StatesOfCharge"
+    ]
 
-class MeasurementType(str, Enum):
-    voltage_magnitude = "voltage_magnitude"
-    voltage_angle = "voltage_angle"
-    voltage_real = "voltage_real"
-    voltage_imaginary = "voltage_imaginary"
-    current_magnitude = "current_magnitude"
-    current_angle = "current_angle"
-    current_real = "current_real"
-    current_imaginary = "current_imaginary"
-    power_magnitude = "power_magnitude"
-    power_angle = "power_angle"
-    power_imaginary = "power_imaginary"
-    power_magnitude = "power_magnitude"
-    state_of_charge = "state_of_charge"
+class VoltagesMagnitude(MeasurementArray):
+    pass
+
+class VoltagesAngle(MeasurementArray):
+    pass
+
+class VoltagesReal(MeasurementArray):
+    pass
+
+class VoltagesImaginary(MeasurementArray):
+    pass
+
+class CurrentsMagnitude(MeasurementArray):
+    pass
+
+class CurrentsAngle(MeasurementArray):
+    pass
+
+class CurrentsReal(MeasurementArray):
+    pass
+
+class CurrentsImaginary(MeasurementArray):
+    pass
+
+class PowersMagnitude(MeasurementArray):
+    pass
+
+class PowersAngle(MeasurementArray):
+    pass
+
+class PowersReal(MeasurementArray):
+    pass
+
+class PowersImaginary(MeasurementArray):
+    pass
+
+class StatesOfCharge(MeasurementArray):
+    pass
+
 
 class Topology(BaseModel):
     admittance_matrix: AdmittanceMatrix
-    base_voltage_angles = MeasurementArray
-    base_voltage_magnitudes = MeasurementArray
+    base_voltage_angles = VoltagesAngle
+    base_voltage_magnitudes = VoltagesMagnitude
     slack_bus: str
 
 class AdmittanceMatrix(BaseModel):
