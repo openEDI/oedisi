@@ -60,6 +60,9 @@ class MeasurementArray(BaseModel):
     values: List[float]
     ids: List[str]
     units: str
+    injection: Optional[List[bool]]
+    accuracy: Optional[List]float]]
+    bad_data_threshold: Optional[List[float]]
     time: Optional[datetime.time]
     allowed_types = [
         "VoltagesMagnitude",
@@ -74,6 +77,9 @@ class MeasurementArray(BaseModel):
         "PowersAngle",
         "PowersReal",
         "PowersImaginary",
+        "SolarIrradiances",
+        "Temperatures",
+        "WindSpeeds",
         "StatesOfCharge"
     ]
 
@@ -113,15 +119,32 @@ class PowersReal(MeasurementArray):
 class PowersImaginary(MeasurementArray):
     pass
 
+class SolarIrradiances(MeasurementArray):
+    pass
+
+class Temperatures(MeasurementArray):
+    pass
+
+class WindSpeeds(MeasurementArray):
+    pass
+
 class StatesOfCharge(MeasurementArray):
     pass
 
 
 class Topology(BaseModel):
-    admittance_matrix: AdmittanceMatrix
-    base_voltage_angles = VoltagesAngle
-    base_voltage_magnitudes = VoltagesMagnitude
-    slack_bus: str
+    adjacency_matrix:  Optional[AdjacencyMatrix]
+    admittance_matrix: Optional[AdmittanceMatrix]
+    base_voltage_angles = Optional[VoltagesAngle]
+    base_voltage_magnitudes = Optional[VoltagesMagnitude]
+    slack_bus: Optional[str]
+
+class AdmittanceMatrix(BaseModel):
+    resistance: Optional[List[float]]
+    reactance: Optional[List[float]]
+    from_equipment: List[str]    
+    to_equipment:    List[str]    
+    equipment_type: List[str] 
 
 class AdmittanceMatrix(BaseModel):
     values: List[List[Complex]]
