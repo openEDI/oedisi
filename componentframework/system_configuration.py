@@ -18,6 +18,7 @@ from typing import List, Dict, Type, Any
 import os
 import logging
 import shutil
+import psutil
 from abc import ABC, abstractmethod, abstractproperty
 
 from pydantic import BaseModel, validator
@@ -113,6 +114,11 @@ class WiringDiagram(BaseModel):
                 logging.warning(f"The location to delete {log_file} does not exist")
             else:
                 os.remove(log_file)
+
+
+        for proc in psutil.process_iter():
+            if proc.name() == "helics_broker":
+                proc.kill()
 
 
 
