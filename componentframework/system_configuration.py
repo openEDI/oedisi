@@ -16,6 +16,8 @@ and the links between them.
 from collections import defaultdict
 from typing import List, Dict, Type, Any
 import os
+import logging
+import shutil
 from abc import ABC, abstractmethod, abstractproperty
 
 from pydantic import BaseModel, validator
@@ -98,6 +100,21 @@ class WiringDiagram(BaseModel):
     name: str
     components: List[Component]
     links: List[Link]
+
+    def clean_model(cls, location = '.'):
+        for component in cls.components:
+            to_delete = os.path.join(location,component.name)
+            log_file = os.path.join(location,component.name+'.log')
+            if not os.path.exists(to_delete):
+                logging.warning(f"The location to delete {to_delete} does not exist")
+            else:
+                shutil.rmtree(to_delete)
+            if not os.path.exists(log_file):
+                logging.warning(f"The location to delete {log_file} does not exist")
+            else:
+                os.remove(log_file)
+
+
 
     @validator("components")
     def check_component_names(cls, components):
