@@ -11,14 +11,17 @@ class Complex(BaseModel):
     imag: float
 
 class StateArray(BaseModel):
-    values: List[int]
-    ids: List[str]
-    time: Optional[datetime.time]
-    allowed_types = [
+    """
+    Extended by classes:
         "SwitchStates",
         "CapacitorStates",
         "RegulatorStates"
-    ]
+
+    """
+    values: List[int]
+    ids: List[str]
+    time: Optional[datetime.time]
+
 class SwitchStates(StateArray):
     pass
 
@@ -29,17 +32,19 @@ class RegulatorStates(StateArray):
     pass
 
 class CostArray(BaseModel):
-    values: List[List[float]]
-    ids: List[str]
-    units: str
-    time: Optional[datetime.time]
-    allowed_types = [
+    """
+    Extended by classes:
         "RealCostFunctions",
         "ReactiveCostFunctions",
         "RealWholesalePrices",
         "ReactiveWholesalePrices",
         "OperationalCosts"
-    ]
+
+    """
+    values: List[List[float]]
+    ids: List[str]
+    units: str
+    time: Optional[datetime.time]
 
 class RealCostFunctions(CostArray):
     pass
@@ -57,14 +62,8 @@ class OperationalCosts(CostArray):
     pass
 
 class MeasurementArray(BaseModel):
-    values: List[float]
-    ids: List[str]
-    units: str
-    injection: Optional[List[bool]]
-    accuracy: Optional[List]float]]
-    bad_data_threshold: Optional[List[float]]
-    time: Optional[datetime.time]
-    allowed_types = [
+    """
+    Extended by classes:
         "VoltagesMagnitude",
         "VoltagesAngle",
         "VoltagesReal",
@@ -81,7 +80,15 @@ class MeasurementArray(BaseModel):
         "Temperatures",
         "WindSpeeds",
         "StatesOfCharge"
-    ]
+
+    """
+    values: List[float]
+    ids: List[str]
+    units: str
+    injection: Optional[List[bool]]
+    accuracy: Optional[List[float]]
+    bad_data_threshold: Optional[List[float]]
+    time: Optional[datetime.time]
 
 class VoltagesMagnitude(MeasurementArray):
     pass
@@ -133,20 +140,19 @@ class StatesOfCharge(MeasurementArray):
 
 
 class Topology(BaseModel):
-    adjacency_matrix:  Optional[AdjacencyMatrix]
-    admittance_matrix: Optional[AdmittanceMatrix]
+    admittance:  Union[AdmittanceSparse, AdmittanceMatrix]
     base_voltage_angles = Optional[VoltagesAngle]
     base_voltage_magnitudes = Optional[VoltagesMagnitude]
-    slack_bus: Optional[str]
+    slack_bus: List[str]
 
-class AdmittanceMatrix(BaseModel):
-    resistance: Optional[List[float]]
-    reactance: Optional[List[float]]
+class AdmittanceSparse(BaseModel):
+    admittance_list: List[Complex]
     from_equipment: List[str]    
     to_equipment:    List[str]    
-    equipment_type: List[str] 
+    equipment_type: Optional[List[str]]
+    units = str
 
 class AdmittanceMatrix(BaseModel):
-    values: List[List[Complex]]
+    admittance_matrix: List[List[Complex]]
     ids: List[str]
     units: str

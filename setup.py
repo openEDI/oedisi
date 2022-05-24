@@ -43,7 +43,7 @@ setup(
         "Programming Language :: Python :: 3.10",
     ],
     # test_suite="tests",
-    install_requires=["helics-apps>=3.1.0", "helics>=3.1.0", "pydantic"],
+    install_requires=["helics-apps>=3.1.0", "helics>=3.1.0", "pydantic", "psutil"],
     extras_require={
     #"dev": test_requires + ["flake8", "pre-commit", "pylint"],
     },

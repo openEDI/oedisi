@@ -116,6 +116,7 @@ class WiringDiagram(BaseModel):
                 os.remove(log_file)
 
 
+        # TODO: Check for any processes using the HELICS port and kill them too
         for proc in psutil.process_iter():
             if proc.name() == "helics_broker":
                 proc.kill()
