@@ -1,14 +1,14 @@
+from __future__ import annotations
 import datetime
 from enum import Enum
 from pydantic import BaseModel, Field
-from typing import List,Optional
+from typing import List, Optional, Union, Tuple
 
 ### Supporting Functions ###
 # TODO: Connect with CIM values
 
-class Complex(BaseModel):
-    real: float
-    imag: float
+
+Complex = Tuple[float,float]
 
 class StateArray(BaseModel):
     """
@@ -20,7 +20,7 @@ class StateArray(BaseModel):
     """
     values: List[int]
     ids: List[str]
-    time: Optional[datetime.time]
+    time: Optional[datetime.datetime]
 
 class SwitchStates(StateArray):
     pass
@@ -44,7 +44,7 @@ class CostArray(BaseModel):
     values: List[List[float]]
     ids: List[str]
     units: str = '$'
-    time: Optional[datetime.time]
+    time: Optional[datetime.datetime]
 
 class RealCostFunctions(CostArray):
     pass
@@ -87,7 +87,7 @@ class MeasurementArray(BaseModel):
     units: str
     accuracy: Optional[List[float]]
     bad_data_threshold: Optional[List[float]]
-    time: Optional[datetime.time]
+    time: Optional[datetime.datetime]
 
 class VoltagesMagnitude(MeasurementArray):
     units: str = 'kV'
@@ -123,7 +123,7 @@ class CurrentsImaginary(MeasurementArray):
 
 class PowersMagnitude(MeasurementArray):
     injection: List[bool]
-    units str = 'kVA'
+    units: str = 'kVA'
     pass
 
 class PowersAngle(MeasurementArray):
@@ -160,9 +160,10 @@ class StatesOfCharge(MeasurementArray):
 
 class Topology(BaseModel):
     admittance:  Union[AdmittanceSparse, AdmittanceMatrix]
-    base_voltage_angles = Optional[VoltagesAngle]
-    base_voltage_magnitudes = Optional[VoltagesMagnitude]
+    base_voltage_angles: Optional[VoltagesAngle]
+    base_voltage_magnitudes: Optional[VoltagesMagnitude]
     slack_bus: List[str] = []
+
 
 class AdmittanceSparse(BaseModel):
     admittance_list: List[Complex]
@@ -175,3 +176,5 @@ class AdmittanceMatrix(BaseModel):
     admittance_matrix: List[List[Complex]]
     ids: List[str]
     units: str = 'S'
+
+Topology.update_forward_refs()
