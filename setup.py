@@ -19,18 +19,18 @@ description = (
 )
 
 setup(
-    name="componentframework",
+    name="gadal",
     version="0.1.0",
     description=description,
     # long_description=readme,
     author="Joseph McKinsey",
     author_email="joseph.mckinsey@nrel.gov",
     packages=find_packages(),
-    package_dir={"componentframework": "componentframework"},
+    package_dir={"gadal": "gadal"},
     include_package_data=True,
     # license="MIT",
     zip_safe=True,
-    keywords="componentframework helics",
+    keywords="gadal componentframework helics",
     python_requires=">=3.8",
     classifiers=[
         "Development Status :: 4 - Beta",
