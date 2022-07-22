@@ -1,0 +1,38 @@
+{
+    "title": "RealWholesalePrices",
+    "description": "Extended by classes:\n    \"RealCostFunctions\",\n    \"ReactiveCostFunctions\",\n    \"RealWholesalePrices\",\n    \"ReactiveWholesalePrices\",\n    \"OperationalCosts\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "number"
+                }
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "$",
+            "type": "string"
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}
