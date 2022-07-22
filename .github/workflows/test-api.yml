@@ -43,4 +43,4 @@ jobs:
         path: |
           tests/test_basic_system/*.log
           tests/test_mock_system/*.log
-          tests/test_data_types/*.log
+          tests/unit_tests/test_data_types/*.log
