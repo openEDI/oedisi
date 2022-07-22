@@ -1,0 +1,1606 @@
+{
+    "title": "StateArray",
+    "description": "Extended by classes:\n    \"SwitchStates\",\n    \"CapacitorStates\",\n    \"RegulatorStates\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "integer"
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}
+{
+    "title": "SwitchStates",
+    "description": "Extended by classes:\n    \"SwitchStates\",\n    \"CapacitorStates\",\n    \"RegulatorStates\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "integer"
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}
+{
+    "title": "CapacitorStates",
+    "description": "Extended by classes:\n    \"SwitchStates\",\n    \"CapacitorStates\",\n    \"RegulatorStates\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "integer"
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}
+{
+    "title": "RegulatorStates",
+    "description": "Extended by classes:\n    \"SwitchStates\",\n    \"CapacitorStates\",\n    \"RegulatorStates\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "integer"
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}
+{
+    "title": "CostArray",
+    "description": "Extended by classes:\n    \"RealCostFunctions\",\n    \"ReactiveCostFunctions\",\n    \"RealWholesalePrices\",\n    \"ReactiveWholesalePrices\",\n    \"OperationalCosts\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "number"
+                }
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "$",
+            "type": "string"
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}
+{
+    "title": "RealCostFunctions",
+    "description": "Extended by classes:\n    \"RealCostFunctions\",\n    \"ReactiveCostFunctions\",\n    \"RealWholesalePrices\",\n    \"ReactiveWholesalePrices\",\n    \"OperationalCosts\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "number"
+                }
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "$",
+            "type": "string"
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}
+{
+    "title": "ReactiveCostFunctions",
+    "description": "Extended by classes:\n    \"RealCostFunctions\",\n    \"ReactiveCostFunctions\",\n    \"RealWholesalePrices\",\n    \"ReactiveWholesalePrices\",\n    \"OperationalCosts\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "number"
+                }
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "$",
+            "type": "string"
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}
+{
+    "title": "RealWholesalePrices",
+    "description": "Extended by classes:\n    \"RealCostFunctions\",\n    \"ReactiveCostFunctions\",\n    \"RealWholesalePrices\",\n    \"ReactiveWholesalePrices\",\n    \"OperationalCosts\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "number"
+                }
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "$",
+            "type": "string"
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}
+{
+    "title": "ReactiveWholesalePrices",
+    "description": "Extended by classes:\n    \"RealCostFunctions\",\n    \"ReactiveCostFunctions\",\n    \"RealWholesalePrices\",\n    \"ReactiveWholesalePrices\",\n    \"OperationalCosts\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "number"
+                }
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "$",
+            "type": "string"
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}
+{
+    "title": "OperationalCosts",
+    "description": "Extended by classes:\n    \"RealCostFunctions\",\n    \"ReactiveCostFunctions\",\n    \"RealWholesalePrices\",\n    \"ReactiveWholesalePrices\",\n    \"OperationalCosts\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "number"
+                }
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "$",
+            "type": "string"
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}
+{
+    "title": "MeasurementArray",
+    "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "type": "string"
+        },
+        "accuracy": {
+            "title": "Accuracy",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "bad_data_threshold": {
+            "title": "Bad Data Threshold",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids",
+        "units"
+    ]
+}
+{
+    "title": "VoltagesMagnitude",
+    "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "kV",
+            "type": "string"
+        },
+        "accuracy": {
+            "title": "Accuracy",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "bad_data_threshold": {
+            "title": "Bad Data Threshold",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}
+{
+    "title": "VoltagesAngle",
+    "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "degrees",
+            "type": "string"
+        },
+        "accuracy": {
+            "title": "Accuracy",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "bad_data_threshold": {
+            "title": "Bad Data Threshold",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}
+{
+    "title": "VoltagesReal",
+    "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "kV",
+            "type": "string"
+        },
+        "accuracy": {
+            "title": "Accuracy",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "bad_data_threshold": {
+            "title": "Bad Data Threshold",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}
+{
+    "title": "VoltagesImaginary",
+    "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "kV",
+            "type": "string"
+        },
+        "accuracy": {
+            "title": "Accuracy",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "bad_data_threshold": {
+            "title": "Bad Data Threshold",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}
+{
+    "title": "CurrentsMagnitude",
+    "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "A",
+            "type": "string"
+        },
+        "accuracy": {
+            "title": "Accuracy",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "bad_data_threshold": {
+            "title": "Bad Data Threshold",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}
+{
+    "title": "CurrentsAngle",
+    "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "degrees",
+            "type": "string"
+        },
+        "accuracy": {
+            "title": "Accuracy",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "bad_data_threshold": {
+            "title": "Bad Data Threshold",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}
+{
+    "title": "CurrentsReal",
+    "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "A",
+            "type": "string"
+        },
+        "accuracy": {
+            "title": "Accuracy",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "bad_data_threshold": {
+            "title": "Bad Data Threshold",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}
+{
+    "title": "CurrentsImaginary",
+    "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "A",
+            "type": "string"
+        },
+        "accuracy": {
+            "title": "Accuracy",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "bad_data_threshold": {
+            "title": "Bad Data Threshold",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}
+{
+    "title": "PowersMagnitude",
+    "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "kVA",
+            "type": "string"
+        },
+        "accuracy": {
+            "title": "Accuracy",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "bad_data_threshold": {
+            "title": "Bad Data Threshold",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        },
+        "injection": {
+            "title": "Injection",
+            "type": "array",
+            "items": {
+                "type": "boolean"
+            }
+        }
+    },
+    "required": [
+        "values",
+        "ids",
+        "injection"
+    ]
+}
+{
+    "title": "PowersAngle",
+    "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "degrees",
+            "type": "string"
+        },
+        "accuracy": {
+            "title": "Accuracy",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "bad_data_threshold": {
+            "title": "Bad Data Threshold",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        },
+        "injection": {
+            "title": "Injection",
+            "type": "array",
+            "items": {
+                "type": "boolean"
+            }
+        }
+    },
+    "required": [
+        "values",
+        "ids",
+        "injection"
+    ]
+}
+{
+    "title": "PowersReal",
+    "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "kW",
+            "type": "string"
+        },
+        "accuracy": {
+            "title": "Accuracy",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "bad_data_threshold": {
+            "title": "Bad Data Threshold",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        },
+        "injection": {
+            "title": "Injection",
+            "type": "array",
+            "items": {
+                "type": "boolean"
+            }
+        }
+    },
+    "required": [
+        "values",
+        "ids",
+        "injection"
+    ]
+}
+{
+    "title": "PowersImaginary",
+    "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "kVAR",
+            "type": "string"
+        },
+        "accuracy": {
+            "title": "Accuracy",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "bad_data_threshold": {
+            "title": "Bad Data Threshold",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        },
+        "injection": {
+            "title": "Injection",
+            "type": "array",
+            "items": {
+                "type": "boolean"
+            }
+        }
+    },
+    "required": [
+        "values",
+        "ids",
+        "injection"
+    ]
+}
+{
+    "title": "PowersImaginary",
+    "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "kVAR",
+            "type": "string"
+        },
+        "accuracy": {
+            "title": "Accuracy",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "bad_data_threshold": {
+            "title": "Bad Data Threshold",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        },
+        "injection": {
+            "title": "Injection",
+            "type": "array",
+            "items": {
+                "type": "boolean"
+            }
+        }
+    },
+    "required": [
+        "values",
+        "ids",
+        "injection"
+    ]
+}
+{
+    "title": "SolarIrradiances",
+    "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "W/m^2",
+            "type": "string"
+        },
+        "accuracy": {
+            "title": "Accuracy",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "bad_data_threshold": {
+            "title": "Bad Data Threshold",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}
+{
+    "title": "Temperatures",
+    "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "C",
+            "type": "string"
+        },
+        "accuracy": {
+            "title": "Accuracy",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "bad_data_threshold": {
+            "title": "Bad Data Threshold",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}
+{
+    "title": "WindSpeeds",
+    "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "m/s",
+            "type": "string"
+        },
+        "accuracy": {
+            "title": "Accuracy",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "bad_data_threshold": {
+            "title": "Bad Data Threshold",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}
+{
+    "title": "StatesOfCharge",
+    "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "percent",
+            "type": "string"
+        },
+        "accuracy": {
+            "title": "Accuracy",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "bad_data_threshold": {
+            "title": "Bad Data Threshold",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}
+{
+    "title": "Topology",
+    "type": "object",
+    "properties": {
+        "admittance": {
+            "title": "Admittance",
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/AdmittanceSparse"
+                },
+                {
+                    "$ref": "#/definitions/AdmittanceMatrix"
+                }
+            ]
+        },
+        "base_voltage_angles": {
+            "$ref": "#/definitions/VoltagesAngle"
+        },
+        "base_voltage_magnitudes": {
+            "$ref": "#/definitions/VoltagesMagnitude"
+        },
+        "slack_bus": {
+            "title": "Slack Bus",
+            "default": [],
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+    },
+    "required": [
+        "admittance"
+    ],
+    "definitions": {
+        "AdmittanceSparse": {
+            "title": "AdmittanceSparse",
+            "type": "object",
+            "properties": {
+                "admittance_list": {
+                    "title": "Admittance List",
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "items": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "number"
+                            }
+                        ]
+                    }
+                },
+                "from_equipment": {
+                    "title": "From Equipment",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "to_equipment": {
+                    "title": "To Equipment",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "equipment_type": {
+                    "title": "Equipment Type",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "units": {
+                    "title": "Units",
+                    "default": "S",
+                    "type": "string"
+                },
+                "str": {
+                    "title": "Str",
+                    "default": "S",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "admittance_list",
+                "from_equipment",
+                "to_equipment"
+            ]
+        },
+        "AdmittanceMatrix": {
+            "title": "AdmittanceMatrix",
+            "type": "object",
+            "properties": {
+                "admittance_matrix": {
+                    "title": "Admittance Matrix",
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "type": "array",
+                            "minItems": 2,
+                            "maxItems": 2,
+                            "items": [
+                                {
+                                    "type": "number"
+                                },
+                                {
+                                    "type": "number"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "ids": {
+                    "title": "Ids",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "units": {
+                    "title": "Units",
+                    "default": "S",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "admittance_matrix",
+                "ids"
+            ]
+        },
+        "VoltagesAngle": {
+            "title": "VoltagesAngle",
+            "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\"",
+            "type": "object",
+            "properties": {
+                "values": {
+                    "title": "Values",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "ids": {
+                    "title": "Ids",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "units": {
+                    "title": "Units",
+                    "default": "degrees",
+                    "type": "string"
+                },
+                "accuracy": {
+                    "title": "Accuracy",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "bad_data_threshold": {
+                    "title": "Bad Data Threshold",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "time": {
+                    "title": "Time",
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "required": [
+                "values",
+                "ids"
+            ]
+        },
+        "VoltagesMagnitude": {
+            "title": "VoltagesMagnitude",
+            "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\"",
+            "type": "object",
+            "properties": {
+                "values": {
+                    "title": "Values",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "ids": {
+                    "title": "Ids",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "units": {
+                    "title": "Units",
+                    "default": "kV",
+                    "type": "string"
+                },
+                "accuracy": {
+                    "title": "Accuracy",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "bad_data_threshold": {
+                    "title": "Bad Data Threshold",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "time": {
+                    "title": "Time",
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "required": [
+                "values",
+                "ids"
+            ]
+        }
+    }
+}
+{
+    "title": "AdmittanceSparse",
+    "type": "object",
+    "properties": {
+        "admittance_list": {
+            "title": "Admittance List",
+            "type": "array",
+            "items": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": [
+                    {
+                        "type": "number"
+                    },
+                    {
+                        "type": "number"
+                    }
+                ]
+            }
+        },
+        "from_equipment": {
+            "title": "From Equipment",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "to_equipment": {
+            "title": "To Equipment",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "equipment_type": {
+            "title": "Equipment Type",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "S",
+            "type": "string"
+        },
+        "str": {
+            "title": "Str",
+            "default": "S",
+            "type": "string"
+        }
+    },
+    "required": [
+        "admittance_list",
+        "from_equipment",
+        "to_equipment"
+    ]
+}
+{
+    "title": "AdmittanceMatrix",
+    "type": "object",
+    "properties": {
+        "admittance_matrix": {
+            "title": "Admittance Matrix",
+            "type": "array",
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "items": [
+                        {
+                            "type": "number"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ]
+                }
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "S",
+            "type": "string"
+        }
+    },
+    "required": [
+        "admittance_matrix",
+        "ids"
+    ]
+}

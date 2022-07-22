@@ -122,22 +122,18 @@ class CurrentsImaginary(MeasurementArray):
     pass
 
 class PowersMagnitude(MeasurementArray):
-    injection: List[bool]
     units: str = 'kVA'
     pass
 
 class PowersAngle(MeasurementArray):
-    injection: List[bool]
     units: str = 'degrees'
     pass
 
 class PowersReal(MeasurementArray):
-    injection: List[bool]
     units: str = 'kW'
     pass
 
 class PowersImaginary(MeasurementArray):
-    injection: List[bool]
     units: str = 'kVAR'
     pass
 
