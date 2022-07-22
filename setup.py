@@ -30,7 +30,7 @@ setup(
     include_package_data=True,
     # license="MIT",
     zip_safe=True,
-    keywords="gadal componentframework helics",
+    keywords="gadal helics",
     python_requires=">=3.8",
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -44,8 +44,6 @@ setup(
     ],
     # test_suite="tests",
     install_requires=["helics-apps>=3.1.0", "helics>=3.1.0", "pydantic", "psutil"],
-    extras_require={
-    #"dev": test_requires + ["flake8", "pre-commit", "pylint"],
-    },
+    extras_require={"test":["pytest"]},
     # cmdclass={"develop": PostDevelopCommand},
 )
