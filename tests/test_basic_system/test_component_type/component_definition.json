@@ -8,5 +8,5 @@
     "dynamic_outputs": [
         {"type": "", "port_id": "test2"}
     ],
-    "apiversion": "0.1.0"
+    "apiversion": "0.2.0"
 }
