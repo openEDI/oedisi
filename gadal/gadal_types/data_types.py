@@ -172,11 +172,11 @@ class AdmittanceMatrix(BaseModel):
     units: str = 'S'
 
 class Injection(BaseModel):
-    current_real: List[CurrentsReal] = []
-    current_imaginary: List[CurrentsImaginary] = []
-    power_real: List[PowersReal] = []
-    power_imaginary: List[PowersImaginary] = []
-    impedance_real: List[ImpedanceReal] = []
-    impedance_imaginary: List[ImpedanceImaginary] = []
+    current_real: CurrentsReal = {"values":[], "ids":[]}
+    current_imaginary: CurrentsImaginary = {"values":[], "ids":[]}
+    power_real: PowersReal = {"values":[], "ids":[]}
+    power_imaginary: PowersImaginary = {"values":[], "ids":[]}
+    impedance_real: ImpedanceReal = {"values":[], "ids":[]}
+    impedance_imaginary: ImpedanceImaginary = {"values":[], "ids":[]}
 
 Topology.update_forward_refs()

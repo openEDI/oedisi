@@ -5,6 +5,17 @@
         "ids": ["node1","node2","node3"],
         "units": "S"
     },
+    "injections":
+    {
+        "power_real": {
+                        "values":[5], 
+                        "ids": ["node3"]
+        },
+        "power_imaginary": {
+                        "values":[2.0], 
+                        "ids": ["node3"]
+        }
+    },
     "base_voltage_angles": 
        {
         "values": [0,90,180],

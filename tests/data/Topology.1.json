@@ -7,6 +7,9 @@
             "equipment_type": ["line", "transformer"],
             "units": "S"
         },
+    "injections":
+        {
+        },
     "base_voltage_angles": 
        {
         "values": [0,90,180],
