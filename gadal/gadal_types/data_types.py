@@ -85,77 +85,75 @@ class MeasurementArray(BaseModel):
     values: List[float]
     ids: List[str]
     units: str
+    equipment_type: Optional[List[str]]
     accuracy: Optional[List[float]]
     bad_data_threshold: Optional[List[float]]
     time: Optional[datetime.datetime]
 
 class VoltagesMagnitude(MeasurementArray):
     units: str = 'kV'
-    pass
 
 class VoltagesAngle(MeasurementArray):
     units: str = 'degrees'
-    pass
 
 class VoltagesReal(MeasurementArray):
     units: str = 'kV'
-    pass
 
 class VoltagesImaginary(MeasurementArray):
     units: str = 'kV'
-    pass
 
 class CurrentsMagnitude(MeasurementArray):
     units: str = 'A'
-    pass
 
 class CurrentsAngle(MeasurementArray):
     units: str = 'degrees'
-    pass
 
 class CurrentsReal(MeasurementArray):
     units: str = 'A'
-    pass
 
 class CurrentsImaginary(MeasurementArray):
     units: str = 'A'
-    pass
+
+class ImpedanceReal(MeasurementArray):
+    units: str = 'Ohm'
+
+class ImpedanceImaginary(MeasurementArray):
+    units: str = 'Ohm'
+
+class ImpedanceMagnitude(MeasurementArray):
+    units: str = 'Ohm'
+
+class ImpedanceAngle(MeasurementArray):
+    units: str = 'degrees'
 
 class PowersMagnitude(MeasurementArray):
     units: str = 'kVA'
-    pass
 
 class PowersAngle(MeasurementArray):
     units: str = 'degrees'
-    pass
 
 class PowersReal(MeasurementArray):
     units: str = 'kW'
-    pass
 
 class PowersImaginary(MeasurementArray):
     units: str = 'kVAR'
-    pass
 
 class SolarIrradiances(MeasurementArray):
     units: str = 'W/m^2'
-    pass
 
 class Temperatures(MeasurementArray):
     units: str = 'C'
-    pass
 
 class WindSpeeds(MeasurementArray):
     units: str = 'm/s'
-    pass
 
 class StatesOfCharge(MeasurementArray):
     units: str = 'percent'
-    pass
 
 
 class Topology(BaseModel):
     admittance:  Union[AdmittanceSparse, AdmittanceMatrix]
+    injections: Injection
     base_voltage_angles: Optional[VoltagesAngle]
     base_voltage_magnitudes: Optional[VoltagesMagnitude]
     slack_bus: List[str] = []
@@ -166,11 +164,19 @@ class AdmittanceSparse(BaseModel):
     from_equipment: List[str]    
     to_equipment:    List[str]    
     equipment_type: Optional[List[str]]
-    units = str = 'S'
+    units:  str = 'S'
 
 class AdmittanceMatrix(BaseModel):
     admittance_matrix: List[List[Complex]]
     ids: List[str]
     units: str = 'S'
+
+class Injection(BaseModel):
+    current_real: List[CurrentsReal] = []
+    current_imaginary: List[CurrentsImaginary] = []
+    power_real: List[PowersReal] = []
+    power_imaginary: List[PowersImaginary] = []
+    impedance_real: List[ImpedanceReal] = []
+    impedance_imaginary: List[ImpedanceImaginary] = []
 
 Topology.update_forward_refs()
