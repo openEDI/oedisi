@@ -8,12 +8,14 @@
     "injections":
     {
         "power_real": {
-                        "values":[5], 
-                        "ids": ["node3"]
+                        "values":[-5], 
+                        "ids": ["node3"],
+                        "equipment_type": ["load"]
         },
         "power_imaginary": {
-                        "values":[2.0], 
-                        "ids": ["node3"]
+                        "values":[-2.0], 
+                        "ids": ["node3"],
+                        "equipment_type": ["load"]
         }
     },
     "base_voltage_angles": 
