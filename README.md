@@ -1,6 +1,6 @@
-# Component Framework: SGIDAL-testing Framework
+# Component Framework: GADAL-testing Framework
 
-The component framework's primary purpose is to instantiate new components with the right HELICS settings in a running simulation.
+GADAL (Grid Algorithms and Data Analytics Library) provides a library for connecting Algorithms and Datasets in a co-simulation frameowrk. The purpose of the GADAL-testing Framework is to instantiate new components with the right HELICS settings in a running simulation.
 
 ## Documentation
 

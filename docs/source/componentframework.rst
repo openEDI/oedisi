@@ -28,6 +28,14 @@ componentframework.system\_configuration module
    :undoc-members:
    :show-inheritance:
 
+componentframework.wiring\_diagram\_utils module
+------------------------------------------------
+
+.. automodule:: componentframework.wiring_diagram_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

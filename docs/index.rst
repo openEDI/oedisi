@@ -1,4 +1,4 @@
-Welcome to sgidal-componentframework's documentation!
+Welcome to GADAL's documentation!
 =====================================================
 
 .. toctree::

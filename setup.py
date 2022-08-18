@@ -19,18 +19,18 @@ description = (
 )
 
 setup(
-    name="componentframework",
-    version="0.1.0",
+    name="gadal",
+    version="0.2.0",
     description=description,
     # long_description=readme,
     author="Joseph McKinsey",
     author_email="joseph.mckinsey@nrel.gov",
     packages=find_packages(),
-    package_dir={"componentframework": "componentframework"},
+    package_dir={"gadal": "gadal"},
     include_package_data=True,
     # license="MIT",
     zip_safe=True,
-    keywords="componentframework helics",
+    keywords="gadal helics",
     python_requires=">=3.8",
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -43,9 +43,7 @@ setup(
         "Programming Language :: Python :: 3.10",
     ],
     # test_suite="tests",
-    install_requires=["helics-apps>=3.1.0", "helics>=3.1.0", "pydantic"],
-    extras_require={
-    #"dev": test_requires + ["flake8", "pre-commit", "pylint"],
-    },
+    install_requires=["helics-apps>=3.1.0", "helics>=3.1.0", "pydantic", "psutil"],
+    extras_require={"test":["pytest"]},
     # cmdclass={"develop": PostDevelopCommand},
 )

@@ -1,0 +1,59 @@
+{
+    "title": "AdmittanceSparse",
+    "type": "object",
+    "properties": {
+        "admittance_list": {
+            "title": "Admittance List",
+            "type": "array",
+            "items": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": [
+                    {
+                        "type": "number"
+                    },
+                    {
+                        "type": "number"
+                    }
+                ]
+            }
+        },
+        "from_equipment": {
+            "title": "From Equipment",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "to_equipment": {
+            "title": "To Equipment",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "equipment_type": {
+            "title": "Equipment Type",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "S",
+            "type": "string"
+        },
+        "str": {
+            "title": "Str",
+            "default": "S",
+            "type": "string"
+        }
+    },
+    "required": [
+        "admittance_list",
+        "from_equipment",
+        "to_equipment"
+    ]
+}

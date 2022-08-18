@@ -1,0 +1,42 @@
+{
+    "title": "AdmittanceMatrix",
+    "type": "object",
+    "properties": {
+        "admittance_matrix": {
+            "title": "Admittance Matrix",
+            "type": "array",
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "items": [
+                        {
+                            "type": "number"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ]
+                }
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "S",
+            "type": "string"
+        }
+    },
+    "required": [
+        "admittance_matrix",
+        "ids"
+    ]
+}

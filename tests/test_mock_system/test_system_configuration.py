@@ -1,0 +1,13 @@
+from gadal.componentframework.system_configuration import (
+    generate_runner_config,
+    WiringDiagram,
+)
+from gadal.componentframework.mock_component import MockComponent
+import json
+
+component_types = {"MockComponent": MockComponent}
+wiring_diagram = WiringDiagram.parse_file("test_system.json")
+runner_config = generate_runner_config(wiring_diagram, component_types)
+
+with open("test_system_runner.json", "w") as f:
+    f.write(runner_config.json(indent=2))

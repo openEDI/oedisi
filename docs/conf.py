@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath('../'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'sgidal-componentframework'
+project = 'gadal'
 copyright = '2022, NREL'
 author = 'NREL'
 

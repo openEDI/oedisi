@@ -1,0 +1,27 @@
+{
+    "name": "basic_system",
+    "components": [
+        {
+            "name": "basic_component1",
+            "type": "TestComponent",
+            "parameters": {}
+        },
+        {
+            "name": "mock_component1",
+            "type": "MockComponent",
+            "parameters": {
+                "inputs": ["sub1"],
+                "outputs": {}
+            }
+        }
+    ],
+    "links": [
+        {
+            "source": "basic_component1",
+            "source_port": "test2",
+            "target": "mock_component1",
+            "target_port": "sub1"
+        }
+    ],
+    "apiversion": "0.2.0"
+}

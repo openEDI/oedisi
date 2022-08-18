@@ -1,0 +1,8 @@
+{
+    "values": [0, 90.0, 180.0],
+    "ids": ["line1", "line2", "line3"],
+    "units": "degrees",
+    "accuracy": [0.01, 0.01, 0.05],
+    "bad_data_threshold": [0.1, 0.2, 0.3],
+    "time": "2022-05-24T17:20"
+}

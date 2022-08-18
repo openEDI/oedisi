@@ -1,0 +1,30 @@
+{
+    "title": "CapacitorStates",
+    "description": "Extended by classes:\n    \"SwitchStates\",\n    \"CapacitorStates\",\n    \"RegulatorStates\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "integer"
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}

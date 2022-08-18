@@ -1,0 +1,9 @@
+{
+    "values": [5, 10, 2.3],
+    "ids": ["load1", "load2", "load3"],
+    "units": "kVAR",
+    "injection": [true, true, true],
+    "accuracy": [0.01, 0.01, 0.05],
+    "bad_data_threshold": [0.1, 0.2, 0.3],
+    "time": "2022-05-24T17:20"
+}

@@ -122,12 +122,12 @@ This is saved at `test_system_runner.json`.
 
 .. code-block:: python
 
-    from componentframework.basic_component import component_from_json
-    from componentframework.system_configuration import (
+    from gadal.componentframework.basic_component import component_from_json
+    from gadal.componentframework.system_configuration import (
         generate_runner_config,
         WiringDiagram,
     )
-    from componentframework.mock_component import MockComponent
+    from gadal.componentframework.mock_component import MockComponent
 
 
     def bad_type_checker(type, x):

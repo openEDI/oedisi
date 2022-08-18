@@ -1,0 +1,33 @@
+{
+    "admittance":
+        {
+            "admittance_list":[[1.0,0.01], [1.5, 0.02], [0.7,0.3]],
+            "from_equipment": ["node1", "node2"],
+            "to_equipment": ["node2", "node3"],
+            "equipment_type": ["line", "transformer"],
+            "units": "S"
+        },
+    "injections":
+        {
+        },
+    "base_voltage_angles": 
+       {
+        "values": [0,90,180],
+        "ids": ["node1", "node2", "node3"],
+        "units": "degrees",
+        "accuracy": [0.01, 0.01, 0.05],
+        "bad_data_threshold": [0.1, 0.2, 0.3]
+       },
+    "base_voltage_magnitudes":
+        {
+            "values": [12.47, 12.48, 12.49],
+            "ids": ["node1", "node2", "node3"],
+            "units": "kV",
+            "accuracy": [0.01, 0.01, 0.05],
+            "bad_data_threshold": [0.1, 0.2, 0.3]
+        },
+    "slack_bus":
+        [
+            "node1"
+        ]
+}

@@ -1,0 +1,8 @@
+{
+    "values": [0,90,180],
+    "ids": ["node1", "node2", "node3"],
+    "units": "degrees",
+    "accuracy": [0.01, 0.01, 0.05],
+    "bad_data_threshold": [0.1, 0.2, 0.3],
+    "time": "2022-05-24T17:20"
+}

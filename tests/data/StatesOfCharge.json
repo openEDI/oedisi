@@ -1,0 +1,8 @@
+{
+    "values": [0, 50, 100],
+    "ids": ["battery1", "battery2", "battery3"],
+    "units": "percent",
+    "accuracy": [0.01, 0.01, 0.05],
+    "bad_data_threshold": [0.1, 0.2, 0.3],
+    "time": "2022-05-24T17:20"
+}
