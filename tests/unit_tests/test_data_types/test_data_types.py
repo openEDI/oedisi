@@ -2,8 +2,11 @@ import os
 import json
 import pytest
 import importlib
+from pathlib import Path
 
-from tests import INPUT_FILES, here, outdir
+DATADIR = Path(__file__).parent / "data"
+
+INPUT_FILES = [p for p in DATADIR.glob("*.json")]
 
 @pytest.mark.parametrize("filepath", INPUT_FILES)
 def test_all_formats(filepath):
