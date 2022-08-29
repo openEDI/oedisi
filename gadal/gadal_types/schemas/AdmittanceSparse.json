@@ -2,23 +2,6 @@
     "title": "AdmittanceSparse",
     "type": "object",
     "properties": {
-        "admittance_list": {
-            "title": "Admittance List",
-            "type": "array",
-            "items": {
-                "type": "array",
-                "minItems": 2,
-                "maxItems": 2,
-                "items": [
-                    {
-                        "type": "number"
-                    },
-                    {
-                        "type": "number"
-                    }
-                ]
-            }
-        },
         "from_equipment": {
             "title": "From Equipment",
             "type": "array",
@@ -40,20 +23,32 @@
                 "type": "string"
             }
         },
+        "admittance_list": {
+            "title": "Admittance List",
+            "type": "array",
+            "items": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": [
+                    {
+                        "type": "number"
+                    },
+                    {
+                        "type": "number"
+                    }
+                ]
+            }
+        },
         "units": {
             "title": "Units",
-            "default": "S",
-            "type": "string"
-        },
-        "str": {
-            "title": "Str",
             "default": "S",
             "type": "string"
         }
     },
     "required": [
-        "admittance_list",
         "from_equipment",
-        "to_equipment"
+        "to_equipment",
+        "admittance_list"
     ]
 }

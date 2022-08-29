@@ -22,6 +22,13 @@
             "default": "kW",
             "type": "string"
         },
+        "equipment_type": {
+            "title": "Equipment Type",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
         "accuracy": {
             "title": "Accuracy",
             "type": "array",
