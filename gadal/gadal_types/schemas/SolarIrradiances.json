@@ -22,6 +22,13 @@
             "default": "W/m^2",
             "type": "string"
         },
+        "equipment_type": {
+            "title": "Equipment Type",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
         "accuracy": {
             "title": "Accuracy",
             "type": "array",
