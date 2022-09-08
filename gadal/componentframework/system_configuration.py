@@ -152,14 +152,15 @@ def initialize_federates(
     wiring_diagram: WiringDiagram,
     component_types: Dict[str, Type[ComponentType]],
     compatability_checker,
+    target_directory="."
 ) -> List[Federate]:
     "Initialize all the federates"
     components = {}
     link_map = get_link_map(wiring_diagram)
     for component in wiring_diagram.components:
-        directory = component.name
+        directory = os.path.join(target_directory, component.name)
         if not os.path.exists(directory):
-            os.mkdir(directory)
+            os.makedirs(directory)
         component_type = component_types[component.type]
         initialized_component = component_type(
             component.name, component.parameters, directory
@@ -188,7 +189,7 @@ def initialize_federates(
             {l.target_port: f"{l.source}/{l.source_port}" for l in links}
         )
         federates.append(
-            Federate(directory=name, name=name, exec=component.execute_function)
+            Federate(directory=os.path.join(target_directory, name), name=name, exec=component.execute_function)
         )
 
     return federates
@@ -228,6 +229,7 @@ def generate_runner_config(
     wiring_diagram: WiringDiagram,
     component_types: Dict[str, Type[ComponentType]],
     compatibility_checker=bad_compatability_checker,
+    target_directory="."
 ):
     """Brings together a `WiringDiagram` and a dictionary of `ComponentTypes`
     to create a helics run configuration.
@@ -249,7 +251,7 @@ def generate_runner_config(
         Configuration which can be used to run the cosimulation
     """
     federates = initialize_federates(
-        wiring_diagram, component_types, compatibility_checker
+        wiring_diagram, component_types, compatibility_checker, target_directory
     )
     broker_federate = Federate(
         directory=".",

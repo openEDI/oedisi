@@ -7,7 +7,7 @@ import json
 
 component_types = {"MockComponent": MockComponent}
 wiring_diagram = WiringDiagram.parse_file("test_system.json")
-runner_config = generate_runner_config(wiring_diagram, component_types)
+runner_config = generate_runner_config(wiring_diagram, component_types, target_directory="build")
 
 with open("test_system_runner.json", "w") as f:
     f.write(runner_config.json(indent=2))
