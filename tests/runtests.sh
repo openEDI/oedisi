@@ -3,7 +3,7 @@
 cd "$(dirname "$0")"
 
 run_helics () {
-    timeout 60 helics run --path=test_system_runner.json || {
+    timeout 60 ./helics-run.sh || {
         echo "$folder failed helics run"; exit 2
     }
 }

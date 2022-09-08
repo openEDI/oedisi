@@ -102,16 +102,16 @@ class WiringDiagram(BaseModel):
     components: List[Component]
     links: List[Link]
 
-    def clean_model(cls, location = '.'):
-        for component in cls.components:
-            to_delete = os.path.join(location,component.name)
-            log_file = os.path.join(location,component.name+'.log')
+    def clean_model(self, target_directory = '.'):
+        for component in self.components:
+            to_delete = os.path.join(target_directory, component.name)
+            log_file = os.path.join(target_directory, component.name+'.log')
             if not os.path.exists(to_delete):
-                logging.warning(f"The location to delete {to_delete} does not exist")
+                logging.warning(f"The directory for {component.name} at {to_delete} does not exist")
             else:
                 shutil.rmtree(to_delete)
             if not os.path.exists(log_file):
-                logging.warning(f"The location to delete {log_file} does not exist")
+                logging.warning(f"The directory for {component.name} at {log_file} does not exist")
             else:
                 os.remove(log_file)
 
@@ -189,7 +189,7 @@ def initialize_federates(
             {l.target_port: f"{l.source}/{l.source_port}" for l in links}
         )
         federates.append(
-            Federate(directory=os.path.join(target_directory, name), name=name, exec=component.execute_function)
+            Federate(directory=name, name=name, exec=component.execute_function)
         )
 
     return federates

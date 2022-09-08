@@ -43,7 +43,7 @@ setup(
         "Programming Language :: Python :: 3.10",
     ],
     # test_suite="tests",
-    install_requires=["helics-apps>=3.1.0", "helics>=3.1.0", "pydantic", "psutil"],
+    install_requires=["helics-apps>=3.2.1", "helics>=3.2.1", "pydantic", "psutil"],
     extras_require={"test":["pytest"]},
     # cmdclass={"develop": PostDevelopCommand},
 )
