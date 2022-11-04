@@ -23,8 +23,10 @@ def bad_type_checker(type, x):
 
 
 def get_basic_component(filename):
+    # before, the runner would use the directory given _in_ the component description
+    # which may be inaccurate
     comp_desc = ComponentDescription.parse_file(filename)
-    comp_desc.directory = os.path.dirname(filename)
+    comp_desc.directory = os.path.dirname(filename)  
     return basic_component(comp_desc, bad_type_checker)
 
 
@@ -65,6 +67,8 @@ def run(runner):
 @cli.command()
 @click.option("--runner", default="build/system_runner.json")
 def run_with_pause(runner):
+    # Helics broker is in the foreground, and we allow user input
+    # to block time. Currently waiting on pyhelics version 3.3.1
     background_runner = subprocess.Popen(["helics", "run", f"--path"])
     from pausing_broker import PausingBroker
     broker = PausingBroker()
@@ -73,7 +77,7 @@ def run_with_pause(runner):
 
 
 @cli.command()
-def test_component():
+def test_component():  # Data fuzzing
     click.echo("Test the component in a complement system")
     # First we create a wiring diagram with our component
     # connected to a tester
@@ -88,7 +92,14 @@ def test_component():
 
 
 @cli.command()
-def debug_component():
+def debug_component():  # one of them should be stdin/stdout
+    # Idea 1: We remove one component from system_runner.json
+    # and then call helics run in the background with our new json.
+    # and then run our debugging component in standard in / standard out.
+    # Note that this requires the helics broker to have the true number of federates.
+
+    # Idea 2: Modify helics run command or reproduce its behavior.
+    # So we run the broker/federates ourselves, and run everything in subprocesses.
     click.echo("Put one component in debug mode")
     return NotImplemented
 
