@@ -1,0 +1,12 @@
+{
+    "directory": "test_component_type",
+    "execute_function": "python test_component_type.py",
+    "static_inputs": [],
+    "dynamic_inputs": [
+        {"type": "", "port_id": "test1"}
+    ],
+    "dynamic_outputs": [
+        {"type": "", "port_id": "test2"}
+    ],
+    "apiversion": "0.2.2"
+}
