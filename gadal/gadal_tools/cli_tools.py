@@ -2,12 +2,14 @@ import click
 import json
 import os
 import subprocess
+import time
 
 from gadal.componentframework.basic_component import (
     basic_component,
     ComponentDescription
 )
 from gadal.componentframework.system_configuration import (
+    RunnerConfig,
     generate_runner_config,
     WiringDiagram,
 )
@@ -69,10 +71,23 @@ def run(runner):
 def run_with_pause(runner):
     # Helics broker is in the foreground, and we allow user input
     # to block time. Currently waiting on pyhelics version 3.3.1
-    background_runner = subprocess.Popen(["helics", "run", f"--path"])
+    #
+    with open(runner, "r") as f:
+        system_json = RunnerConfig.parse_obj(json.load(f))
+        new_system, brokers = remove_from_json(system_json, "broker")
+        assert len(brokers) == 1
+
+    new_path = runner + "revised.json"
+    click.echo(f"Saving new json without broker to {new_path}")
+    with open(new_path, "w") as f:
+        f.write(new_system.json())
+
+    background_runner = subprocess.Popen(["helics", "run", f"--path={new_path}"])
     from pausing_broker import PausingBroker
-    broker = PausingBroker()
+    broker = PausingBroker(len(new_system.federates))
+    time.sleep(3)
     broker.run()
+    background_runner.wait()
 
 
 
@@ -91,17 +106,51 @@ def test_component():  # Data fuzzing
     return NotImplemented
 
 
+def remove_from_json(system_json, component):
+    within_feds = [fed for fed in system_json.federates
+                        if fed.name != component]
+    without_feds = [fed for fed in system_json.federates
+                        if fed.name == component]
+    new_system = RunnerConfig(
+        name = system_json.name,
+        federates = within_feds
+    )
+    return new_system, without_feds
+
+
 @cli.command()
-def debug_component():  # one of them should be stdin/stdout
+@click.option("--runner", default="build/system_runner.json")
+@click.option("--without")
+def debug_component(runner, without):  # one of them should be stdin/stdout
     # Idea 1: We remove one component from system_runner.json
     # and then call helics run in the background with our new json.
     # and then run our debugging component in standard in / standard out.
     # Note that this requires the helics broker to have the true number of federates.
+    with open(runner, "r") as f:
+        system_json = RunnerConfig.parse_obj(json.load(f))
+        new_system, without_feds = remove_from_json(system_json, without)
+        assert len(without_feds) == 1
+        without_fed = without_feds[0]
+    new_path = runner + "revised.json"
+    click.echo(f"Saving new json to {new_path}")
+    with open(new_path, "w") as f:
+        f.write(new_system.json())
 
-    # Idea 2: Modify helics run command or reproduce its behavior.
-    # So we run the broker/federates ourselves, and run everything in subprocesses.
-    click.echo("Put one component in debug mode")
-    return NotImplemented
+    directory = os.path.join(os.path.dirname(new_path), without_fed.directory)
+    click.echo("Removing")
+    click.echo(f"""
+Name      : {without_fed.name}
+Directory : {directory}
+Command   : {without_fed.exec}
+    """)
+
+    click.echo("Starting system (note you may have to kill manually)")
+    helics_sim = subprocess.Popen(["helics", "run", f"--path={new_path}"])
+    click.echo("Running component {without_fed.name} in foreground")
+    _ = subprocess.run(without_fed.exec.split(), cwd=directory)
+    helics_sim.wait()
+    #component_proc.wait()
+
 
 if __name__ == "__main__":
     cli()
