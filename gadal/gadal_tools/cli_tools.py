@@ -42,7 +42,17 @@ def get_basic_component(filename):
 @click.option("--component-dict", default="components.json", type=str,
               help="JSON Dictionary of component folders")
 def build(target_directory, system, component_dict):
-    "Build to the simulation folder"
+    """Build to the simulation folder
+
+    Parameters
+    ---------
+    target_directory : str (default="build")
+        build path
+    system : str (default="system.json")
+        path to wiring diagram json
+    component_dict : str (default="components.json")
+        path to JSON dictionary of component folders
+    """
     click.echo(f"Loading the components defined in {component_dict}")
     with open(component_dict, 'r') as f:
         component_dict_of_files = json.load(f)
@@ -65,14 +75,15 @@ def build(target_directory, system, component_dict):
 @cli.command()
 @click.option("--runner", default="build/system_runner.json")
 def run(runner):
+    "Calls out to helics run command"
     subprocess.run(["helics", "run", f"--path={runner}"])
 
 
 @cli.command()
 @click.option("--runner", default="build/system_runner.json")
 def run_with_pause(runner):
-    # Helics broker is in the foreground, and we allow user input
-    # to block time. Currently waiting on pyhelics version 3.3.1
+    """Helics broker is in the foreground, and we allow user input
+    to block time. Currently waiting on pyhelics version 3.3.1"""
     new_system, new_path, _ = remove_from_json(runner, "broker")
     background_runner = subprocess.Popen(["helics", "run", f"--path={new_path}"])
     from pausing_broker import PausingBroker
@@ -86,15 +97,29 @@ def run_with_pause(runner):
 @click.option("--component-desc")
 @click.option("--parameters", default=None)
 def test_description(target_directory, component_desc, parameters):
-    # Get inputs and outputs from component_desc
-    # Create a wiring diagram for component
-    #     and a "do-nothing" component with parameters for the corresponding
-    #     inputs and outputs (basically recorder federate?)
-    # Create and run system with wiring diagram
-    #
-    # Alternative would be to initialize the component,
-    # then figure out what it's inputs and output are,
-    # and create another component based on this.
+    """Test component intialization from component description
+
+    Parameters
+    ----------
+
+    target_directory : str
+        build location
+
+    component_desc : str
+        filepath to component_description.json to test
+
+    parameters : str
+        filepath to parameters json (default is parameters={})
+
+    Process
+    -------
+
+    Get inputs and outputs from component_desc
+    Create a wiring diagram for component
+        and a "do-nothing" component with parameters for the corresponding
+        inputs and outputs (basically recorder federate?)
+    Create and run system with wiring diagram
+    """
 
     comp_desc = ComponentDescription.parse_file(component_desc)
     comp_desc.directory = os.path.dirname(component_desc)
@@ -157,6 +182,7 @@ def test_description(target_directory, component_desc, parameters):
 
 
 def remove_from_runner_config(runner_config, element):
+    "Remove federate from configuration"
     within_feds = [fed for fed in runner_config.federates
                         if fed.name != element]
     without_feds = [fed for fed in runner_config.federates
@@ -169,6 +195,7 @@ def remove_from_runner_config(runner_config, element):
 
 
 def remove_from_json(system_json, element):
+    "Remove federate from configuration and resave with revised.json"
     with open(system_json, "r") as f:
         runner_config = RunnerConfig.parse_obj(json.load(f))
         new_config, without_feds = remove_from_runner_config(
@@ -186,11 +213,23 @@ def remove_from_json(system_json, element):
 @cli.command()
 @click.option("--runner", default="build/system_runner.json")
 @click.option("--foreground")
-def debug_component(runner, foreground):  # one of them should be stdin/stdout
-    # Idea 1: We remove one component from system_runner.json
-    # and then call helics run in the background with our new json.
-    # and then run our debugging component in standard in / standard out.
-    # Note that this requires the helics broker to have the true number of federates.
+def debug_component(runner, foreground):
+    """
+    Run system runner json with one component in the JSON
+
+    Parameters
+    ----------
+
+    runner : str
+        filepath to system runner json
+
+    foreground : str
+        name of component
+
+    We remove one component from system_runner.json
+    and then call helics run in the background with our new json.
+    and then run our debugging component in standard in / standard out.
+    """
     _, new_path, foreground_federates = remove_from_json(runner, foreground)
     assert len(foreground_federates) == 1
     foreground_fed = foreground_federates[0]
@@ -207,7 +246,6 @@ Command   : {foreground_fed.exec}
     click.echo(f"Running component {foreground_fed.name} in foreground")
     _ = subprocess.run(foreground_fed.exec.split(), cwd=directory)
     helics_sim.wait()
-    #component_proc.wait()
 
 
 if __name__ == "__main__":
