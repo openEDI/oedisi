@@ -42,12 +42,21 @@ class PausingBroker:
         print("Setting time barrier to 0.0")
         h.helicsBrokerSetTimeBarrier(self.broker, 0.0)
         t = 0.0
-        time.sleep(2)
+
+        time.sleep(3)
+        name_2_timedata = {}
         while h.helicsBrokerIsConnected(self.broker) is True:
-            for t_data in parse_time_data(
+            for time_data in parse_time_data(
+                    # Use global time debugging?
                     self.broker.query("broker", "global_time")
-                    ):
-                pprint_time_data(t_data)
-            t = click.prompt('Enter next time:', type=float, default=t+1)
-            print(f"Setting time barrier to {t}")
-            h.helicsBrokerSetTimeBarrier(self.broker, t)
+            ):
+                if ((time_data.name not in name_2_timedata) or
+                    (name_2_timedata[time_data.name] != time_data)):
+                    name_2_timedata[time_data.name] = time_data
+                    pprint_time_data(time_data)
+
+            new_t = click.prompt('Enter next time:', type=float, default=t)
+            if new_t != t:
+                t = new_t
+                print(f"Setting time barrier to {t}")
+                h.helicsBrokerSetTimeBarrier(self.broker, t)

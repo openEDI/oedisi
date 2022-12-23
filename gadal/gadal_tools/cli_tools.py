@@ -8,10 +8,12 @@ from gadal.componentframework.basic_component import (
     basic_component,
     ComponentDescription
 )
+from gadal.componentframework.mock_component import MockComponent
 from gadal.componentframework.system_configuration import (
     RunnerConfig,
     generate_runner_config,
     WiringDiagram,
+    Component,
 )
 
 @click.group()
@@ -71,83 +73,139 @@ def run(runner):
 def run_with_pause(runner):
     # Helics broker is in the foreground, and we allow user input
     # to block time. Currently waiting on pyhelics version 3.3.1
-    #
-    with open(runner, "r") as f:
-        system_json = RunnerConfig.parse_obj(json.load(f))
-        new_system, brokers = remove_from_json(system_json, "broker")
-        assert len(brokers) == 1
-
-    new_path = runner + "revised.json"
-    click.echo(f"Saving new json without broker to {new_path}")
-    with open(new_path, "w") as f:
-        f.write(new_system.json())
-
+    new_system, new_path, _ = remove_from_json(runner, "broker")
     background_runner = subprocess.Popen(["helics", "run", f"--path={new_path}"])
     from pausing_broker import PausingBroker
     broker = PausingBroker(len(new_system.federates))
-    time.sleep(3)
     broker.run()
     background_runner.wait()
 
 
-
 @cli.command()
-def test_component():  # Data fuzzing
-    click.echo("Test the component in a complement system")
-    # First we create a wiring diagram with our component
-    # connected to a tester
+@click.option("--target-directory", default="build")
+@click.option("--component-desc")
+@click.option("--parameters", default=None)
+def test_description(target_directory, component_desc, parameters):
+    # Get inputs and outputs from component_desc
+    # Create a wiring diagram for component
+    #     and a "do-nothing" component with parameters for the corresponding
+    #     inputs and outputs (basically recorder federate?)
+    # Create and run system with wiring diagram
     #
-    # The tester will send a test data of each input,
-    # then it'll listen for the output.
-    #
-    # We want to start a HELICS simulation, then confirm
-    # that things got connected (maybe run for a bit), then we want to shut the simulation
-    # down fast. Maybe we can start our federate early and then cancel?
-    return NotImplemented
+    # Alternative would be to initialize the component,
+    # then figure out what it's inputs and output are,
+    # and create another component based on this.
+
+    comp_desc = ComponentDescription.parse_file(component_desc)
+    comp_desc.directory = os.path.dirname(component_desc)
+
+    if parameters is None:
+        parameters = {}
+    else:
+        with open(parameters) as f:
+            parameters = json.load(f)
+
+    inputs = list(map(lambda x: x.port_name, comp_desc.dynamic_inputs))
+    outputs = list(map(lambda x: x.port_name, comp_desc.dynamic_outputs))
+    w = WiringDiagram.empty()
+    component = Component(name="component", type="UserComponent",
+                          parameters=parameters)
+    tester = Component(name="tester", type="MockComponent", parameters={
+        "inputs": outputs,
+        "outputs": {x.port_name: x.type for x in comp_desc.dynamic_inputs}
+    })
+    w.add_component(component)
+    w.add_component(tester)
+    for i in outputs:
+        w.add_link(component.port(i).connect(tester.port(i)))
+
+    for i in inputs:
+        w.add_link(tester.port(i).connect(component.port(i)))
+
+    component_types = {
+        "MockComponent": MockComponent,
+        "UserComponent": basic_component(
+            comp_desc,
+            bad_type_checker
+        )
+    }
+    runner_config = generate_runner_config(w, component_types, target_directory=target_directory)
+    runner_config, _ = remove_from_runner_config(runner_config, "broker")
+    with open(f"{target_directory}/system_runner.json", "w") as f:
+        f.write(runner_config.json())
+
+    background_runner = subprocess.Popen(
+        ["helics", "run", f"--path={target_directory}/system_runner.json"]
+    )
+    from testing_broker import TestingBroker
+    broker = TestingBroker(len(runner_config.federates))
+    federate_inputs, federate_outputs = broker.run()
+    background_runner.kill()
+    print("Testing dynamic input names")
+    assert sorted(list(map(
+        lambda x: x.port_name, comp_desc.dynamic_inputs
+    ))) == sorted(list(map(
+        lambda x: x.split("/")[1], federate_inputs["component"]
+    )))
+    print("✓")
+    print("Testing dynamic output names")
+    assert sorted(list(map(
+        lambda x: "component/" + x.port_name, comp_desc.dynamic_outputs
+    ))) == sorted(federate_outputs["component"])
+    print("✓")
 
 
-def remove_from_json(system_json, component):
-    within_feds = [fed for fed in system_json.federates
-                        if fed.name != component]
-    without_feds = [fed for fed in system_json.federates
-                        if fed.name == component]
-    new_system = RunnerConfig(
-        name = system_json.name,
+
+def remove_from_runner_config(runner_config, element):
+    within_feds = [fed for fed in runner_config.federates
+                        if fed.name != element]
+    without_feds = [fed for fed in runner_config.federates
+                        if fed.name == element]
+    new_config = RunnerConfig(
+        name = runner_config.name,
         federates = within_feds
     )
-    return new_system, without_feds
+    return new_config, without_feds
+
+
+def remove_from_json(system_json, element):
+    with open(system_json, "r") as f:
+        runner_config = RunnerConfig.parse_obj(json.load(f))
+        new_config, without_feds = remove_from_runner_config(
+            runner_config,
+            element
+        )
+
+        new_path = system_json + "revised.json"
+        click.echo(f"Saving new json to {new_path}")
+        with open(new_path, "w") as f:
+            f.write(new_config.json())
+        return new_config, new_path, without_feds
 
 
 @cli.command()
 @click.option("--runner", default="build/system_runner.json")
-@click.option("--without")
-def debug_component(runner, without):  # one of them should be stdin/stdout
+@click.option("--foreground")
+def debug_component(runner, foreground):  # one of them should be stdin/stdout
     # Idea 1: We remove one component from system_runner.json
     # and then call helics run in the background with our new json.
     # and then run our debugging component in standard in / standard out.
     # Note that this requires the helics broker to have the true number of federates.
-    with open(runner, "r") as f:
-        system_json = RunnerConfig.parse_obj(json.load(f))
-        new_system, without_feds = remove_from_json(system_json, without)
-        assert len(without_feds) == 1
-        without_fed = without_feds[0]
-    new_path = runner + "revised.json"
-    click.echo(f"Saving new json to {new_path}")
-    with open(new_path, "w") as f:
-        f.write(new_system.json())
-
-    directory = os.path.join(os.path.dirname(new_path), without_fed.directory)
+    _, new_path, foreground_federates = remove_from_json(runner, foreground)
+    assert len(foreground_federates) == 1
+    foreground_fed = foreground_federates[0]
+    directory = os.path.join(os.path.dirname(new_path), foreground_fed.directory)
     click.echo("Removing")
     click.echo(f"""
-Name      : {without_fed.name}
+Name      : {foreground_fed.name}
 Directory : {directory}
-Command   : {without_fed.exec}
+Command   : {foreground_fed.exec}
     """)
 
     click.echo("Starting system (note you may have to kill manually)")
     helics_sim = subprocess.Popen(["helics", "run", f"--path={new_path}"])
-    click.echo("Running component {without_fed.name} in foreground")
-    _ = subprocess.run(without_fed.exec.split(), cwd=directory)
+    click.echo(f"Running component {foreground_fed.name} in foreground")
+    _ = subprocess.run(foreground_fed.exec.split(), cwd=directory)
     helics_sim.wait()
     #component_proc.wait()
 
