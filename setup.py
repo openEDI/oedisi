@@ -45,5 +45,10 @@ setup(
     # test_suite="tests",
     install_requires=["helics-apps>=3.2.1", "helics>=3.2.1", "pydantic", "psutil"],
     extras_require={"test":["pytest"]},
+    entry_points = {
+        'console_scripts': [
+            'gadal = gadal.gadal_tools:cli'
+        ]
+    }
     # cmdclass={"develop": PostDevelopCommand},
 )

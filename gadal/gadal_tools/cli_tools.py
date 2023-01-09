@@ -15,6 +15,8 @@ from gadal.componentframework.system_configuration import (
     WiringDiagram,
     Component,
 )
+from .pausing_broker import PausingBroker
+from .testing_broker import TestingBroker
 
 @click.group()
 def cli():
@@ -35,11 +37,11 @@ def get_basic_component(filename):
 
 
 @cli.command()
-@click.option("--target-directory", default="build", type=str,
+@click.option("--target-directory", default="build", type=click.Path(),
               help="Target directory to put the system in")
-@click.option("--system", default="system.json", type=str,
+@click.option("--system", default="system.json", type=click.Path(),
               help="Wiring diagram json to build")
-@click.option("--component-dict", default="components.json", type=str,
+@click.option("--component-dict", default="components.json", type=click.Path(),
               help="JSON Dictionary of component folders")
 def build(target_directory, system, component_dict):
     """Build to the simulation folder
@@ -73,28 +75,27 @@ def build(target_directory, system, component_dict):
 
 
 @cli.command()
-@click.option("--runner", default="build/system_runner.json")
+@click.option("--runner", default="build/system_runner.json", type=click.Path())
 def run(runner):
     "Calls out to helics run command"
     subprocess.run(["helics", "run", f"--path={runner}"])
 
 
 @cli.command()
-@click.option("--runner", default="build/system_runner.json")
+@click.option("--runner", default="build/system_runner.json", type=click.Path())
 def run_with_pause(runner):
     """Helics broker is in the foreground, and we allow user input
     to block time. Currently waiting on pyhelics version 3.3.1"""
     new_system, new_path, _ = remove_from_json(runner, "broker")
     background_runner = subprocess.Popen(["helics", "run", f"--path={new_path}"])
-    from pausing_broker import PausingBroker
     broker = PausingBroker(len(new_system.federates))
     broker.run()
     background_runner.wait()
 
 
 @cli.command()
-@click.option("--target-directory", default="build")
-@click.option("--component-desc")
+@click.option("--target-directory", default="build", type=click.Path())
+@click.option("--component-desc", type=click.Path())
 @click.option("--parameters", default=None)
 def test_description(target_directory, component_desc, parameters):
     """Test component intialization from component description
@@ -162,7 +163,6 @@ def test_description(target_directory, component_desc, parameters):
     background_runner = subprocess.Popen(
         ["helics", "run", f"--path={target_directory}/system_runner.json"]
     )
-    from testing_broker import TestingBroker
     broker = TestingBroker(len(runner_config.federates))
     federate_inputs, federate_outputs = broker.run()
     background_runner.kill()
@@ -211,8 +211,8 @@ def remove_from_json(system_json, element):
 
 
 @cli.command()
-@click.option("--runner", default="build/system_runner.json")
-@click.option("--foreground")
+@click.option("--runner", default="build/system_runner.json", type=click.Path())
+@click.option("--foreground", type=str)
 def debug_component(runner, foreground):
     """
     Run system runner json with one component in the JSON
