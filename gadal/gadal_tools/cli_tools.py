@@ -47,7 +47,7 @@ def build(target_directory, system, component_dict):
     """Build to the simulation folder
 
     Parameters
-    ---------
+    ----------
     target_directory : str (default="build")
         build path
     system : str (default="system.json")
