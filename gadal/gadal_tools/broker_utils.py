@@ -18,7 +18,6 @@ def pprint_time_data(time_data):
 
 
 def parse_time_data(response):
-    print(response)
     time_data = []
     for core in response["cores"]:
         for fed in core["federates"]:

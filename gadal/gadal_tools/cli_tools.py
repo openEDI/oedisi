@@ -42,12 +42,20 @@ def get_basic_component(filename):
 @click.option("--system", default="system.json", type=click.Path(),
               help="Wiring diagram json to build")
 @click.option("--component-dict", default="components.json", type=click.Path(),
-              help="JSON Dictionary of component folders")
+              help="path to JSON Dictionary of component folders")
 def build(target_directory, system, component_dict):
     """Build to the simulation folder
 
+    Examples::
+
+        gadal build
+
+        gadal build --component-dict components.json --system scenario.json
+
+    \f
     Parameters
     ----------
+
     target_directory : str (default="build")
         build path
     system : str (default="system.json")
@@ -75,17 +83,43 @@ def build(target_directory, system, component_dict):
 
 
 @cli.command()
-@click.option("--runner", default="build/system_runner.json", type=click.Path())
+@click.option("--runner", default="build/system_runner.json", type=click.Path(),
+              help="Location of helics run json. Usually build/system_runner.json")
 def run(runner):
-    "Calls out to helics run command"
+    """Calls out to helics run command
+
+    Examples::
+
+        gadal run
+    """
     subprocess.run(["helics", "run", f"--path={runner}"])
 
 
 @cli.command()
-@click.option("--runner", default="build/system_runner.json", type=click.Path())
+@click.option("--runner", default="build/system_runner.json", type=click.Path(),
+              help="Location of helics run json. Usually build/system_runner.json")
 def run_with_pause(runner):
-    """Helics broker is in the foreground, and we allow user input
-    to block time. Currently waiting on pyhelics version 3.3.1"""
+    """Helics broker is run in the foreground, and we allow user input
+    to block time.
+
+    Examples::
+
+        gadal run-with-pause
+
+
+        Enter next time: [0.0]: 1.0
+        Setting time barrier to 1.0
+
+            Name         : comp_abc
+            Granted Time : 0.0
+            Send Time    : 0.0
+
+
+            Name         : comp_xyz
+            Granted Time : 0.0
+            Send Time    : 0.0
+
+    """
     new_system, new_path, _ = remove_from_json(runner, "broker")
     background_runner = subprocess.Popen(["helics", "run", f"--path={new_path}"])
     broker = PausingBroker(len(new_system.federates))
@@ -94,12 +128,27 @@ def run_with_pause(runner):
 
 
 @cli.command()
-@click.option("--target-directory", default="build", type=click.Path())
-@click.option("--component-desc", type=click.Path())
-@click.option("--parameters", default=None)
+@click.option("--target-directory", default="build", type=click.Path(),
+              help="Target directory to put the system in")
+@click.option("--component-desc", type=click.Path(),
+              help="Path to component description")
+@click.option("--parameters", default=None,
+              help="Path to parameters JSON (default is parameters={})")
 def test_description(target_directory, component_desc, parameters):
     """Test component intialization from component description
 
+    Examples::
+
+        gadal test-description --component-desc component/component_definition.json --parameters inputs.json
+
+        Initialized broker
+        Waiting for initialization
+        Testing dynamic input names
+        ✓
+        Testing dynamic output names
+        ✓
+
+    \f
     Parameters
     ----------
 
@@ -211,12 +260,18 @@ def remove_from_json(system_json, element):
 
 
 @cli.command()
-@click.option("--runner", default="build/system_runner.json", type=click.Path())
-@click.option("--foreground", type=str)
+@click.option("--runner", default="build/system_runner.json", type=click.Path(),
+              help="Location of helics run json. Usually build/system_runner.json")
+@click.option("--foreground", type=str, help="Name of component to run in background")
 def debug_component(runner, foreground):
     """
     Run system runner json with one component in the JSON
 
+    We remove one component from system_runner.json
+    and then call helics run in the background with our new json.
+    and then run our debugging component in standard in / standard out.
+
+    \f
     Parameters
     ----------
 
@@ -225,10 +280,6 @@ def debug_component(runner, foreground):
 
     foreground : str
         name of component
-
-    We remove one component from system_runner.json
-    and then call helics run in the background with our new json.
-    and then run our debugging component in standard in / standard out.
     """
     _, new_path, foreground_federates = remove_from_json(runner, foreground)
     assert len(foreground_federates) == 1
