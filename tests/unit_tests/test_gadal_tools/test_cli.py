@@ -46,3 +46,31 @@ def test_build_description(
         ]
     )
     assert result.exit_code == 0
+
+def test_bad_build_description(
+        base_path: Path,
+        monkeypatch: pytest.MonkeyPatch
+):
+    monkeypatch.chdir(base_path)
+
+    runner = CliRunner()
+    result = runner.invoke(cli, ['build'])
+    assert result.exit_code == 0
+    result = runner.invoke(
+        cli, [
+            'test-description',
+            '--component-desc',
+            'component3/component_definition.json'
+        ]
+    )
+    assert result.exit_code == 0
+
+    result = runner.invoke(
+        cli, [
+            'test-description',
+            '--component-desc',
+            'component3/bad_component_definition.json'
+        ]
+    )
+    assert result.exit_code == 1
+ 

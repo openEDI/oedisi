@@ -1,10 +1,6 @@
 import time
 
-import click
 import helics as h
-from pydantic import BaseModel
-from typing import List, Dict, Tuple
-import json
 
 
 def get_inputs_outputs(graph_dict):
@@ -20,7 +16,7 @@ def get_inputs_outputs(graph_dict):
                 fed["attributes"]["id"]
             ] = name
             pub_keys = []
-            for pub in fed["publications"]:
+            for pub in fed.get("publications", []):
                 federate_id_handle2key[
                     (pub["federate"], pub["handle"])
                 ] = pub["key"]
@@ -31,7 +27,7 @@ def get_inputs_outputs(graph_dict):
         for fed in c["federates"]:
             name = fed["attributes"]["name"]
             sub_keys = []
-            for sub in fed["inputs"]:
+            for sub in fed.get("inputs", []):
                 for source in sub["sources"]:
                     sub_keys.append(federate_id_handle2key[
                         (source["federate"], source["handle"])
@@ -49,8 +45,19 @@ class TestingBroker:
         self.broker = h.helicsCreateBroker("zmq", "", self.initstring)
         h.helicsBrokerSetTimeBarrier(self.broker, 0.0)
         print("Initialized broker")
-        time.sleep(2)
+        # Wait until federates have hit the time barrier
+        self.wait_until_connected()
 
         graph_dict = self.broker.query("broker", "data_flow_graph")
         self.broker.disconnect()
         return get_inputs_outputs(graph_dict)
+
+    def wait_until_connected(self):
+        print("Waiting for initialization")
+        while True:
+            time.sleep(2)
+            current_state = self.broker.query("broker", "current_state")
+            cores = current_state["cores"]
+            if (len(cores) == 2 and
+                all((core["state"] == "init_requested" for core in cores))):
+                return
