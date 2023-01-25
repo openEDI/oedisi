@@ -9,5 +9,5 @@ jobs:
     - uses: actions/checkout@v1
     - uses: ammaraskar/sphinx-action@master
       with:
-        pre-build-command: pip install helics==3.1.0 helics-apps==3.1.0 pydantic
+        pre-build-command: pip install helics==3.1.0 helics-apps==3.1.0 pydantic sphinx-click
         docs-folder: "docs/"

@@ -81,6 +81,25 @@ class ComponentType(ABC):
         pass
 
 
+class Link(BaseModel):
+    source: str
+    source_port: str
+    target: str
+    target_port: str
+
+
+class Port(BaseModel):
+    name: str
+    port_name: str
+
+    def connect(self, port: 'Port'):
+        return Link(
+            source=self.name,
+            source_port=self.port_name,
+            target=port.name,
+            target_port=port.port_name
+        )
+
 class Component(BaseModel):
     """Component type used in WiringDiagram, includes name,
     component type, and initial parameters"""
@@ -88,12 +107,8 @@ class Component(BaseModel):
     type: str
     parameters: Dict[str, Any]
 
-
-class Link(BaseModel):
-    source: str
-    source_port: str
-    target: str
-    target_port: str
+    def port(self, port_name: str):
+        return Port(name=self.name, port_name=port_name)
 
 
 class WiringDiagram(BaseModel):
@@ -139,6 +154,16 @@ class WiringDiagram(BaseModel):
                 assert link.source in names and link.target in names
         return links
 
+    def add_component(self, c: Component):
+        self.components.append(c)
+
+    def add_link(self, l: Link):
+        self.links.append(l)
+
+    @classmethod
+    def empty(cls, name="unnamed"):
+        return cls(name=name, components=[], links=[])
+
 
 class Federate(BaseModel):
     "Federate configuration for HELICS CLI"
@@ -175,7 +200,7 @@ def initialize_federates(
         ), f"{l.source} does not have {l.source_port}"
         assert (
             l.target_port in target_types
-        ), f"{l.target} does not have {l.target_port}"
+        ), f"{l.target} does not have dynamic input {l.target_port}"
         source_type = source_types[l.source_port]
         target_type = target_types[l.target_port]
         assert compatability_checker(

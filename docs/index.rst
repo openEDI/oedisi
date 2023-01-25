@@ -8,6 +8,7 @@ Welcome to GADAL's documentation!
    getting_started.rst
    examples.rst
    design.rst
+   gadal_cli.rst
 
 
 Indices and tables
