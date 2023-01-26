@@ -15,12 +15,12 @@ class KubernetesEnvironment:
     def pull_docker_images(self,image_list):
         # Create a Docker client
         docker_client = docker.from_env()
-        
+
         for image in image_list:
             # Pull an image from Docker Hub
-            docker_image = docker_client.images.pull(repository)
+            docker_image = docker_client.images.pull(image)
             self.docker_images.append(docker_image)
-        
+
 
     def __init__(self,image_list):
         self.pull_docker_images(image_list)
@@ -33,7 +33,8 @@ class KubernetesEnvironment:
         image_count = 1
         for image in self.docker_images:
             container = {
-                            "name": image.tags[0],
+                            # Use the image tag as the name (without the tag value)
+                            "name": image.tags[0].split(':')[0],
                             "image": image.id,
                             "ports": [
                                 {
@@ -43,7 +44,7 @@ class KubernetesEnvironment:
                         }
             container_list.append(container)
             image_count+=1
-        
+
         # Create a deployment object
         deployment = client.AppsV1Api().create_namespaced_deployment(
             body={
@@ -66,7 +67,7 @@ class KubernetesEnvironment:
                             }
                         },
                         "spec": {
-                            "containers": container_list 
+                            "containers": container_list
                         }
                     }
                 }
@@ -76,6 +77,3 @@ class KubernetesEnvironment:
 
         # Print the deployment object
         print(deployment)
-
-
-
