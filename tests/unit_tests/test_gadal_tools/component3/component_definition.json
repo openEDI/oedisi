@@ -6,5 +6,5 @@
         {"type": "", "port_id": "test1"}
     ],
     "dynamic_outputs": [],
-    "apiversion": "0.2.2"
+    "apiversion": "0.2.4"
 }

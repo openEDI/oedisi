@@ -23,5 +23,5 @@
             "target_port": "sub1"
         }
     ],
-    "apiversion": "0.2.0"
+    "apiversion": "0.2.4"
 }

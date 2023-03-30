@@ -20,7 +20,7 @@ description = (
 
 setup(
     name="gadal",
-    version="0.2.2",
+    version="0.2.4",
     description=description,
     # long_description=readme,
     author="Joseph McKinsey",
