@@ -1,7 +1,7 @@
-from enum import IntEnum
+from enum import IntEnum, Enum
 
-def AppPort(IntEnum):
+class AppPort(IntEnum):
     feeder =  8765
 
-def AppIP(IntEnum):
+class AppIP(Enum):
     feeder =  '192.168.0.1'
