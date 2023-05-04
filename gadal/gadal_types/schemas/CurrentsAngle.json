@@ -1,6 +1,6 @@
 {
     "title": "CurrentsAngle",
-    "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\"",
+    "description": "Primary key is ids + equipment_ids.\n\n- ids corresponding node id, so \"113.1\", \"113.2\", \"113.3\"\n- equipment_id corresponds to PVSystem.113\n\nExtended by classes:\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",",
     "type": "object",
     "properties": {
         "values": {
@@ -22,13 +22,6 @@
             "default": "degrees",
             "type": "string"
         },
-        "equipment_type": {
-            "title": "Equipment Type",
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
-        },
         "accuracy": {
             "title": "Accuracy",
             "type": "array",
@@ -47,10 +40,18 @@
             "title": "Time",
             "type": "string",
             "format": "date-time"
+        },
+        "equipment_ids": {
+            "title": "Equipment Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
         }
     },
     "required": [
         "values",
-        "ids"
+        "ids",
+        "equipment_ids"
     ]
 }

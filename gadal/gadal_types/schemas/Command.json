@@ -1,0 +1,52 @@
+{
+    "title": "Command",
+    "description": "JSON Configuration for external object commands.\n\nobj_name -- name of the object.\nobj_prop -- name of the property.\nobj_val -- val of the property.",
+    "type": "object",
+    "properties": {
+        "obj_name": {
+            "title": "Obj Name",
+            "type": "string"
+        },
+        "obj_property": {
+            "title": "Obj Property",
+            "type": "string"
+        },
+        "val": {
+            "title": "Val",
+            "anyOf": [
+                {
+                    "type": "integer"
+                },
+                {
+                    "type": "number"
+                },
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            ]
+        }
+    },
+    "required": [
+        "obj_name",
+        "obj_property",
+        "val"
+    ]
+}

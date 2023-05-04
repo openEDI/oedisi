@@ -1,6 +1,6 @@
 {
     "title": "MeasurementArray",
-    "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\"",
+    "description": "Extended by classes:\n    \"BusArray\",\n    \"EquipmentArray\",\n    \"EquipmentNodeArray\"",
     "type": "object",
     "properties": {
         "values": {
@@ -20,13 +20,6 @@
         "units": {
             "title": "Units",
             "type": "string"
-        },
-        "equipment_type": {
-            "title": "Equipment Type",
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
         },
         "accuracy": {
             "title": "Accuracy",
