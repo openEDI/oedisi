@@ -1,10 +1,10 @@
 # Component Framework: GADAL-testing Framework
 
-GADAL (Grid Algorithms and Data Analytics Library) provides a library for connecting Algorithms and Datasets in a co-simulation frameowrk. The purpose of the GADAL-testing Framework is to instantiate new components with the right HELICS settings in a running simulation.
-
 [![Main - Integration Tests](https://github.com/openEDI/GADAL/actions/workflows/test-api.yml/badge.svg)](https://github.com/openEDI/GADAL/actions/workflows/test-api.yml)
 [![Main - Unit Tests](https://github.com/openEDI/GADAL/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/openEDI/GADAL/actions/workflows/unit-tests.yml)
 [![Documentation](https://github.com/openEDI/GADAL/actions/workflows/build-docs.yml/badge.svg)](https://openedi.github.io/GADAL/)
+
+GADAL (Grid Algorithms and Data Analytics Library) provides a library for connecting Algorithms and Datasets in a co-simulation frameowrk. The purpose of the GADAL-testing Framework is to instantiate new components with the right HELICS settings in a running simulation.
 
 ## Documentation
 
