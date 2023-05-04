@@ -108,7 +108,15 @@ class EquipmentArray(MeasurementArray):
         "SolarIrradiances",
         "Temperatures",
         "WindSpeeds",
-        "StatesOfCharge"
+        "StatesOfCharge",
+        "CurrentsMagnitude",
+        "CurrentsAngle",
+        "CurrentsReal",
+        "CurrentsImaginary",
+        "ImpedanceMagnitude",
+        "ImpedanceAngle",
+        "ImpedanceReal",
+        "ImpedanceImaginary",
     """
 
     pass
@@ -122,10 +130,6 @@ class EquipmentNodeArray(MeasurementArray):
     - equipment_id corresponds to PVSystem.113
 
     Extended by classes:
-        "CurrentsMagnitude",
-        "CurrentsAngle",
-        "CurrentsReal",
-        "CurrentsImaginary",
         "PowersMagnitude",
         "PowersAngle",
         "PowersReal",
@@ -152,35 +156,35 @@ class VoltagesImaginary(BusArray):
     units: str = "kV"
 
 
-class CurrentsMagnitude(EquipmentNodeArray):
+class CurrentsMagnitude(EquipmentArray):
     units: str = "A"
 
 
-class CurrentsAngle(EquipmentNodeArray):
+class CurrentsAngle(EquipmentArray):
     units: str = "degrees"
 
 
-class CurrentsReal(EquipmentNodeArray):
+class CurrentsReal(EquipmentArray):
     units: str = "A"
 
 
-class CurrentsImaginary(EquipmentNodeArray):
+class CurrentsImaginary(EquipmentArray):
     units: str = "A"
 
 
-class ImpedanceReal(EquipmentNodeArray):
+class ImpedanceReal(EquipmentArray):
     units: str = "Ohm"
 
 
-class ImpedanceImaginary(EquipmentNodeArray):
+class ImpedanceImaginary(EquipmentArray):
     units: str = "Ohm"
 
 
-class ImpedanceMagnitude(EquipmentNodeArray):
+class ImpedanceMagnitude(EquipmentArray):
     units: str = "Ohm"
 
 
-class ImpedanceAngle(EquipmentNodeArray):
+class ImpedanceAngle(EquipmentArray):
     units: str = "degrees"
 
 
