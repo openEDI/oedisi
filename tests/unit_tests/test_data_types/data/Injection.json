@@ -1,0 +1,22 @@
+{
+    "power_real": {
+        "values": [500, 150, 25],
+        "ids": ["13.1", "13.2", "13.3"],
+        "equipment_ids": ["Load.load1", "Load.load1", "Load.load1"],
+        "units": "kW",
+        "injection": [true, true, true],
+        "accuracy": [0.01, 0.01, 0.05],
+        "bad_data_threshold": [0.1, 0.2, 0.3],
+        "time": "2022-05-24T17:20"
+    },
+    "power_imaginary": {
+        "values": [500, 150, 25],
+        "ids": ["13.1", "13.2", "13.3"],
+        "equipment_ids": ["Load.load1", "Load.load1", "Load.load1"],
+        "units": "kW",
+        "injection": [true, true, true],
+        "accuracy": [0.01, 0.01, 0.05],
+        "bad_data_threshold": [0.1, 0.2, 0.3],
+        "time": "2022-05-24T17:20"
+    }
+}
