@@ -168,7 +168,7 @@ class WiringDiagram(BaseModel):
 class Federate(BaseModel):
     "Federate configuration for HELICS CLI"
     directory: str
-    hostname = "localhost"
+    hostname: str = "localhost"
     name: str
     exec: str
 
