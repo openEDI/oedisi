@@ -137,7 +137,7 @@
         },
         "CurrentsReal": {
             "title": "CurrentsReal",
-            "description": "Primary key is ids + equipment_ids.\n\n- ids corresponding node id, so \"113.1\", \"113.2\", \"113.3\"\n- equipment_id corresponds to PVSystem.113\n\nExtended by classes:\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",",
+            "description": "Extended by classes:\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"ImpedanceMagnitude\",\n    \"ImpedanceAngle\",\n    \"ImpedanceReal\",\n    \"ImpedanceImaginary\",",
             "type": "object",
             "properties": {
                 "values": {
@@ -177,24 +177,16 @@
                     "title": "Time",
                     "type": "string",
                     "format": "date-time"
-                },
-                "equipment_ids": {
-                    "title": "Equipment Ids",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 }
             },
             "required": [
                 "values",
-                "ids",
-                "equipment_ids"
+                "ids"
             ]
         },
         "CurrentsImaginary": {
             "title": "CurrentsImaginary",
-            "description": "Primary key is ids + equipment_ids.\n\n- ids corresponding node id, so \"113.1\", \"113.2\", \"113.3\"\n- equipment_id corresponds to PVSystem.113\n\nExtended by classes:\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",",
+            "description": "Extended by classes:\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"ImpedanceMagnitude\",\n    \"ImpedanceAngle\",\n    \"ImpedanceReal\",\n    \"ImpedanceImaginary\",",
             "type": "object",
             "properties": {
                 "values": {
@@ -234,24 +226,16 @@
                     "title": "Time",
                     "type": "string",
                     "format": "date-time"
-                },
-                "equipment_ids": {
-                    "title": "Equipment Ids",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 }
             },
             "required": [
                 "values",
-                "ids",
-                "equipment_ids"
+                "ids"
             ]
         },
         "PowersReal": {
             "title": "PowersReal",
-            "description": "Primary key is ids + equipment_ids.\n\n- ids corresponding node id, so \"113.1\", \"113.2\", \"113.3\"\n- equipment_id corresponds to PVSystem.113\n\nExtended by classes:\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",",
+            "description": "Primary key is ids + equipment_ids.\n\n- ids corresponding node id, so \"113.1\", \"113.2\", \"113.3\"\n- equipment_id corresponds to PVSystem.113\n\nExtended by classes:\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",",
             "type": "object",
             "properties": {
                 "values": {
@@ -308,7 +292,7 @@
         },
         "PowersImaginary": {
             "title": "PowersImaginary",
-            "description": "Primary key is ids + equipment_ids.\n\n- ids corresponding node id, so \"113.1\", \"113.2\", \"113.3\"\n- equipment_id corresponds to PVSystem.113\n\nExtended by classes:\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",",
+            "description": "Primary key is ids + equipment_ids.\n\n- ids corresponding node id, so \"113.1\", \"113.2\", \"113.3\"\n- equipment_id corresponds to PVSystem.113\n\nExtended by classes:\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",",
             "type": "object",
             "properties": {
                 "values": {
@@ -365,7 +349,7 @@
         },
         "ImpedanceReal": {
             "title": "ImpedanceReal",
-            "description": "Primary key is ids + equipment_ids.\n\n- ids corresponding node id, so \"113.1\", \"113.2\", \"113.3\"\n- equipment_id corresponds to PVSystem.113\n\nExtended by classes:\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",",
+            "description": "Extended by classes:\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"ImpedanceMagnitude\",\n    \"ImpedanceAngle\",\n    \"ImpedanceReal\",\n    \"ImpedanceImaginary\",",
             "type": "object",
             "properties": {
                 "values": {
@@ -405,24 +389,16 @@
                     "title": "Time",
                     "type": "string",
                     "format": "date-time"
-                },
-                "equipment_ids": {
-                    "title": "Equipment Ids",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 }
             },
             "required": [
                 "values",
-                "ids",
-                "equipment_ids"
+                "ids"
             ]
         },
         "ImpedanceImaginary": {
             "title": "ImpedanceImaginary",
-            "description": "Primary key is ids + equipment_ids.\n\n- ids corresponding node id, so \"113.1\", \"113.2\", \"113.3\"\n- equipment_id corresponds to PVSystem.113\n\nExtended by classes:\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",",
+            "description": "Extended by classes:\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"ImpedanceMagnitude\",\n    \"ImpedanceAngle\",\n    \"ImpedanceReal\",\n    \"ImpedanceImaginary\",",
             "type": "object",
             "properties": {
                 "values": {
@@ -462,19 +438,11 @@
                     "title": "Time",
                     "type": "string",
                     "format": "date-time"
-                },
-                "equipment_ids": {
-                    "title": "Equipment Ids",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 }
             },
             "required": [
                 "values",
-                "ids",
-                "equipment_ids"
+                "ids"
             ]
         },
         "Injection": {

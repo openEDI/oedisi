@@ -1,6 +1,6 @@
 {
     "title": "StatesOfCharge",
-    "description": "Extended by classes:\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\"",
+    "description": "Extended by classes:\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"ImpedanceMagnitude\",\n    \"ImpedanceAngle\",\n    \"ImpedanceReal\",\n    \"ImpedanceImaginary\",",
     "type": "object",
     "properties": {
         "values": {
