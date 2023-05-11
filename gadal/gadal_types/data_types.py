@@ -297,7 +297,7 @@ class InverterControlMode(Enum):
 class VVControl(BaseModel):
     """OpenDSS setting for volt-var control."""
 
-    deltaq_factor: float = 0.7
+    deltaq_factor: float = -1.0  # -1.0 tells OpenDSS to figure it out
     varchangetolerance: float = 0.025
     voltagechangetolerance: float = 0.0001
     vv_refreactivepower: ReactivePowerSetting = ReactivePowerSetting.VARAVAL_WATTS
@@ -308,7 +308,7 @@ class VVControl(BaseModel):
 class VWControl(BaseModel):
     """OpenDSS setting for volt-watt control."""
 
-    deltap_factor: float = 1.0
+    deltap_factor: float = -1.0  # -1.0 tells OpenDSS to figure it out
     voltage: List[float]  # p.u. in V
     power_response: List[float]  # p.u. in VArs
 
