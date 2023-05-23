@@ -1,8 +1,8 @@
-from gadal.componentframework.system_configuration import (
+from oedisi.componentframework.system_configuration import (
     generate_runner_config,
     WiringDiagram,
 )
-from gadal.componentframework.mock_component import MockComponent
+from oedisi.componentframework.mock_component import MockComponent
 import json
 
 component_types = {"MockComponent": MockComponent}

@@ -1,6 +1,6 @@
 import os
 import json
-from gadal.gadal_tools import cli
+from oedisi.tools import cli
 import pytest
 import importlib
 from pathlib import Path
