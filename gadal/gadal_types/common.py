@@ -1,3 +1,6 @@
-from enum import IntEnum, Enum
+from pydantic import BaseModel
 
-BROKER_PORT = 5678
+
+class BrokerConfig(BaseModel):
+    broker_port : int = 23405
+    broker_ip : str = "10.5.0.2"
