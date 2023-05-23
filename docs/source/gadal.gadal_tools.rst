@@ -4,6 +4,14 @@ gadal.gadal\_tools package
 Submodules
 ----------
 
+gadal.gadal\_tools.broker\_utils module
+---------------------------------------
+
+.. automodule:: gadal.gadal_tools.broker_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gadal.gadal\_tools.cli\_tools module
 ------------------------------------
 

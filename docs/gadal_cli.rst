@@ -37,6 +37,7 @@ This can be done with::
     gadal build
     gadal run-with-pause
 
+
 Output::
 
     ...
@@ -67,6 +68,7 @@ We can test the description of a component and it's initialization without
 a full simulation::
 
     gadal test-description --component-desc component/component_definition.json --parameters inputs.json
+
 
 Output::
 

@@ -148,6 +148,7 @@ def test_description(target_directory, component_desc, parameters):
         Testing dynamic output names
         ✓
 
+
     \f
     Parameters
     ----------
