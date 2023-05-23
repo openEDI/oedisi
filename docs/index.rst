@@ -1,4 +1,4 @@
-Welcome to GADAL's documentation!
+Welcome to oedisi's documentation!
 =====================================================
 
 .. toctree::
