@@ -3,6 +3,9 @@ import json
 import os
 import subprocess
 import time
+import requests
+import yaml
+
 
 from gadal.componentframework.basic_component import (
     basic_component,
@@ -80,7 +83,77 @@ def build(target_directory, system, component_dict):
     )
     with open(f"{target_directory}/system_runner.json", "w") as f:
         f.write(runner_config.json(indent=2))
+    
+    create_docker_compose_file(wiring_diagram, target_directory)
+    edit_docker_files(wiring_diagram, target_directory)
 
+def edit_docker_file(file_path, component):
+    print(component.dict())
+    edited_lines = []
+    with open(file_path, 'r') as f:
+        for line in f.readlines():
+            if line.startswith('RUN mkdir'):
+                edited_lines.append(f'RUN mkdir {component.name}\n')
+            elif line.startswith('COPY  *'):
+                edited_lines.append(f'COPY  * ./{component.name}\n')
+            elif line.startswith('WORKDIR'):
+                edited_lines.append(f'WORKDIR ./{component.name}\n')
+            elif line.startswith('EXPOSE'):
+                edited_lines.append(f'EXPOSE {component.port}/tcp\n')
+            elif line.startswith('CMD'):
+                a = f'CMD {["python", "server.py", component.host, str(component.port)]}\n'
+                a = a.replace("'", '"')
+                edited_lines.append(a)
+            else:
+                edited_lines.append(line)
+    with open(file_path, 'w') as f:
+        f.writelines(edited_lines)
+    pass
+
+
+def edit_docker_files(wiring_diagram:WiringDiagram, target_directory:str):
+    for component in wiring_diagram.components:
+        docker_path = os.path.join(target_directory, component.name, "Dockerfile")
+        try:
+            edit_docker_file(docker_path, component)
+        except Exception as e:
+            print(e)
+    ...
+
+
+def create_docker_compose_file(wiring_diagram:WiringDiagram, target_directory:str):
+    config = {"services": {}, "networks": {}}
+    for component in wiring_diagram.components:
+        config['services'][component.name] = {
+            "build": {
+                    "context": f'./{component.name}/.'
+                },
+            "ports": [
+                    f'{component.port}:{component.port}'
+                ],
+            "networks": {
+                "custom-network" : {
+                        "ipv4_address": component.host
+                    } 
+                },
+            }
+        
+    config["networks"] = {
+        "custom-network": {
+            "driver": "bridge",
+            "ipam": {
+                "config": [
+                    {
+                        "subnet": "10.5.0.0/16",
+                        "gateway": "10.5.0.1",
+                    },
+                ]
+            }
+        }
+    }
+    with open(f"{target_directory}/docker-compose.yml","w") as file:
+        yaml.dump(config,file)
+    
 
 @cli.command()
 @click.option("--runner", default="build/system_runner.json", type=click.Path(),
@@ -93,6 +166,33 @@ def run(runner):
         gadal run
     """
     subprocess.run(["helics", "run", f"--path={runner}"])
+
+@cli.command()
+@click.option("--runner", default="build/system_runner.json", type=click.Path(),
+              help="Location of helics run json. Usually build/system_runner.json")
+def run_api(runner):
+
+    broker_port = None
+    broker_ip = None
+    
+    with open(runner, 'r') as f:
+        config = json.load(f)
+        for i, fed_info in  enumerate(config['federates']):
+            if fed_info["name"] == "broker":
+                broker_port = fed_info["port"]
+                broker_ip = fed_info["hostname"]
+        
+        if not broker_port:
+            raise Exception("Broker port not found in the config file")
+        
+        
+        for i, fed_info in  enumerate(config['federates']):  
+            if fed_info["name"] != "broker":
+                url = f'https://{fed_info["hostname"]}:{fed_info["port"]}'
+                #myobj = {'somekey': 'somevalue'}
+                x = requests.get(url)
+                print(x.text)
+                #x = requests.post(url, json = myobj)
 
 
 @cli.command()

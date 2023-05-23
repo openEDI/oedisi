@@ -65,10 +65,13 @@ def basic_component(comp_desc: ComponentDescription, type_checker):
         _dynamic_outputs = types_to_dict(comp_desc.dynamic_outputs)
         _static_inputs = types_to_dict(comp_desc.static_inputs)
 
-        def __init__(self, name, parameters: Dict[str, Any], directory: str):
+        def __init__(self, name, parameters: Dict[str, Any], directory: str, host:str, port:int, comp_type:str):
             self._name = name
             self._directory = directory
             self._parameters = parameters
+            self._host = host
+            self._port = port
+            self._type = comp_type
             self.check_parameters(parameters)
             self.copy_code_into_directory()
             self.generate_parameter_config()

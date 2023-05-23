@@ -14,6 +14,7 @@ and the links between them.
 """
 
 from collections import defaultdict
+from lib2to3.pgen2.tokenize import StopTokenizing
 from typing import List, Dict, Type, Any
 import os
 import logging
@@ -23,7 +24,7 @@ from abc import ABC, abstractmethod, abstractproperty
 
 from pydantic import BaseModel, validator
 from typing import List, Optional, Any, Dict
-
+from gadal.gadal_types.common import BROKER_PORT
 
 class AnnotatedType(BaseModel):
     "Class for representing the types of components and their interfaces"
@@ -105,6 +106,8 @@ class Component(BaseModel):
     component type, and initial parameters"""
     name: str
     type: str
+    host: str
+    port: int
     parameters: Dict[str, Any]
 
     def port(self, port_name: str):
@@ -173,6 +176,20 @@ class Federate(BaseModel):
     exec: str
 
 
+def get_broker_conn_info(wiring_diagram: WiringDiagram):
+
+    for component in wiring_diagram.components:  
+        if component.type == 'LocalFeeder':
+            return component.host, component.port
+    return None, None
+
+def get_federates_conn_info(wiring_diagram: WiringDiagram):
+    data = ""
+    for component in wiring_diagram.components: 
+        data +=  f" {component.host} {component.port}"
+    return data
+                
+
 def initialize_federates(
     wiring_diagram: WiringDiagram,
     component_types: Dict[str, Type[ComponentType]],
@@ -180,6 +197,8 @@ def initialize_federates(
     target_directory="."
 ) -> List[Federate]:
     "Initialize all the federates"
+    broker_ip, broker_port = get_broker_conn_info(wiring_diagram)
+    conn_str = f" {broker_ip} {broker_port}" + get_federates_conn_info(wiring_diagram)
     components = {}
     link_map = get_link_map(wiring_diagram)
     for component in wiring_diagram.components:
@@ -188,7 +207,7 @@ def initialize_federates(
             os.makedirs(directory)
         component_type = component_types[component.type]
         initialized_component = component_type(
-            component.name, component.parameters, directory
+            component.name, component.parameters, directory, component.host, component.port, component.type
         )
         components[component.name] = initialized_component
 
@@ -213,19 +232,27 @@ def initialize_federates(
         component.generate_input_mapping(
             {l.target_port: f"{l.source}/{l.source_port}" for l in links}
         )
+        
+        # split_cmd = component._execute_function.split(" ")
+        # #split_cmd[1] = "server.py"
+        # component._execute_function = " ".join(split_cmd)
+        # if component._type=="LocalFeeder":
+        #     component._execute_function +=  conn_str
+        # else:
+        #     component._execute_function += f" {broker_ip} {broker_port} {component._host} {component._port}"
+        
         federates.append(
             Federate(directory=name, name=name, exec=component.execute_function)
         )
 
-    return federates
 
+    return federates
 
 def get_link_map(wiring_diagram: WiringDiagram):
     link_map = defaultdict(list)
     for link in wiring_diagram.links:
         link_map[link.target].append(link)
     return link_map
-
 
 class RunnerConfig(BaseModel):
     """HELICS running config for the full simulation
