@@ -19,18 +19,18 @@ description = (
 )
 
 setup(
-    name="gadal",
+    name="oedisi",
     version="0.2.4",
     description=description,
     # long_description=readme,
     author="Joseph McKinsey",
     author_email="joseph.mckinsey@nrel.gov",
     packages=find_packages(),
-    package_dir={"gadal": "gadal"},
+    package_dir={"oedisi": "oedisi"},
     include_package_data=True,
     # license="MIT",
     zip_safe=True,
-    keywords="gadal helics",
+    keywords="oedisi gadal helics",
     python_requires=">=3.8",
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -47,7 +47,7 @@ setup(
     extras_require={"test":["pytest"]},
     entry_points = {
         'console_scripts': [
-            'gadal = gadal.gadal_tools:cli'
+            'oedisi = oedisi.tools:cli'
         ]
     }
     # cmdclass={"develop": PostDevelopCommand},

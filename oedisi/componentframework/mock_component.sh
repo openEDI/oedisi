@@ -1,4 +1,4 @@
 #!/bin/sh
 
-python -m gadal.componentframework.mock_component
+python -m oedisi.componentframework.mock_component
 
