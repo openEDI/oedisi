@@ -24,7 +24,6 @@ from abc import ABC, abstractmethod, abstractproperty
 
 from pydantic import BaseModel, validator
 from typing import List, Optional, Any, Dict
-from gadal.gadal_types.common import BROKER_PORT
 
 class AnnotatedType(BaseModel):
     "Class for representing the types of components and their interfaces"
