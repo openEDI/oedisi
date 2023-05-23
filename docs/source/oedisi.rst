@@ -1,5 +1,5 @@
-gadal package
-=============
+oedisi package
+==============
 
 Subpackages
 -----------
@@ -7,14 +7,14 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   gadal.componentframework
-   gadal.gadal_tools
-   gadal.gadal_types
+   oedisi.componentframework
+   oedisi.tools
+   oedisi.types
 
 Module contents
 ---------------
 
-.. automodule:: gadal
+.. automodule:: oedisi
    :members:
    :undoc-members:
    :show-inheritance:
