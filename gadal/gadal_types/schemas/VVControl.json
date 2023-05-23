@@ -1,0 +1,59 @@
+{
+    "title": "VVControl",
+    "description": "OpenDSS setting for volt-var control.",
+    "type": "object",
+    "properties": {
+        "deltaq_factor": {
+            "title": "Deltaq Factor",
+            "default": 0.7,
+            "type": "number"
+        },
+        "varchangetolerance": {
+            "title": "Varchangetolerance",
+            "default": 0.025,
+            "type": "number"
+        },
+        "voltagechangetolerance": {
+            "title": "Voltagechangetolerance",
+            "default": 0.0001,
+            "type": "number"
+        },
+        "vv_refreactivepower": {
+            "default": "VARAVAL_WATTS",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/ReactivePowerSetting"
+                }
+            ]
+        },
+        "voltage": {
+            "title": "Voltage",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "reactive_response": {
+            "title": "Reactive Response",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        }
+    },
+    "required": [
+        "voltage",
+        "reactive_response"
+    ],
+    "definitions": {
+        "ReactivePowerSetting": {
+            "title": "ReactivePowerSetting",
+            "description": "Reactive power setting, almost always VARAVAL_WATTS.",
+            "enum": [
+                "VARAVAL_WATTS",
+                "VARMAX_VARS",
+                "VARMAX_WATTS"
+            ]
+        }
+    }
+}

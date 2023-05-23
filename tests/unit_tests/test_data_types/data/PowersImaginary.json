@@ -1,6 +1,7 @@
 {
     "values": [5, 10, 2.3],
-    "ids": ["load1", "load2", "load3"],
+    "ids": ["13.1", "13.2", "13.3"],
+    "equipment_ids": ["Load.load1", "Load.load1", "Load.load1"],
     "units": "kVAR",
     "injection": [true, true, true],
     "accuracy": [0.01, 0.01, 0.05],

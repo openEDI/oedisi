@@ -1,0 +1,5 @@
+{
+    "deltap_factor": 0.9,
+    "voltage": [0.9, 0.98, 1.02, 1.1],
+    "power_response": [-1, -1, 1, 1]
+}

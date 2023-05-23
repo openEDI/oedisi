@@ -1,0 +1,13 @@
+[
+    {
+        "pvsystem_list": ["PVSystem.113"],
+        "vvcontrol": {
+            "deltaq_factor": 0.8,
+            "voltagechangetolerance": 0.001,
+            "vv_refreactivepower": "VARMAX_VARS",
+            "voltage": [0.9, 0.98, 1.02, 1.1],
+            "reactive_response": [1, 1, -1, -1]
+        },
+        "mode": "VOLTVAR"
+    }
+]
