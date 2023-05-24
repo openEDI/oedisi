@@ -20,7 +20,7 @@ description = (
 
 setup(
     name="oedisi",
-    version="0.2.4",
+    version="1.0.0",
     description=description,
     # long_description=readme,
     author="Joseph McKinsey",
