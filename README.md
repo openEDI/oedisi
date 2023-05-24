@@ -1,10 +1,15 @@
-# Component Framework: oeidisi-testing Framework
+# `oeidisi`
+
 
 [![Main - Integration Tests](https://github.com/openEDI/oeidisi/actions/workflows/test-api.yml/badge.svg)](https://github.com/openEDI/oeidisi/actions/workflows/test-api.yml)
 [![Main - Unit Tests](https://github.com/openEDI/oeidisi/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/openEDI/oeidisi/actions/workflows/unit-tests.yml)
 [![Documentation](https://github.com/openEDI/oeidisi/actions/workflows/build-docs.yml/badge.svg)](https://openedi.github.io/oeidisi/)
 
-oedisi (OpenEDI - System Integration) provides a library for connecting Algorithms and Datasets in a co-simulation frameowrk. The purpose of the oedisi-testing Framework is to instantiate new components with the right HELICS settings in a running simulation.
+`oedisi` (OpenEDI - System Integration) is an orchestration interface for HELICS power simulations.
+
+- connects algorithms and data in a co-simulation framework HELICS by instantiating new components with the right HELICS configuration
+- runs simulations (including with debug features) using the `oedisi` CLI tool.
+- provides common [Pydantic](https://github.com/pydantic/pydantic) models for communications between power system algorithms and data in `oedisi.types`
 
 ## Documentation
 
@@ -19,9 +24,3 @@ The repository [`sgidal-example`](https://github.com/openEDI/sgidal-example/) co
 - measuring federate
 - weighted least squares state estimator federate
 - recording federates
-
-## Dependencies
-
-- `helics-apps` version >= 3.2.0 
-- `helics` version >= 3.2.0
-- `pydantic`
