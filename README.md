@@ -1,9 +1,9 @@
-# `oeidisi`
+# `oedisi`
 
 
-[![Main - Integration Tests](https://github.com/openEDI/oeidisi/actions/workflows/test-api.yml/badge.svg)](https://github.com/openEDI/oeidisi/actions/workflows/test-api.yml)
-[![Main - Unit Tests](https://github.com/openEDI/oeidisi/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/openEDI/oeidisi/actions/workflows/unit-tests.yml)
-[![Documentation](https://github.com/openEDI/oeidisi/actions/workflows/build-docs.yml/badge.svg)](https://openedi.github.io/oeidisi/)
+[![Main - Integration Tests](https://github.com/openEDI/oedisi/actions/workflows/test-api.yml/badge.svg)](https://github.com/openEDI/oedisi/actions/workflows/test-api.yml)
+[![Main - Unit Tests](https://github.com/openEDI/oedisi/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/openEDI/oedisi/actions/workflows/unit-tests.yml)
+[![Documentation](https://github.com/openEDI/oedisi/actions/workflows/build-docs.yml/badge.svg)](https://openedi.github.io/oedisi/)
 
 `oedisi` (OpenEDI - System Integration) is an orchestration interface for HELICS power simulations.
 
