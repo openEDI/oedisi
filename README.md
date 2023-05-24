@@ -1,4 +1,4 @@
-# `oedisi`
+# Oedisi
 
 
 [![Main - Integration Tests](https://github.com/openEDI/oedisi/actions/workflows/test-api.yml/badge.svg)](https://github.com/openEDI/oedisi/actions/workflows/test-api.yml)

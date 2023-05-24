@@ -21,7 +21,7 @@ with open("README.md") as f:
 
 setup(
     name="oedisi",
-    version="1.0.2",
+    version="1.0.0rc2",
     description=description,
     long_description=readme,
     long_description_content_type='text/markdown',
