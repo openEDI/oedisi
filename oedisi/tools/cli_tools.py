@@ -4,12 +4,12 @@ import os
 import subprocess
 import time
 
-from gadal.componentframework.basic_component import (
+from oedisi.componentframework.basic_component import (
     basic_component,
     ComponentDescription
 )
-from gadal.componentframework.mock_component import MockComponent
-from gadal.componentframework.system_configuration import (
+from oedisi.componentframework.mock_component import MockComponent
+from oedisi.componentframework.system_configuration import (
     RunnerConfig,
     generate_runner_config,
     WiringDiagram,
@@ -48,9 +48,9 @@ def build(target_directory, system, component_dict):
 
     Examples::
 
-        gadal build
+        oedisi build
 
-        gadal build --component-dict components.json --system scenario.json
+        oedisi build --component-dict components.json --system scenario.json
 
     \f
     Parameters
@@ -90,7 +90,7 @@ def run(runner):
 
     Examples::
 
-        gadal run
+        oedisi run
     """
     subprocess.run(["helics", "run", f"--path={runner}"])
 
@@ -104,7 +104,7 @@ def run_with_pause(runner):
 
     Examples::
 
-        gadal run-with-pause
+        oedisi run-with-pause
 
 
         Enter next time: [0.0]: 1.0
@@ -139,7 +139,7 @@ def test_description(target_directory, component_desc, parameters):
 
     Examples::
 
-        gadal test-description --component-desc component/component_definition.json --parameters inputs.json
+        oedisi test-description --component-desc component/component_definition.json --parameters inputs.json
 
         Initialized broker
         Waiting for initialization

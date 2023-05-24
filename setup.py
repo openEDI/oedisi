@@ -12,30 +12,32 @@ from warnings import warn
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-# test_requires = ["pytest>=5.2", ]
 description = (
-    "HELICS component framework to generate runner configs "
-    "and map inputs to outputs"
+    "Orchestration interface for HELICS power simulations"
 )
 
+with open("README.md") as f:
+    readme = f.read()
+
 setup(
-    name="gadal",
-    version="0.2.4",
+    name="oedisi",
+    version="1.0.0",
     description=description,
-    # long_description=readme,
+    long_description=readme,
+    long_description_content_type='text/markdown',
     author="Joseph McKinsey",
     author_email="joseph.mckinsey@nrel.gov",
     packages=find_packages(),
-    package_dir={"gadal": "gadal"},
+    package_dir={"oedisi": "oedisi"},
     include_package_data=True,
-    # license="MIT",
+    license="BSD 3-Clause",
     zip_safe=True,
-    keywords="gadal helics",
+    keywords="oedisi gadal helics",
     python_requires=">=3.8",
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Science/Research",
-        #"License :: OSI Approved :: MIT License",
+        "License :: OSI Approved :: BSD License",
         "Natural Language :: English",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
@@ -47,7 +49,7 @@ setup(
     extras_require={"test":["pytest"]},
     entry_points = {
         'console_scripts': [
-            'gadal = gadal.gadal_tools:cli'
+            'oedisi = oedisi.tools:cli'
         ]
     }
     # cmdclass={"develop": PostDevelopCommand},

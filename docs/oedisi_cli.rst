@@ -1,7 +1,7 @@
-``gadal`` CLI
-=============
+``oedisi`` CLI
+==============
 
-In ``gadal.gadal_tools``, there is a ``cli`` tool called ``gadal``.
+In ``oedisi.tools``, there is a ``cli`` tool called ``oedisi``.
 There are tools to build, run, and debug simulations as well
 as test component description JSONs.
 
@@ -25,8 +25,8 @@ then most command line parameters will not be necessary.
 
 Build and run::
 
-    gadal build
-    gadal run
+    oedisi build
+    oedisi run
 
 Debugging
 +++++++++
@@ -34,8 +34,8 @@ Debugging
 If there are timing problems, it may be helpful to pause the simulation and inspect the time.
 This can be done with::
 
-    gadal build
-    gadal run-with-pause
+    oedisi build
+    oedisi run-with-pause
 
 
 Output::
@@ -58,8 +58,8 @@ Output::
 We can debug components with ordinary debuggers and running that component in
 the foreground::
 
-    gadal build
-    gadal debug-component --foreground your_component
+    oedisi build
+    oedisi debug-component --foreground your_component
 
 Testing component initialization
 ++++++++++++++++++++++++++++++++
@@ -67,7 +67,7 @@ Testing component initialization
 We can test the description of a component and it's initialization without
 a full simulation::
 
-    gadal test-description --component-desc component/component_definition.json --parameters inputs.json
+    oedisi test-description --component-desc component/component_definition.json --parameters inputs.json
 
 
 Output::
@@ -80,6 +80,6 @@ Output::
     Testing dynamic output names
     ✓
 
-.. click:: gadal.gadal_tools:cli
-   :prog: gadal
+.. click:: oedisi.tools:cli
+   :prog: oedisi
    :nested: full

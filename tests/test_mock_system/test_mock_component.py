@@ -1,4 +1,4 @@
-from gadal.componentframework.mock_component import MockComponent
+from oedisi.componentframework.mock_component import MockComponent
 import os
 
 if not os.path.exists("testC"):
