@@ -1,11 +1,12 @@
+import subprocess
+import requests
+import shutil
 import click
+import yaml
 import json
 import os
-import subprocess
-import time
-import requests
-import yaml
 
+from distutils.dir_util import copy_tree
 
 from gadal.componentframework.basic_component import (
     basic_component,
@@ -84,11 +85,20 @@ def build(target_directory, system, component_dict):
     with open(f"{target_directory}/system_runner.json", "w") as f:
         f.write(runner_config.json(indent=2))
     
-    create_docker_compose_file(wiring_diagram, target_directory)
+    yaml_file_path = create_docker_compose_file(wiring_diagram, target_directory)
     edit_docker_files(wiring_diagram, target_directory)
+    clone_broker(target_directory, yaml_file_path)
+    
+def clone_broker(target_directory, yaml_file_path):
+    yaml
+    broker_folder = os.path.join(target_directory, 'broker')
+    if not os.path.exists(broker_folder):
+        os.makedirs(broker_folder)
+    copy_tree('./broker', broker_folder)
+    shutil.copy(yaml_file_path, broker_folder)
+    return
 
 def edit_docker_file(file_path, component):
-    print(component.dict())
     edited_lines = []
     with open(file_path, 'r') as f:
         for line in f.readlines():
@@ -123,6 +133,21 @@ def edit_docker_files(wiring_diagram:WiringDiagram, target_directory:str):
 
 def create_docker_compose_file(wiring_diagram:WiringDiagram, target_directory:str):
     config = {"services": {}, "networks": {}}
+    
+    config['services']['broker'] = {
+            "build": {
+                    "context": f'./broker/.'
+                },
+            "ports": [
+                    f'8766:8766'
+                ],
+            "networks": {
+                "custom-network" : {
+                        "ipv4_address": '10.5.0.2'
+                    } 
+                },
+            }
+    
     for component in wiring_diagram.components:
         config['services'][component.name] = {
             "build": {
@@ -137,7 +162,9 @@ def create_docker_compose_file(wiring_diagram:WiringDiagram, target_directory:st
                     } 
                 },
             }
-        
+    
+    
+     
     config["networks"] = {
         "custom-network": {
             "driver": "bridge",
@@ -151,8 +178,10 @@ def create_docker_compose_file(wiring_diagram:WiringDiagram, target_directory:st
             }
         }
     }
-    with open(f"{target_directory}/docker-compose.yml","w") as file:
+    yaml_file_path = f"{target_directory}/docker-compose.yml"
+    with open(yaml_file_path,"w") as file:
         yaml.dump(config,file)
+    return yaml_file_path
     
 
 @cli.command()
