@@ -1,13 +1,32 @@
-name: "Pull Request Docs Check"
-on: 
-- pull_request
-
+name: "Docs Check and Deployment"
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+    contents: write
 jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - uses: ammaraskar/sphinx-action@master
+    - name: Set up Python 3.10
+      uses: conda-incubator/setup-miniconda@v2
       with:
-        pre-build-command: pip install helics==3.1.0 helics-apps==3.1.0 pydantic sphinx-click
-        docs-folder: "docs/"
+        auto-update-conda: true
+        python-version: '3.10'
+    - name: Install python dependencies and build sphinx
+      shell: bash -l {0}
+      run: |
+        pip install -r docs/requirements.txt
+        cd docs
+        make html
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+      with:
+        publish_branch: gh-pages
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: docs/_build/html
+        force_orphan: true

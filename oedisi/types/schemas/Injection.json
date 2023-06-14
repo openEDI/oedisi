@@ -1,0 +1,396 @@
+{
+    "title": "Injection",
+    "type": "object",
+    "properties": {
+        "current_real": {
+            "title": "Current Real",
+            "default": {
+                "values": [],
+                "ids": [],
+                "node_ids": []
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/CurrentsReal"
+                }
+            ]
+        },
+        "current_imaginary": {
+            "title": "Current Imaginary",
+            "default": {
+                "values": [],
+                "ids": [],
+                "node_ids": []
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/CurrentsImaginary"
+                }
+            ]
+        },
+        "power_real": {
+            "title": "Power Real",
+            "default": {
+                "values": [],
+                "ids": [],
+                "node_ids": []
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/PowersReal"
+                }
+            ]
+        },
+        "power_imaginary": {
+            "title": "Power Imaginary",
+            "default": {
+                "values": [],
+                "ids": [],
+                "node_ids": []
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/PowersImaginary"
+                }
+            ]
+        },
+        "impedance_real": {
+            "title": "Impedance Real",
+            "default": {
+                "values": [],
+                "ids": [],
+                "node_ids": []
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/ImpedanceReal"
+                }
+            ]
+        },
+        "impedance_imaginary": {
+            "title": "Impedance Imaginary",
+            "default": {
+                "values": [],
+                "ids": [],
+                "node_ids": []
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/ImpedanceImaginary"
+                }
+            ]
+        }
+    },
+    "definitions": {
+        "CurrentsReal": {
+            "title": "CurrentsReal",
+            "description": "Extended by classes:\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"ImpedanceMagnitude\",\n    \"ImpedanceAngle\",\n    \"ImpedanceReal\",\n    \"ImpedanceImaginary\",",
+            "type": "object",
+            "properties": {
+                "values": {
+                    "title": "Values",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "ids": {
+                    "title": "Ids",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "units": {
+                    "title": "Units",
+                    "default": "A",
+                    "type": "string"
+                },
+                "accuracy": {
+                    "title": "Accuracy",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "bad_data_threshold": {
+                    "title": "Bad Data Threshold",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "time": {
+                    "title": "Time",
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "required": [
+                "values",
+                "ids"
+            ]
+        },
+        "CurrentsImaginary": {
+            "title": "CurrentsImaginary",
+            "description": "Extended by classes:\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"ImpedanceMagnitude\",\n    \"ImpedanceAngle\",\n    \"ImpedanceReal\",\n    \"ImpedanceImaginary\",",
+            "type": "object",
+            "properties": {
+                "values": {
+                    "title": "Values",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "ids": {
+                    "title": "Ids",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "units": {
+                    "title": "Units",
+                    "default": "A",
+                    "type": "string"
+                },
+                "accuracy": {
+                    "title": "Accuracy",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "bad_data_threshold": {
+                    "title": "Bad Data Threshold",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "time": {
+                    "title": "Time",
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "required": [
+                "values",
+                "ids"
+            ]
+        },
+        "PowersReal": {
+            "title": "PowersReal",
+            "description": "Primary key is ids + equipment_ids.\n\n- ids corresponding node id, so \"113.1\", \"113.2\", \"113.3\"\n- equipment_id corresponds to PVSystem.113\n\nExtended by classes:\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",",
+            "type": "object",
+            "properties": {
+                "values": {
+                    "title": "Values",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "ids": {
+                    "title": "Ids",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "units": {
+                    "title": "Units",
+                    "default": "kW",
+                    "type": "string"
+                },
+                "accuracy": {
+                    "title": "Accuracy",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "bad_data_threshold": {
+                    "title": "Bad Data Threshold",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "time": {
+                    "title": "Time",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "equipment_ids": {
+                    "title": "Equipment Ids",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "values",
+                "ids",
+                "equipment_ids"
+            ]
+        },
+        "PowersImaginary": {
+            "title": "PowersImaginary",
+            "description": "Primary key is ids + equipment_ids.\n\n- ids corresponding node id, so \"113.1\", \"113.2\", \"113.3\"\n- equipment_id corresponds to PVSystem.113\n\nExtended by classes:\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",",
+            "type": "object",
+            "properties": {
+                "values": {
+                    "title": "Values",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "ids": {
+                    "title": "Ids",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "units": {
+                    "title": "Units",
+                    "default": "kVAR",
+                    "type": "string"
+                },
+                "accuracy": {
+                    "title": "Accuracy",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "bad_data_threshold": {
+                    "title": "Bad Data Threshold",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "time": {
+                    "title": "Time",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "equipment_ids": {
+                    "title": "Equipment Ids",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "values",
+                "ids",
+                "equipment_ids"
+            ]
+        },
+        "ImpedanceReal": {
+            "title": "ImpedanceReal",
+            "description": "Extended by classes:\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"ImpedanceMagnitude\",\n    \"ImpedanceAngle\",\n    \"ImpedanceReal\",\n    \"ImpedanceImaginary\",",
+            "type": "object",
+            "properties": {
+                "values": {
+                    "title": "Values",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "ids": {
+                    "title": "Ids",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "units": {
+                    "title": "Units",
+                    "default": "Ohm",
+                    "type": "string"
+                },
+                "accuracy": {
+                    "title": "Accuracy",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "bad_data_threshold": {
+                    "title": "Bad Data Threshold",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "time": {
+                    "title": "Time",
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "required": [
+                "values",
+                "ids"
+            ]
+        },
+        "ImpedanceImaginary": {
+            "title": "ImpedanceImaginary",
+            "description": "Extended by classes:\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"ImpedanceMagnitude\",\n    \"ImpedanceAngle\",\n    \"ImpedanceReal\",\n    \"ImpedanceImaginary\",",
+            "type": "object",
+            "properties": {
+                "values": {
+                    "title": "Values",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "ids": {
+                    "title": "Ids",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "units": {
+                    "title": "Units",
+                    "default": "Ohm",
+                    "type": "string"
+                },
+                "accuracy": {
+                    "title": "Accuracy",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "bad_data_threshold": {
+                    "title": "Bad Data Threshold",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "time": {
+                    "title": "Time",
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "required": [
+                "values",
+                "ids"
+            ]
+        }
+    }
+}

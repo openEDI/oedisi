@@ -13,7 +13,5 @@ def test_all_formats(filepath):
     name = filepath.name.split('.')[0]
     with open(filepath) as f_in:
         json_data = json.load(f_in)
-        class_name = getattr(importlib.import_module("gadal.gadal_types.data_types"),name)
-        class_name(**json_data)
-
-
+        class_name = getattr(importlib.import_module("oedisi.types.data_types"),name)
+        class_name.parse_obj(json_data)

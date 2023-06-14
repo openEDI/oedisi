@@ -1,7 +1,7 @@
-gadal
-=====
+oedisi
+======
 
 .. toctree::
    :maxdepth: 4
 
-   gadal
+   oedisi

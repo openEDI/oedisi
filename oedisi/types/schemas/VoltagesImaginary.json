@@ -1,0 +1,49 @@
+{
+    "title": "VoltagesImaginary",
+    "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\"",
+    "type": "object",
+    "properties": {
+        "values": {
+            "title": "Values",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "title": "Units",
+            "default": "kV",
+            "type": "string"
+        },
+        "accuracy": {
+            "title": "Accuracy",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "bad_data_threshold": {
+            "title": "Bad Data Threshold",
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "time": {
+            "title": "Time",
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "values",
+        "ids"
+    ]
+}
