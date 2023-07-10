@@ -6,6 +6,8 @@ import yaml
 import json
 import os
 
+
+
 from distutils.dir_util import copy_tree
 
 from oedisi.componentframework.basic_component import (
@@ -21,6 +23,9 @@ from oedisi.componentframework.system_configuration import (
 )
 from .pausing_broker import PausingBroker
 from .testing_broker import TestingBroker
+
+BROKER_PORT = 8766
+BROKER_SERVICE = "broker"
 
 @click.group()
 def cli():
@@ -87,10 +92,63 @@ def build(target_directory, system, component_dict):
     
     yaml_file_path = create_docker_compose_file(wiring_diagram, target_directory)
     edit_docker_files(wiring_diagram, target_directory)
+    helm_chart_path =create_helm_chart(target_directory)
+    edit_helm_chart(helm_chart_path, wiring_diagram)
     clone_broker(target_directory, yaml_file_path)
+
+def create_helm_chart(target_directory):
+    print("Building helm chart")
+    helm_chart_path = os.path.join(target_directory, "oedisi-chart")
+    os.system(f"helm create {helm_chart_path}")
+    return helm_chart_path
     
+    
+def edit_helm_chart(helm_chart_path, wiring_diagram):
+
+    with open(os.path.join(helm_chart_path, "Chart.yaml"), 'r') as file:
+        chart_yaml = yaml.safe_load(file)
+    
+    chart_yaml['description'] = "OEDISI helm chart for kubernetes"
+    
+    with open(os.path.join(helm_chart_path, "Chart.yaml"), 'w') as file:
+        yaml.dump(chart_yaml, file)
+
+    with open(os.path.join(helm_chart_path, "values.yaml"), 'r') as file:
+        values_yaml = yaml.safe_load(file)
+    
+    with open(os.path.join(helm_chart_path, "templates", "deployment.yaml"), 'r') as file:
+        deployment_yaml = yaml.safe_load(file)
+    
+    image = values_yaml.pop('image')
+    service = {"type": "NodePort"}
+    count = 1 
+    for component in wiring_diagram.components:
+        print(component.name, )
+        image["repository"] = component.name
+        image["tag"] = "latest"
+        values_yaml[f"image{count}"] = image.copy()
+        service[f"port{count}"] = component.port
+        service[f"targetPort{count}"] = component.port
+        count += 1
+    
+    image["repository"] = BROKER_SERVICE
+    image["tag"] = "latest"
+    values_yaml["imageBroker"] = image.copy()
+    
+    service["brokerPort"] = BROKER_PORT
+    service["brokerTargetPort"] = BROKER_PORT
+    values_yaml["service"] = service    
+    
+    with open(os.path.join(helm_chart_path, "values.yaml"), 'w') as file:
+        yaml.dump(values_yaml, file)
+    
+    print(deployment_yaml)
+    # print(json.dumps(values_yaml, indent = 4))
+    quit()
+    
+    ...
+
 def clone_broker(target_directory, yaml_file_path):
-    yaml
     broker_folder = os.path.join(target_directory, 'broker')
     if not os.path.exists(broker_folder):
         os.makedirs(broker_folder)
@@ -134,12 +192,12 @@ def edit_docker_files(wiring_diagram:WiringDiagram, target_directory:str):
 def create_docker_compose_file(wiring_diagram:WiringDiagram, target_directory:str):
     config = {"services": {}, "networks": {}}
     
-    config['services']['broker'] = {
+    config['services'][BROKER_SERVICE] = {
             "build": {
                     "context": f'./broker/.'
                 },
             "ports": [
-                    f'8766:8766'
+                    f'{BROKER_PORT}:{BROKER_PORT}'
                 ],
             "networks": {
                 "custom-network" : {
