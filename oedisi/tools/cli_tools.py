@@ -26,6 +26,7 @@ from .testing_broker import TestingBroker
 
 BROKER_PORT = 8766
 BROKER_SERVICE = "broker"
+KUBERNETES_APP = "oedisi"
 
 @click.group()
 def cli():
@@ -92,61 +93,83 @@ def build(target_directory, system, component_dict):
     
     yaml_file_path = create_docker_compose_file(wiring_diagram, target_directory)
     edit_docker_files(wiring_diagram, target_directory)
-    helm_chart_path =create_helm_chart(target_directory)
-    edit_helm_chart(helm_chart_path, wiring_diagram)
+    create_kubernetes_deployment(target_directory, wiring_diagram)
     clone_broker(target_directory, yaml_file_path)
 
-def create_helm_chart(target_directory):
-    print("Building helm chart")
-    helm_chart_path = os.path.join(target_directory, "oedisi-chart")
-    os.system(f"helm create {helm_chart_path}")
-    return helm_chart_path
+def create_kubernetes_deployment(target_directory, wiring_diagram):
+    kube_folder = os.path.join(target_directory, "kubernetes")
+    if not os.path.exists(kube_folder):
+        os.mkdir(kube_folder)
     
+    service = {
+        "apiVersion": "v1",
+        "kind": "Service",
+        "metadata": {
+            "name": f"{KUBERNETES_APP}-service",
+        },
+        "spec" : {
+            "type": "NodePort",
+            "selector" : {
+                "app": KUBERNETES_APP
+            },
+            "ports" : [
+                {
+                    "port": BROKER_PORT,
+                    "targetPort": BROKER_PORT
+                }
+            ]
+        }
+    }
     
-def edit_helm_chart(helm_chart_path, wiring_diagram):
-
-    with open(os.path.join(helm_chart_path, "Chart.yaml"), 'r') as file:
-        chart_yaml = yaml.safe_load(file)
-    
-    chart_yaml['description'] = "OEDISI helm chart for kubernetes"
-    
-    with open(os.path.join(helm_chart_path, "Chart.yaml"), 'w') as file:
-        yaml.dump(chart_yaml, file)
-
-    with open(os.path.join(helm_chart_path, "values.yaml"), 'r') as file:
-        values_yaml = yaml.safe_load(file)
-    
-    with open(os.path.join(helm_chart_path, "templates", "deployment.yaml"), 'r') as file:
-        deployment_yaml = yaml.safe_load(file)
-    
-    image = values_yaml.pop('image')
-    service = {"type": "NodePort"}
-    count = 1 
+     
+    deployment = {
+        "apiVersion": "apps/v1",
+        "kind": "Deployment",
+        "metadata": {
+            "name": f"{KUBERNETES_APP}-deployment",
+            "labels": {
+                "app": KUBERNETES_APP
+            }     
+        },
+        "spec" : {
+            "replicas": 1,
+            "selector" : {
+                "matchLabels": {
+                    "app": KUBERNETES_APP
+                }
+            },
+            "template" : {
+                "metadata" : {
+                    "labels": {
+                        "app": KUBERNETES_APP
+                    }
+                },
+                "spec" : {
+                    "containers" : []
+                }
+            }
+        }          
+    }
+   
+    container = {}
     for component in wiring_diagram.components:
-        print(component.name, )
-        image["repository"] = component.name
-        image["tag"] = "latest"
-        values_yaml[f"image{count}"] = image.copy()
-        service[f"port{count}"] = component.port
-        service[f"targetPort{count}"] = component.port
-        count += 1
+        print(component.name, component.port)
+        container["name"] = component.name.replace("_", "-")
+        container["image"] = f"{component.name.replace('_', '-')}:latest"
+        container["ports"] = [{"containerPort": component.port}]
+        deployment["spec"]["template"]["spec"]["containers"].append(container.copy())
     
-    image["repository"] = BROKER_SERVICE
-    image["tag"] = "latest"
-    values_yaml["imageBroker"] = image.copy()
+    container["name"] = BROKER_SERVICE
+    container["image"] = f"{BROKER_SERVICE}:latest"
+    container["ports"] = [{"containerPort": BROKER_PORT}]
+    deployment["spec"]["template"]["spec"]["containers"].append(container.copy())
     
-    service["brokerPort"] = BROKER_PORT
-    service["brokerTargetPort"] = BROKER_PORT
-    values_yaml["service"] = service    
-    
-    with open(os.path.join(helm_chart_path, "values.yaml"), 'w') as file:
-        yaml.dump(values_yaml, file)
-    
-    print(deployment_yaml)
-    # print(json.dumps(values_yaml, indent = 4))
+    with open(os.path.join(kube_folder, "deployment.yml"), 'w') as f:
+        yaml.dump(deployment, f)
+    with open(os.path.join(kube_folder, "service.yml"), 'w') as f:
+        yaml.dump(service, f)
     quit()
-    
-    ...
+
 
 def clone_broker(target_directory, yaml_file_path):
     broker_folder = os.path.join(target_directory, 'broker')
