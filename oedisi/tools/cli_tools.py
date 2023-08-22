@@ -24,6 +24,8 @@ from oedisi.componentframework.system_configuration import (
 from .pausing_broker import PausingBroker
 from .testing_broker import TestingBroker
 
+from oedisi.types.common import APP_NAME
+
 BROKER_PORT = 8766
 BROKER_SERVICE = "broker"
 KUBERNETES_APP = "oedisi"
@@ -53,7 +55,15 @@ def get_basic_component(filename):
               help="Wiring diagram json to build")
 @click.option("--component-dict", default="components.json", type=click.Path(),
               help="path to JSON Dictionary of component folders")
-def build(target_directory, system, component_dict):
+@click.option(
+    "-m", "--multi-container",
+    is_flag=True,
+    default=False,
+    show_default=True,
+    help="Use the flag to create docker-compose config files for a multi-container implementation."
+)
+
+def build(target_directory, system, component_dict, multi_container):
     """Build to the simulation folder
 
     Examples::
@@ -91,11 +101,15 @@ def build(target_directory, system, component_dict):
     with open(f"{target_directory}/system_runner.json", "w") as f:
         f.write(runner_config.json(indent=2))
     
-    yaml_file_path = create_docker_compose_file(wiring_diagram, target_directory)
-    edit_docker_files(wiring_diagram, target_directory)
-    create_kubernetes_deployment(target_directory, wiring_diagram)
-    clone_broker(target_directory, yaml_file_path)
-
+    
+    yaml_file_path = f"{target_directory}/docker-compose.yml"
+    
+    if multi_container:
+        edit_docker_files(wiring_diagram, target_directory)
+        create_docker_compose_file(wiring_diagram, target_directory)
+        clone_broker(target_directory, yaml_file_path)
+        create_kubernetes_deployment(target_directory, wiring_diagram)
+    
 def create_kubernetes_deployment(target_directory, wiring_diagram):
     kube_folder = os.path.join(target_directory, "kubernetes")
     if not os.path.exists(kube_folder):
@@ -153,14 +167,13 @@ def create_kubernetes_deployment(target_directory, wiring_diagram):
    
     container = {}
     for component in wiring_diagram.components:
-        print(component.name, component.port)
-        container["name"] = component.name.replace("_", "-")
-        container["image"] = f"{component.name.replace('_', '-')}:latest"
+        container["name"] = component.name
+        container["image"] = f"{APP_NAME}_{component.name}:latest"
         container["ports"] = [{"containerPort": component.port}]
         deployment["spec"]["template"]["spec"]["containers"].append(container.copy())
     
     container["name"] = BROKER_SERVICE
-    container["image"] = f"{BROKER_SERVICE}:latest"
+    container["image"] = f"{APP_NAME}_{BROKER_SERVICE}:latest"
     container["ports"] = [{"containerPort": BROKER_PORT}]
     deployment["spec"]["template"]["spec"]["containers"].append(container.copy())
     
@@ -168,7 +181,6 @@ def create_kubernetes_deployment(target_directory, wiring_diagram):
         yaml.dump(deployment, f)
     with open(os.path.join(kube_folder, "service.yml"), 'w') as f:
         yaml.dump(service, f)
-    quit()
 
 
 def clone_broker(target_directory, yaml_file_path):
@@ -215,7 +227,7 @@ def edit_docker_files(wiring_diagram:WiringDiagram, target_directory:str):
 def create_docker_compose_file(wiring_diagram:WiringDiagram, target_directory:str):
     config = {"services": {}, "networks": {}}
     
-    config['services'][BROKER_SERVICE] = {
+    config['services'][f"{APP_NAME}_{BROKER_SERVICE}"] = {
             "build": {
                     "context": f'./broker/.'
                 },
@@ -230,7 +242,7 @@ def create_docker_compose_file(wiring_diagram:WiringDiagram, target_directory:st
             }
     
     for component in wiring_diagram.components:
-        config['services'][component.name] = {
+        config['services'][f"{APP_NAME}_{component.name}"] = {
             "build": {
                     "context": f'./{component.name}/.'
                 },
