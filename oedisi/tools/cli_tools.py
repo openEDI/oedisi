@@ -30,6 +30,8 @@ BROKER_PORT = 8766
 BROKER_SERVICE = "broker"
 KUBERNETES_APP = "oedisi"
 
+DOCKER_HUB_USER = "aadillatif"
+
 @click.group()
 def cli():
     pass
@@ -168,12 +170,12 @@ def create_kubernetes_deployment(target_directory, wiring_diagram):
     container = {}
     for component in wiring_diagram.components:
         container["name"] = component.name
-        container["image"] = f"{APP_NAME}_{component.name}:latest"
+        container["image"] = f"{DOCKER_HUB_USER}/{APP_NAME}_{component.name}:latest"
         container["ports"] = [{"containerPort": component.port}]
         deployment["spec"]["template"]["spec"]["containers"].append(container.copy())
     
     container["name"] = BROKER_SERVICE
-    container["image"] = f"{APP_NAME}_{BROKER_SERVICE}:latest"
+    container["image"] = f"{DOCKER_HUB_USER}/{APP_NAME}_{BROKER_SERVICE}:latest"
     container["ports"] = [{"containerPort": BROKER_PORT}]
     deployment["spec"]["template"]["spec"]["containers"].append(container.copy())
     
