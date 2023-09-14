@@ -95,7 +95,7 @@ Upload private data
 These files are automatically unzipped server side after a sucessful upload.
 
 Launch the simulation
-++++++++++++++++++++
++++++++++++++++++++++
 
 #. Identify the ``ip``  and ``port`` information for ``oedisi_broker`` container from the  ``docker-compose.yml`` file.
 #. Make a POST request to the following endpoint ``http://{ip}:{port}/run`` (no payload needed for the POST request)
@@ -103,7 +103,7 @@ Launch the simulation
 This starts the simulation. The Broker communicated with other container via REST API and singals them to start Helics co-simulation.
 
 Retrieve simulation results
-++++++++++++++++++++
++++++++++++++++++++++++++++
 
 #. Identify the ``ips``  and ``ports`` information for ``recorder_*`` containers from the  ``docker-compose.yml`` file.
 #. For each ip and port ofrecorder type container, data can be downloaded by making a POST request to the following endpoint ``http://{ip}:{port}/download``
