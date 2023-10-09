@@ -14,7 +14,6 @@ and the links between them.
 """
 
 from collections import defaultdict
-from lib2to3.pgen2.tokenize import StopTokenizing
 from typing import List, Dict, Type, Any
 import os
 import logging
@@ -174,14 +173,6 @@ class Federate(BaseModel):
     name: str
     exec: str
 
-
-def get_broker_conn_info(wiring_diagram: WiringDiagram):
-
-    for component in wiring_diagram.components:  
-        if component.type == 'LocalFeeder':
-            return component.host, component.port
-    return None, None
-
 def get_federates_conn_info(wiring_diagram: WiringDiagram):
     data = ""
     for component in wiring_diagram.components: 
@@ -196,8 +187,6 @@ def initialize_federates(
     target_directory="."
 ) -> List[Federate]:
     "Initialize all the federates"
-    broker_ip, broker_port = get_broker_conn_info(wiring_diagram)
-    conn_str = f" {broker_ip} {broker_port}" + get_federates_conn_info(wiring_diagram)
     components = {}
     link_map = get_link_map(wiring_diagram)
     for component in wiring_diagram.components:
@@ -231,14 +220,6 @@ def initialize_federates(
         component.generate_input_mapping(
             {l.target_port: f"{l.source}/{l.source_port}" for l in links}
         )
-        
-        # split_cmd = component._execute_function.split(" ")
-        # #split_cmd[1] = "server.py"
-        # component._execute_function = " ".join(split_cmd)
-        # if component._type=="LocalFeeder":
-        #     component._execute_function +=  conn_str
-        # else:
-        #     component._execute_function += f" {broker_ip} {broker_port} {component._host} {component._port}"
         
         federates.append(
             Federate(directory=name, name=name, exec=component.execute_function)

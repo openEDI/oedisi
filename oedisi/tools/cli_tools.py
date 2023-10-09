@@ -29,7 +29,6 @@ from oedisi.types.common import APP_NAME
 BROKER_PORT = 8766
 BROKER_SERVICE = "broker"
 KUBERNETES_APP = "oedisi"
-
 DOCKER_HUB_USER = "aadillatif"
 
 @click.group()
@@ -64,8 +63,13 @@ def get_basic_component(filename):
     show_default=True,
     help="Use the flag to create docker-compose config files for a multi-container implementation."
 )
-
-def build(target_directory, system, component_dict, multi_container):
+@click.option(
+    "-p", "--broker-port",
+    default=BROKER_PORT,
+    show_default=True,
+    help="Pass the broker port."
+)
+def build(target_directory, system, component_dict, multi_container, broker_port):
     """Build to the simulation folder
 
     Examples::
@@ -85,6 +89,8 @@ def build(target_directory, system, component_dict, multi_container):
     component_dict : str (default="components.json")
         path to JSON dictionary of component folders
     """
+    global BROKER_PORT
+    BROKER_PORT = broker_port
     click.echo(f"Loading the components defined in {component_dict}")
     with open(component_dict, 'r') as f:
         component_dict_of_files = json.load(f)
@@ -109,10 +115,10 @@ def build(target_directory, system, component_dict, multi_container):
     if multi_container:
         edit_docker_files(wiring_diagram, target_directory)
         create_docker_compose_file(wiring_diagram, target_directory)
-        clone_broker(target_directory, yaml_file_path)
-        create_kubernetes_deployment(target_directory, wiring_diagram)
+        clone_broker(yaml_file_path, target_directory)
+        create_kubernetes_deployment(wiring_diagram, target_directory)
     
-def create_kubernetes_deployment(target_directory, wiring_diagram):
+def create_kubernetes_deployment(wiring_diagram, target_directory):
     kube_folder = os.path.join(target_directory, "kubernetes")
     if not os.path.exists(kube_folder):
         os.mkdir(kube_folder)
@@ -185,7 +191,7 @@ def create_kubernetes_deployment(target_directory, wiring_diagram):
         yaml.dump(service, f)
 
 
-def clone_broker(target_directory, yaml_file_path):
+def clone_broker(yaml_file_path, target_directory):
     broker_folder = os.path.join(target_directory, 'broker')
     if not os.path.exists(broker_folder):
         os.makedirs(broker_folder)
@@ -195,6 +201,10 @@ def clone_broker(target_directory, yaml_file_path):
 
 def edit_docker_file(file_path, component):
     edited_lines = []
+    dir_path = os.path.pardir(file_path)
+    server_file = os.path.join(dir_path, "server.py")
+    assert os.path.exists(server_file), f"Server.py file missing for {component.name}.REST API implementation expected in a server.py file"
+    
     with open(file_path, 'r') as f:
         for line in f.readlines():
             if line.startswith('RUN mkdir'):
@@ -308,15 +318,11 @@ def run_api(runner):
         
         if not broker_port:
             raise Exception("Broker port not found in the config file")
-        
-        
+               
         for i, fed_info in  enumerate(config['federates']):  
             if fed_info["name"] != "broker":
                 url = f'https://{fed_info["hostname"]}:{fed_info["port"]}'
-                #myobj = {'somekey': 'somevalue'}
                 x = requests.get(url)
-                print(x.text)
-                #x = requests.post(url, json = myobj)
 
 
 @cli.command()

@@ -69,9 +69,6 @@ def basic_component(comp_desc: ComponentDescription, type_checker):
             self._name = name
             self._directory = directory
             self._parameters = parameters
-            self._host = host
-            self._port = port
-            self._type = comp_type
             self.check_parameters(parameters)
             self.copy_code_into_directory()
             self.generate_parameter_config()
