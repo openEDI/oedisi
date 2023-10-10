@@ -23,6 +23,7 @@ from abc import ABC, abstractmethod, abstractproperty
 
 from pydantic import BaseModel, validator
 from typing import List, Optional, Any, Dict
+from oedisi.types.common import DOCKER_HUB_USER, APP_NAME
 
 class AnnotatedType(BaseModel):
     "Class for representing the types of components and their interfaces"
@@ -104,13 +105,20 @@ class Component(BaseModel):
     component type, and initial parameters"""
     name: str
     type: str
-    host: str
-    port: int
+    host: Optional[str]
+    container_port: Optional[int]
+    image: str = ""
     parameters: Dict[str, Any]
 
     def port(self, port_name: str):
         return Port(name=self.name, port_name=port_name)
-
+    
+    @validator("image", pre=True, always=True)
+    def validate_image(cls, v, values, **kwargs):
+        if not v:
+            return f"{DOCKER_HUB_USER}/{APP_NAME}_{values['name']}:latest"
+        return v 
+       
 
 class WiringDiagram(BaseModel):
     "Cosimulation configuration. This may end up wrapped in another interface"

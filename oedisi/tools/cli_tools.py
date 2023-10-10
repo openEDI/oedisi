@@ -5,7 +5,7 @@ import click
 import yaml
 import json
 import os
-
+from pathlib import Path    
 
 
 from distutils.dir_util import copy_tree
@@ -24,12 +24,7 @@ from oedisi.componentframework.system_configuration import (
 from .pausing_broker import PausingBroker
 from .testing_broker import TestingBroker
 
-from oedisi.types.common import APP_NAME
-
-BROKER_PORT = 8766
-BROKER_SERVICE = "broker"
-KUBERNETES_APP = "oedisi"
-DOCKER_HUB_USER = "aadillatif"
+from oedisi.types.common import APP_NAME, BASE_DOCKER_IMAGE, BROKER_SERVICE, DOCKER_HUB_USER
 
 @click.group()
 def cli():
@@ -65,7 +60,7 @@ def get_basic_component(filename):
 )
 @click.option(
     "-p", "--broker-port",
-    default=BROKER_PORT,
+    default=8766,
     show_default=True,
     help="Pass the broker port."
 )
@@ -89,8 +84,6 @@ def build(target_directory, system, component_dict, multi_container, broker_port
     component_dict : str (default="components.json")
         path to JSON dictionary of component folders
     """
-    global BROKER_PORT
-    BROKER_PORT = broker_port
     click.echo(f"Loading the components defined in {component_dict}")
     with open(component_dict, 'r') as f:
         component_dict_of_files = json.load(f)
@@ -103,22 +96,29 @@ def build(target_directory, system, component_dict, multi_container, broker_port
     wiring_diagram = WiringDiagram.parse_file(system)
 
     click.echo(f"Building system in {target_directory}")
+    
     runner_config = generate_runner_config(
         wiring_diagram, component_types, target_directory=target_directory
     )
+    
     with open(f"{target_directory}/system_runner.json", "w") as f:
         f.write(runner_config.json(indent=2))
-    
     
     yaml_file_path = f"{target_directory}/docker-compose.yml"
     
     if multi_container:
+        validate_optional_inputs(wiring_diagram)
         edit_docker_files(wiring_diagram, target_directory)
-        create_docker_compose_file(wiring_diagram, target_directory)
+        create_docker_compose_file(wiring_diagram, target_directory, broker_port)
         clone_broker(yaml_file_path, target_directory)
-        create_kubernetes_deployment(wiring_diagram, target_directory)
-    
-def create_kubernetes_deployment(wiring_diagram, target_directory):
+        create_kubernetes_deployment(wiring_diagram, target_directory, broker_port)
+
+def validate_optional_inputs(wiring_diagram: WiringDiagram):
+    for component in wiring_diagram.components:
+        assert hasattr(component, "host"), f"host parameter required for component {component.name} for multi-continer model build"
+        assert hasattr(component, "container_port"), f"post parameter required for component {component.name} for multi-continer model build"
+
+def create_kubernetes_deployment(wiring_diagram: WiringDiagram, target_directory, broker_port):
     kube_folder = os.path.join(target_directory, "kubernetes")
     if not os.path.exists(kube_folder):
         os.mkdir(kube_folder)
@@ -127,17 +127,17 @@ def create_kubernetes_deployment(wiring_diagram, target_directory):
         "apiVersion": "v1",
         "kind": "Service",
         "metadata": {
-            "name": f"{KUBERNETES_APP}-service",
+            "name": f"{APP_NAME}-service",
         },
         "spec" : {
             "type": "NodePort",
             "selector" : {
-                "app": KUBERNETES_APP
+                "app": APP_NAME
             },
             "ports" : [
                 {
-                    "port": BROKER_PORT,
-                    "targetPort": BROKER_PORT
+                    "port": broker_port,
+                    "targetPort": broker_port
                 }
             ]
         }
@@ -148,22 +148,22 @@ def create_kubernetes_deployment(wiring_diagram, target_directory):
         "apiVersion": "apps/v1",
         "kind": "Deployment",
         "metadata": {
-            "name": f"{KUBERNETES_APP}-deployment",
+            "name": f"{APP_NAME}-deployment",
             "labels": {
-                "app": KUBERNETES_APP
+                "app": APP_NAME
             }     
         },
         "spec" : {
             "replicas": 1,
             "selector" : {
                 "matchLabels": {
-                    "app": KUBERNETES_APP
+                    "app": APP_NAME
                 }
             },
             "template" : {
                 "metadata" : {
                     "labels": {
-                        "app": KUBERNETES_APP
+                        "app": APP_NAME
                     }
                 },
                 "spec" : {
@@ -176,13 +176,13 @@ def create_kubernetes_deployment(wiring_diagram, target_directory):
     container = {}
     for component in wiring_diagram.components:
         container["name"] = component.name
-        container["image"] = f"{DOCKER_HUB_USER}/{APP_NAME}_{component.name}:latest"
-        container["ports"] = [{"containerPort": component.port}]
+        container["image"] = component.image
+        container["ports"] = [{"containerPort": component.container_port}]
         deployment["spec"]["template"]["spec"]["containers"].append(container.copy())
     
     container["name"] = BROKER_SERVICE
     container["image"] = f"{DOCKER_HUB_USER}/{APP_NAME}_{BROKER_SERVICE}:latest"
-    container["ports"] = [{"containerPort": BROKER_PORT}]
+    container["ports"] = [{"containerPort": broker_port}]
     deployment["spec"]["template"]["spec"]["containers"].append(container.copy())
     
     with open(os.path.join(kube_folder, "deployment.yml"), 'w') as f:
@@ -199,44 +199,32 @@ def clone_broker(yaml_file_path, target_directory):
     shutil.copy(yaml_file_path, broker_folder)
     return
 
-def edit_docker_file(file_path, component):
-    edited_lines = []
-    dir_path = os.path.pardir(file_path)
+def edit_docker_file(file_path, component:Component):
+    dir_path = os.path.abspath(os.path.join(file_path, os.pardir))
     server_file = os.path.join(dir_path, "server.py")
     assert os.path.exists(server_file), f"Server.py file missing for {component.name}.REST API implementation expected in a server.py file"
     
-    with open(file_path, 'r') as f:
-        for line in f.readlines():
-            if line.startswith('RUN mkdir'):
-                edited_lines.append(f'RUN mkdir {component.name}\n')
-            elif line.startswith('COPY  *'):
-                edited_lines.append(f'COPY  * ./{component.name}\n')
-            elif line.startswith('WORKDIR'):
-                edited_lines.append(f'WORKDIR ./{component.name}\n')
-            elif line.startswith('EXPOSE'):
-                edited_lines.append(f'EXPOSE {component.port}/tcp\n')
-            elif line.startswith('CMD'):
-                a = f'CMD {["python", "server.py", component.host, str(component.port)]}\n'
-                a = a.replace("'", '"')
-                edited_lines.append(a)
-            else:
-                edited_lines.append(line)
     with open(file_path, 'w') as f:
-        f.writelines(edited_lines)
+        f.write(f"FROM {BASE_DOCKER_IMAGE}\n")
+        f.write(f"RUN apt-get update\n")
+        f.write(f"apt-get install -y git ssh\n")
+        f.write(f'RUN mkdir {component.name}\n')
+        f.write(f'COPY  * ./{component.name}\n')
+        f.write(f'WORKDIR ./{component.name}\n')
+        f.write(f'EXPOSE {component.container_port}/tcp\n')
+        cmd = f'CMD {["python", "server.py", component.host, str(component.container_port)]}\n'
+        cmd = cmd.replace("'", '"')
+        f.write(cmd)
     pass
-
+    
 
 def edit_docker_files(wiring_diagram:WiringDiagram, target_directory:str):
     for component in wiring_diagram.components:
         docker_path = os.path.join(target_directory, component.name, "Dockerfile")
-        try:
-            edit_docker_file(docker_path, component)
-        except Exception as e:
-            print(e)
-    ...
+        edit_docker_file(docker_path, component)
 
 
-def create_docker_compose_file(wiring_diagram:WiringDiagram, target_directory:str):
+def create_docker_compose_file(wiring_diagram:WiringDiagram, target_directory:str, broker_port:int):
     config = {"services": {}, "networks": {}}
     
     config['services'][f"{APP_NAME}_{BROKER_SERVICE}"] = {
@@ -244,7 +232,7 @@ def create_docker_compose_file(wiring_diagram:WiringDiagram, target_directory:st
                     "context": f'./broker/.'
                 },
             "ports": [
-                    f'{BROKER_PORT}:{BROKER_PORT}'
+                    f'{broker_port}:{broker_port}'
                 ],
             "networks": {
                 "custom-network" : {
@@ -259,7 +247,7 @@ def create_docker_compose_file(wiring_diagram:WiringDiagram, target_directory:st
                     "context": f'./{component.name}/.'
                 },
             "ports": [
-                    f'{component.port}:{component.port}'
+                    f'{component.container_port}:{component.container_port}'
                 ],
             "networks": {
                 "custom-network" : {
@@ -304,30 +292,6 @@ def run(runner):
 @cli.command()
 @click.option("--runner", default="build/system_runner.json", type=click.Path(),
               help="Location of helics run json. Usually build/system_runner.json")
-def run_api(runner):
-
-    broker_port = None
-    broker_ip = None
-    
-    with open(runner, 'r') as f:
-        config = json.load(f)
-        for i, fed_info in  enumerate(config['federates']):
-            if fed_info["name"] == "broker":
-                broker_port = fed_info["port"]
-                broker_ip = fed_info["hostname"]
-        
-        if not broker_port:
-            raise Exception("Broker port not found in the config file")
-               
-        for i, fed_info in  enumerate(config['federates']):  
-            if fed_info["name"] != "broker":
-                url = f'https://{fed_info["hostname"]}:{fed_info["port"]}'
-                x = requests.get(url)
-
-
-@cli.command()
-@click.option("--runner", default="build/system_runner.json", type=click.Path(),
-              help="Location of helics run json. Usually build/system_runner.json")
 def run_with_pause(runner):
     """Helics broker is run in the foreground, and we allow user input
     to block time.
@@ -355,6 +319,63 @@ def run_with_pause(runner):
     broker = PausingBroker(len(new_system.federates))
     broker.run()
     background_runner.wait()
+
+@cli.command()
+@click.option("--runner", 
+    default="build/docker-compose.yml", # build/kubernetes/deployment.yml
+    type=click.Path(),
+    help="path to the docker-compose or kubernetes deployment file"
+)
+@click.option(
+    "-k", "--kubernetes",
+    is_flag=True,
+    default=False,
+    show_default=True,
+    help="Use the flag to launch in a kubernetes pod. "
+)
+@click.option(
+    "-d", "--docker-compose",
+    is_flag=True,
+    default=False,
+    show_default=True,
+    help="Use the flag to launch in a kubernetes pod. "
+)
+def run_mc(runner, kubernetes, docker_compose):
+    assert os.path.exists(runner), f"The provied path {runner} does not exist."
+    file_name = Path(runner).name.lower()
+    os.system("docker network prune")
+    if docker_compose:
+        assert file_name == "docker-compose.yml", f"{file_name} is not a valid docker-compose.yml file"
+        build_path = os.path.dirname(os.path.abspath(runner))
+        print(build_path)
+        os.chdir(build_path)
+        os.system("start cmd /k docker-compose up")
+    elif kubernetes:
+        assert file_name == "deployment.yml", f"{file_name} is not a valid deployment.yml file for kubernetes."
+        build_path = os.path.dirname(os.path.abspath(runner))
+        os.chdir(build_path)
+        os.system(f"start cmd /k kubectl apply -f {build_path}")
+    else:
+        raise Exception("Either -k or -d flag needs to be True.")
+    
+    ...
+    # broker_port = None
+    # broker_ip = None
+    
+    # with open(runner, 'r') as f:
+    #     config = json.load(f)
+    #     for i, fed_info in  enumerate(config['federates']):
+    #         if fed_info["name"] == "broker":
+    #             broker_port = fed_info["port"]
+    #             broker_ip = fed_info["hostname"]
+        
+    #     if not broker_port:
+    #         raise Exception("Broker port not found in the config file")
+               
+    #     for i, fed_info in  enumerate(config['federates']):  
+    #         if fed_info["name"] != "broker":
+    #             url = f'https://{fed_info["hostname"]}:{fed_info["port"]}'
+    #             x = requests.get(url)
 
 
 @cli.command()
@@ -458,7 +479,6 @@ def test_description(target_directory, component_desc, parameters):
         lambda x: "component/" + x.port_name, comp_desc.dynamic_outputs
     ))) == sorted(federate_outputs["component"])
     print("✓")
-
 
 
 def remove_from_runner_config(runner_config, element):
