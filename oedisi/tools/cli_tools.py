@@ -347,37 +347,15 @@ def run_mc(runner, kubernetes, docker_compose):
     if docker_compose:
         assert file_name == "docker-compose.yml", f"{file_name} is not a valid docker-compose.yml file"
         build_path = os.path.dirname(os.path.abspath(runner))
-        print(build_path)
         os.chdir(build_path)
         os.system("start cmd /k docker-compose up")
     elif kubernetes:
         assert file_name == "deployment.yml", f"{file_name} is not a valid deployment.yml file for kubernetes."
         build_path = os.path.dirname(os.path.abspath(runner))
-        os.chdir(build_path)
         os.system(f"start cmd /k kubectl apply -f {build_path}")
     else:
         raise Exception("Either -k or -d flag needs to be True.")
     
-    ...
-    # broker_port = None
-    # broker_ip = None
-    
-    # with open(runner, 'r') as f:
-    #     config = json.load(f)
-    #     for i, fed_info in  enumerate(config['federates']):
-    #         if fed_info["name"] == "broker":
-    #             broker_port = fed_info["port"]
-    #             broker_ip = fed_info["hostname"]
-        
-    #     if not broker_port:
-    #         raise Exception("Broker port not found in the config file")
-               
-    #     for i, fed_info in  enumerate(config['federates']):  
-    #         if fed_info["name"] != "broker":
-    #             url = f'https://{fed_info["hostname"]}:{fed_info["port"]}'
-    #             x = requests.get(url)
-
-
 @cli.command()
 @click.option("--target-directory", default="build", type=click.Path(),
               help="Target directory to put the system in")
