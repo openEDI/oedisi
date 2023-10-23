@@ -207,10 +207,11 @@ def edit_docker_file(file_path, component:Component):
     with open(file_path, 'w') as f:
         f.write(f"FROM {BASE_DOCKER_IMAGE}\n")
         f.write(f"RUN apt-get update\n")
-        f.write(f"apt-get install -y git ssh\n")
+        f.write(f"RUN apt-get install -y git ssh\n")
         f.write(f'RUN mkdir {component.name}\n')
         f.write(f'COPY  * ./{component.name}\n')
         f.write(f'WORKDIR ./{component.name}\n')
+        f.write(f"RUN pip install -r requirements.txt\n")
         f.write(f'EXPOSE {component.container_port}/tcp\n')
         cmd = f'CMD {["python", "server.py", component.host, str(component.container_port)]}\n'
         cmd = cmd.replace("'", '"')
@@ -343,16 +344,17 @@ def run_with_pause(runner):
 def run_mc(runner, kubernetes, docker_compose):
     assert os.path.exists(runner), f"The provied path {runner} does not exist."
     file_name = Path(runner).name.lower()
-    os.system("docker network prune")
+    os.system("docker system prune --all")
+    os.system("docker network prune --all")
     if docker_compose:
         assert file_name == "docker-compose.yml", f"{file_name} is not a valid docker-compose.yml file"
         build_path = os.path.dirname(os.path.abspath(runner))
         os.chdir(build_path)
-        os.system("start cmd /k docker-compose up")
+        os.system("docker-compose up")
     elif kubernetes:
         assert file_name == "deployment.yml", f"{file_name} is not a valid deployment.yml file for kubernetes."
         build_path = os.path.dirname(os.path.abspath(runner))
-        os.system(f"start cmd /k kubectl apply -f {build_path}")
+        os.system(f"kubectl apply -f {build_path}")
     else:
         raise Exception("Either -k or -d flag needs to be True.")
     
