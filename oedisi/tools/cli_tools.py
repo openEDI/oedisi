@@ -1,5 +1,4 @@
 import subprocess
-import requests
 import shutil
 import click
 import yaml

@@ -38,6 +38,8 @@ configurations. By default, the  ``oedisi`` frameworks sets up the single-contai
 ``-m`` flag can be used to build additional files needed for either Docker-compose or Kubernetes 
 orchestration.
 
+Uploading user defined models requires setting the 'user_uploads_model' to true. If the flag is set to false, the model will be downloaded automatically from AWS.
+
 Building files for multi-container implementation::
 
     oedisi build -m
@@ -88,6 +90,7 @@ and ``port`` are container specific (see ``docker-compose.yml``).
 Upload private data
 ++++++++++++++++++++
 
+#. 
 #. Identify the ``ip``  and ``port`` information for ``oedisi_feeder`` container from the  ``docker-compose.yml`` file. 
 #. Distribution models, compressed in ``zip`` format can be uploaded by making a POST request to the following endpoint ``http://{ip}:{port}/model``  
 #. Similarly, load profile, compressed in ``zip`` format can be uploaded by making a POST request to the following endpoint ``http://{ip}:{port}/profiles``  
