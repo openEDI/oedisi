@@ -24,7 +24,7 @@ logger.setLevel(logging.DEBUG)
 
 
 class MockComponent(system_configuration.ComponentType):
-    def __init__(self, name, parameters: Dict[str, Dict[str, str]], directory: str):
+    def __init__(self, name, parameters: Dict[str, Dict[str, str]], directory: str, host:str, port:int, comp_type:str):
         self._name = name
         self._directory = directory
         self._execute_function = os.path.join(
