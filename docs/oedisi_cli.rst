@@ -28,6 +28,92 @@ Build and run::
     oedisi build
     oedisi run
 
+Multi-Container Model Setup
+---------------------------
+
+The ``oedisi`` frameworks enables users to set up models as single-container (all models running 
+in a single Docker container) or multi-container implementation (all componenets running in 
+seperate docker containers.). The framework currently supports both Docker-compose and kubernetes 
+configurations. By default, the  ``oedisi`` frameworks sets up the single-container simulation.  
+``-m`` flag can be used to build additional files needed for either Docker-compose or Kubernetes 
+orchestration.
+
+Uploading user defined models requires setting the 'user_uploads_model' to true. If the flag is set to false, the model will be downloaded automatically from AWS.
+
+Building files for multi-container implementation::
+
+    oedisi build -m
+
+Once the build process is complete, the containers can be launched by either Docker-compose 
+(all images will run on the local machine) or using Kubernetes (enables orchestration across multiple 
+machines). Navigate to the build folder and execute following command to lauch all images in the 
+build folder.  
+
+Running containers using Docker-compose::
+
+    docker compose up
+
+Stopping containers using Docker-compose::
+
+    docker compose down
+
+Alternately, Kubernetes setup files can be used to orchestrate the launch of all the required containers.
+Navigate to the ``kubernetes`` folder inside the build folder. It should contain ``deployment.yml`` and 
+``service.yml`` files. Use the command below to run the model within the Kubernetes cluster. 
+It is to be noted that these files can be modified to serve a unique usecases.
+
+Running containers using Kubernetes::
+
+    kubectl apply -f deployment.yml
+    kubectl apply -f service.yml
+
+By default, the deployment file is configured to download required images from Docker Hub. 
+Users have to option to modify the deployment file and use a local registery (https://docs.docker.com/registry/) 
+to use local images instead.
+
+Multi-Container Model Run
+---------------------------
+
+Once all required docker images are running (see last section), simulation run can be orchestration using the REST API interface.
+The interface aloows users to 
+
+#. Upload private data (distribution models and associated profiles)
+#. Launch the simulation
+#. Retrieve simulation results
+
+IPs for containers and corresponding exposed ports are available to users within the ``docker-compose.yml`` file in the main build folder.
+To check healh of the API server the runnig container, user can open a web browser and browse to ``http://{ip}:{port}``, where ``ip`` 
+and ``port`` are container specific (see ``docker-compose.yml``).
+
+
+
+Upload private data
+++++++++++++++++++++
+
+#. 
+#. Identify the ``ip``  and ``port`` information for ``oedisi_feeder`` container from the  ``docker-compose.yml`` file. 
+#. Distribution models, compressed in ``zip`` format can be uploaded by making a POST request to the following endpoint ``http://{ip}:{port}/model``  
+#. Similarly, load profile, compressed in ``zip`` format can be uploaded by making a POST request to the following endpoint ``http://{ip}:{port}/profiles``  
+
+These files are automatically unzipped server side after a sucessful upload.
+
+Launch the simulation
++++++++++++++++++++++
+
+#. Identify the ``ip``  and ``port`` information for ``oedisi_broker`` container from the  ``docker-compose.yml`` file.
+#. Make a POST request to the following endpoint ``http://{ip}:{port}/run`` (no payload needed for the POST request)
+
+This starts the simulation. The Broker communicated with other container via REST API and singals them to start Helics co-simulation.
+
+Retrieve simulation results
++++++++++++++++++++++++++++
+
+#. Identify the ``ips``  and ``ports`` information for ``recorder_*`` containers from the  ``docker-compose.yml`` file.
+#. For each ip and port ofrecorder type container, data can be downloaded by making a POST request to the following endpoint ``http://{ip}:{port}/download``
+
+This will later be simplified so users are able to download all results using a single endpoint fromthe broker container.
+
+
 Debugging
 +++++++++
 

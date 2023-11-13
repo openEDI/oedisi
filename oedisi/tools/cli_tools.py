@@ -1,8 +1,13 @@
+import subprocess
+import shutil
 import click
+import yaml
 import json
 import os
-import subprocess
-import time
+from pathlib import Path    
+
+
+from distutils.dir_util import copy_tree
 
 from oedisi.componentframework.basic_component import (
     basic_component,
@@ -17,6 +22,8 @@ from oedisi.componentframework.system_configuration import (
 )
 from .pausing_broker import PausingBroker
 from .testing_broker import TestingBroker
+
+from oedisi.types.common import APP_NAME, BASE_DOCKER_IMAGE, BROKER_SERVICE, DOCKER_HUB_USER
 
 @click.group()
 def cli():
@@ -43,7 +50,20 @@ def get_basic_component(filename):
               help="Wiring diagram json to build")
 @click.option("--component-dict", default="components.json", type=click.Path(),
               help="path to JSON Dictionary of component folders")
-def build(target_directory, system, component_dict):
+@click.option(
+    "-m", "--multi-container",
+    is_flag=True,
+    default=False,
+    show_default=True,
+    help="Use the flag to create docker-compose config files for a multi-container implementation."
+)
+@click.option(
+    "-p", "--broker-port",
+    default=8766,
+    show_default=True,
+    help="Pass the broker port."
+)
+def build(target_directory, system, component_dict, multi_container, broker_port):
     """Build to the simulation folder
 
     Examples::
@@ -75,12 +95,187 @@ def build(target_directory, system, component_dict):
     wiring_diagram = WiringDiagram.parse_file(system)
 
     click.echo(f"Building system in {target_directory}")
+    
     runner_config = generate_runner_config(
         wiring_diagram, component_types, target_directory=target_directory
     )
+    
     with open(f"{target_directory}/system_runner.json", "w") as f:
         f.write(runner_config.json(indent=2))
+    
+    yaml_file_path = f"{target_directory}/docker-compose.yml"
+    
+    if multi_container:
+        validate_optional_inputs(wiring_diagram)
+        edit_docker_files(wiring_diagram, target_directory)
+        create_docker_compose_file(wiring_diagram, target_directory, broker_port)
+        clone_broker(yaml_file_path, target_directory)
+        create_kubernetes_deployment(wiring_diagram, target_directory, broker_port)
 
+def validate_optional_inputs(wiring_diagram: WiringDiagram):
+    for component in wiring_diagram.components:
+        assert hasattr(component, "host"), f"host parameter required for component {component.name} for multi-continer model build"
+        assert hasattr(component, "container_port"), f"post parameter required for component {component.name} for multi-continer model build"
+
+def create_kubernetes_deployment(wiring_diagram: WiringDiagram, target_directory, broker_port):
+    kube_folder = os.path.join(target_directory, "kubernetes")
+    if not os.path.exists(kube_folder):
+        os.mkdir(kube_folder)
+    
+    service = {
+        "apiVersion": "v1",
+        "kind": "Service",
+        "metadata": {
+            "name": f"{APP_NAME}-service",
+        },
+        "spec" : {
+            "type": "NodePort",
+            "selector" : {
+                "app": APP_NAME
+            },
+            "ports" : [
+                {
+                    "port": broker_port,
+                    "targetPort": broker_port
+                }
+            ]
+        }
+    }
+    
+     
+    deployment = {
+        "apiVersion": "apps/v1",
+        "kind": "Deployment",
+        "metadata": {
+            "name": f"{APP_NAME}-deployment",
+            "labels": {
+                "app": APP_NAME
+            }     
+        },
+        "spec" : {
+            "replicas": 1,
+            "selector" : {
+                "matchLabels": {
+                    "app": APP_NAME
+                }
+            },
+            "template" : {
+                "metadata" : {
+                    "labels": {
+                        "app": APP_NAME
+                    }
+                },
+                "spec" : {
+                    "containers" : []
+                }
+            }
+        }          
+    }
+   
+    container = {}
+    for component in wiring_diagram.components:
+        container["name"] = component.name
+        container["image"] = component.image
+        container["ports"] = [{"containerPort": component.container_port}]
+        deployment["spec"]["template"]["spec"]["containers"].append(container.copy())
+    
+    container["name"] = BROKER_SERVICE
+    container["image"] = f"{DOCKER_HUB_USER}/{APP_NAME}_{BROKER_SERVICE}:latest"
+    container["ports"] = [{"containerPort": broker_port}]
+    deployment["spec"]["template"]["spec"]["containers"].append(container.copy())
+    
+    with open(os.path.join(kube_folder, "deployment.yml"), 'w') as f:
+        yaml.dump(deployment, f)
+    with open(os.path.join(kube_folder, "service.yml"), 'w') as f:
+        yaml.dump(service, f)
+
+
+def clone_broker(yaml_file_path, target_directory):
+    broker_folder = os.path.join(target_directory, 'broker')
+    if not os.path.exists(broker_folder):
+        os.makedirs(broker_folder)
+    copy_tree('./broker', broker_folder)
+    shutil.copy(yaml_file_path, broker_folder)
+    return
+
+def edit_docker_file(file_path, component:Component):
+    dir_path = os.path.abspath(os.path.join(file_path, os.pardir))
+    server_file = os.path.join(dir_path, "server.py")
+    assert os.path.exists(server_file), f"Server.py file missing for {component.name}.REST API implementation expected in a server.py file"
+    
+    with open(file_path, 'w') as f:
+        f.write(f"FROM {BASE_DOCKER_IMAGE}\n")
+        f.write(f"RUN apt-get update\n")
+        f.write(f"RUN apt-get install -y git ssh\n")
+        f.write(f'RUN mkdir {component.name}\n')
+        f.write(f'COPY  * ./{component.name}\n')
+        f.write(f'WORKDIR ./{component.name}\n')
+        f.write(f"RUN pip install -r requirements.txt\n")
+        f.write(f'EXPOSE {component.container_port}/tcp\n')
+        cmd = f'CMD {["python", "server.py", component.host, str(component.container_port)]}\n'
+        cmd = cmd.replace("'", '"')
+        f.write(cmd)
+    pass
+    
+
+def edit_docker_files(wiring_diagram:WiringDiagram, target_directory:str):
+    for component in wiring_diagram.components:
+        docker_path = os.path.join(target_directory, component.name, "Dockerfile")
+        edit_docker_file(docker_path, component)
+
+
+def create_docker_compose_file(wiring_diagram:WiringDiagram, target_directory:str, broker_port:int):
+    config = {"services": {}, "networks": {}}
+    
+    config['services'][f"{APP_NAME}_{BROKER_SERVICE}"] = {
+            "build": {
+                    "context": f'./broker/.'
+                },
+            "ports": [
+                    f'{broker_port}:{broker_port}'
+                ],
+            "networks": {
+                "custom-network" : {
+                        "ipv4_address": '10.5.0.2'
+                    } 
+                },
+            }
+    
+    for component in wiring_diagram.components:
+        config['services'][f"{APP_NAME}_{component.name}"] = {
+            "build": {
+                    "context": f'./{component.name}/.'
+                },
+            "ports": [
+                    f'{component.container_port}:{component.container_port}'
+                ],
+            "networks": {
+                "custom-network" : {
+                        "ipv4_address": component.host
+                    } 
+                },
+            }
+    
+    
+     
+    config["networks"] = {
+        "custom-network": {
+            "driver": "bridge",
+            "ipam": {
+                "config": [
+                    {
+                        "subnet": "10.5.0.0/16",
+                        "gateway": "10.5.0.1",
+                    },
+                ]
+            }
+        }
+    }
+    yaml_file_path = f"{target_directory}/docker-compose.yml"
+    with open(yaml_file_path,"w") as file:
+        yaml.dump(config,file)
+    return yaml_file_path
+    
 
 @cli.command()
 @click.option("--runner", default="build/system_runner.json", type=click.Path(),
@@ -93,7 +288,6 @@ def run(runner):
         oedisi run
     """
     subprocess.run(["helics", "run", f"--path={runner}"])
-
 
 @cli.command()
 @click.option("--runner", default="build/system_runner.json", type=click.Path(),
@@ -126,7 +320,43 @@ def run_with_pause(runner):
     broker.run()
     background_runner.wait()
 
-
+@cli.command()
+@click.option("--runner", 
+    default="build/docker-compose.yml", # build/kubernetes/deployment.yml
+    type=click.Path(),
+    help="path to the docker-compose or kubernetes deployment file"
+)
+@click.option(
+    "-k", "--kubernetes",
+    is_flag=True,
+    default=False,
+    show_default=True,
+    help="Use the flag to launch in a kubernetes pod. "
+)
+@click.option(
+    "-d", "--docker-compose",
+    is_flag=True,
+    default=False,
+    show_default=True,
+    help="Use the flag to launch in a kubernetes pod. "
+)
+def run_mc(runner, kubernetes, docker_compose):
+    assert os.path.exists(runner), f"The provied path {runner} does not exist."
+    file_name = Path(runner).name.lower()
+    os.system("docker system prune --all")
+    os.system("docker network prune --all")
+    if docker_compose:
+        assert file_name == "docker-compose.yml", f"{file_name} is not a valid docker-compose.yml file"
+        build_path = os.path.dirname(os.path.abspath(runner))
+        os.chdir(build_path)
+        os.system("docker-compose up")
+    elif kubernetes:
+        assert file_name == "deployment.yml", f"{file_name} is not a valid deployment.yml file for kubernetes."
+        build_path = os.path.dirname(os.path.abspath(runner))
+        os.system(f"kubectl apply -f {build_path}")
+    else:
+        raise Exception("Either -k or -d flag needs to be True.")
+    
 @cli.command()
 @click.option("--target-directory", default="build", type=click.Path(),
               help="Target directory to put the system in")
@@ -228,7 +458,6 @@ def test_description(target_directory, component_desc, parameters):
         lambda x: "component/" + x.port_name, comp_desc.dynamic_outputs
     ))) == sorted(federate_outputs["component"])
     print("✓")
-
 
 
 def remove_from_runner_config(runner_config, element):
