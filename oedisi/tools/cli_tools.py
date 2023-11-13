@@ -63,7 +63,7 @@ def get_basic_component(filename):
     show_default=True,
     help="Pass the broker port."
 )
-def build(target_directory, system, component_dict, multi_container, broker_port):
+def build(target_directory, system, component_dict, multi_container, broker_port, node_port=30000):
     """Build to the simulation folder
 
     Examples::
@@ -82,6 +82,12 @@ def build(target_directory, system, component_dict, multi_container, broker_port
         path to wiring diagram json
     component_dict : str (default="components.json")
         path to JSON dictionary of component folders
+    multi_container: bool
+        A boolean specifying whether or not we're using the multi-container approach
+    broker_port: float
+        The port of the broker. If using kubernetes, is internal to k8s
+    node_port: float (default=30000)
+        The port exposed externally from k8s for external access on localhost
     """
     click.echo(f"Loading the components defined in {component_dict}")
     with open(component_dict, 'r') as f:
@@ -136,7 +142,7 @@ def create_kubernetes_deployment(wiring_diagram: WiringDiagram, target_directory
             "ports" : [
                 {
                     "port": broker_port,
-                    "targetPort": broker_port
+                    "nodePort": broker_port
                 }
             ]
         }
@@ -174,12 +180,12 @@ def create_kubernetes_deployment(wiring_diagram: WiringDiagram, target_directory
    
     container = {}
     for component in wiring_diagram.components:
-        container["name"] = component.name
+        container["name"] = component.name.replace('_','-')
         container["image"] = component.image
         container["ports"] = [{"containerPort": component.container_port}]
         deployment["spec"]["template"]["spec"]["containers"].append(container.copy())
     
-    container["name"] = BROKER_SERVICE
+    container["name"] = BROKER_SERVICE.replace('_','-')
     container["image"] = f"{DOCKER_HUB_USER}/{APP_NAME}_{BROKER_SERVICE}:latest"
     container["ports"] = [{"containerPort": broker_port}]
     deployment["spec"]["template"]["spec"]["containers"].append(container.copy())
