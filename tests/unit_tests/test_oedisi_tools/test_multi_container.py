@@ -37,7 +37,7 @@ def test_api_heath_endpoint(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     for folder in build_path.iterdir():
         if folder.is_dir() and folder.name != "kubernetes":
             sys.path.insert(1, str(folder.absolute()))
-            assert False, f"{list(build_path.iterdir())}"
+            assert False, f"{list(folder.iterdir())}"
             module = importlib.import_module('server') 
             app = getattr(module, "app")  
             client = TestClient(app)
