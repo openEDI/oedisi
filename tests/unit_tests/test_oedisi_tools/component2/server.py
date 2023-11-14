@@ -14,7 +14,7 @@ app = FastAPI()
 def read_root():
     hostname = socket.gethostname()
     host_ip = socket.gethostbyname(hostname)
-    return {"hostname": hostname, "host ip": host_ip}
+    return {"hostname": hostname, "host_ip": host_ip}
 
 @app.post("/run/")
 async def run_model(broker_config:BrokerConfig, background_tasks: BackgroundTasks):
