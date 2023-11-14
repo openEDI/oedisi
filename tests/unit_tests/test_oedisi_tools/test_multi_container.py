@@ -1,12 +1,11 @@
-from oedisi.tools import cli
 from oedisi.types.common import BROKER_SERVICE, API_FILE, HeathCheck
-import pytest
-from pathlib import Path
-from click.testing import CliRunner
 from fastapi.testclient import TestClient
-import sys
+from click.testing import CliRunner
+from oedisi.tools import cli
+from pathlib import Path
 import importlib
-
+import pytest
+import sys
 
 @pytest.fixture
 def base_path() -> Path:
@@ -38,11 +37,12 @@ def test_api_heath_endpoint(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     for folder in build_path.iterdir():
         if folder.is_dir() and folder.name != "kubernetes":
             sys.path.insert(1, str(folder.absolute()))
+            assert False, f"{list(build_path.iterdir())}"
             module = importlib.import_module('server') 
             app = getattr(module, "app")  
             client = TestClient(app)
             response = client.get("/")
             assert response.status_code == 200
             HeathCheck.validate(response.json())
-    
+            sys.path.remove(str(folder.absolute()))
     
