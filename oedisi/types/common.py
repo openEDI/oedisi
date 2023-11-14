@@ -1,8 +1,10 @@
+from pydantic.networks import IPvAnyAddress
 from pydantic import BaseModel
 from typing import Dict
 
 BASE_DOCKER_IMAGE = "python:3.10.6-slim-bullseye"
 BROKER_SERVICE = "broker"
+API_FILE = "server.py"
 APP_NAME = "oedisi"
 DOCKER_HUB_USER = "aadillatif"
 
@@ -11,3 +13,8 @@ class BrokerConfig(BaseModel):
     broker_ip : str = "10.5.0.2"
     api_port : int = 12345
     services : Dict = {}
+    
+class HeathCheck(BaseModel):
+    hostname: str
+    host_ip : IPvAnyAddress
+    

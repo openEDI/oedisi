@@ -112,14 +112,21 @@ def build(target_directory, system, component_dict, multi_container, broker_port
     yaml_file_path = f"{target_directory}/docker-compose.yml"
     
     if multi_container:
-        validate_optional_inputs(wiring_diagram)
+        validate_optional_inputs( wiring_diagram, component_dict_of_files)
         edit_docker_files(wiring_diagram, target_directory)
         create_docker_compose_file(wiring_diagram, target_directory, broker_port)
         clone_broker(yaml_file_path, target_directory)
         create_kubernetes_deployment(wiring_diagram, target_directory, broker_port)
 
-def validate_optional_inputs(wiring_diagram: WiringDiagram):
+def validate_optional_inputs(wiring_diagram: WiringDiagram, component_dict_of_files):
+    print(component_dict_of_files)
     for component in wiring_diagram.components:
+        json_path = Path(component_dict_of_files[component.type])
+        comp_path = json_path.parent
+        requirement_path = comp_path / "requirements.txt"
+
+        assert requirement_path.exists(), f"Missing file: {requirement_path}. All components should have a valid requirements.txt file listing required python packages for the build."
+
         assert hasattr(component, "host"), f"host parameter required for component {component.name} for multi-continer model build"
         assert hasattr(component, "container_port"), f"post parameter required for component {component.name} for multi-continer model build"
 
