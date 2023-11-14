@@ -35,7 +35,7 @@ def test_api_heath_endpoint(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     build_path = base_path / "build"
     assert build_path.exists(), "Build path for the test project does not exist."
     for folder in build_path.iterdir():
-        if folder.is_dir() and folder.name != "kubernetes":
+        if folder.is_dir() and folder.name not in ["kubernetes", 'tester']:
             sys.path.insert(1, str(folder.absolute()))
             assert False, f"{list(folder.iterdir())}"
             module = importlib.import_module('server') 
