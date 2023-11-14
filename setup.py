@@ -45,7 +45,7 @@ setup(
         "Programming Language :: Python :: 3.10",
     ],
     # test_suite="tests",
-    install_requires=["helics-apps>=3.2.1", "helics>=3.2.1", "pydantic>=1.7,<2", "psutil", "click", "pyyaml", "httpx", "fastapi"],
+    install_requires=["helics-apps>=3.2.1", "helics>=3.2.1", "pydantic>=1.7,<2", "psutil", "click", "pyyaml", "httpx", "fastapi", "uvicorn"],
     extras_require={"test":["pytest"]},
     entry_points = {
         'console_scripts': [
