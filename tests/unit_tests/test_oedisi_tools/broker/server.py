@@ -72,7 +72,7 @@ def read_root():
     host_ip = socket.gethostbyname(hostname)
     return {"hostname": hostname, "host_ip": host_ip}
 
-@app.get("/run")
+@app.post("/run")
 async def run_feeder(background_tasks: BackgroundTasks): 
     try:
         data_input = read_settings()
