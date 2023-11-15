@@ -2,30 +2,29 @@ from fastapi import FastAPI, BackgroundTasks, UploadFile
 from fastapi.exceptions import HTTPException
 from fastapi.responses import FileResponse
 
+from pathlib import Path
 
 import helics as h
 import grequests
 import traceback
-import requests
-import zipfile
 import uvicorn
 import logging
 import socket
-import shutil
 import time
 import yaml
 import sys
 import os
 
+BASE_PATH = Path(__file__).parent
+os.chdir(BASE_PATH)
 app = FastAPI()
 
-def find_filenames(path_to_dir=os.getcwd(), suffix=".feather" ):
-    filenames = os.listdir(path_to_dir)
-    return [ filename for filename in filenames if filename.endswith( suffix ) ]
     
 def read_settings():
     component_map = {}
-    with open("docker-compose.yml", "r") as stream:
+    yaml_file = BASE_PATH / "docker-compose.yml"
+    assert yaml_file.exists(), f"{yaml_file} does not exist"
+    with open(yaml_file, "r") as stream:
         config = yaml.safe_load(stream)
     services = config['services']
     print(services)
@@ -73,10 +72,10 @@ def read_root():
     host_ip = socket.gethostbyname(hostname)
     return {"hostname": hostname, "host_ip": host_ip}
 
-@app.post("/run/")
+@app.get("/run")
 async def run_feeder(background_tasks: BackgroundTasks): 
-    data_input = read_settings()
     try:
+        data_input = read_settings()
         background_tasks.add_task(run_simulation, *data_input)
     except Exception as e:
         err = traceback.format_exc()

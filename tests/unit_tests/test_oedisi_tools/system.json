@@ -4,14 +4,14 @@
     {
       "name": "comp_xyz",
       "type": "ComponentOne",
-	  "host": "10.5.0.3",
+	  "host": "127.0.0.1",
 	  "container_port": 5678,
       "parameters": {}
     },
     {
       "name": "comp_abc",
       "type": "ComponentTwo",
-	  "host": "10.5.0.4",
+	  "host": "127.0.0.1",
 	  "container_port": 5679,
       "parameters": {}
     }
