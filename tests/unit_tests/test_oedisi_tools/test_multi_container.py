@@ -34,7 +34,6 @@ def test_mc_build(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     
 @pytest.mark.usefixtures('test_mc_build')
 def test_api_heath_endpoint(base_path: Path, monkeypatch: pytest.MonkeyPatch):
-    monkeypatch.chdir(base_path)
     build_path = base_path / "build"
     assert build_path.exists(), "Build path for the test project does not exist."
     for folder in build_path.iterdir():
@@ -52,7 +51,6 @@ def test_api_heath_endpoint(base_path: Path, monkeypatch: pytest.MonkeyPatch):
 @pytest.mark.skipif(IN_GITHUB_ACTIONS,  reason="test runs locally but fails on github actions")
 @pytest.mark.usefixtures('test_mc_build')
 def test_api_run(base_path: Path, monkeypatch: pytest.MonkeyPatch):
-    monkeypatch.chdir(base_path)
     build_path = base_path / "build"
     assert build_path.exists(), "Build path for the test project does not exist."
     clients = {}
@@ -70,3 +68,24 @@ def test_api_run(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     response = client.post("/run")
     assert response.status_code == 200
         
+@pytest.mark.skipif(IN_GITHUB_ACTIONS,  reason="Requires docker deamon running on the machine. Will not work with github actions")       
+@pytest.mark.usefixtures('test_mc_build')
+def test_docker_compose(base_path: Path, monkeypatch: pytest.MonkeyPatch):
+    build_path = base_path / "build"
+    assert build_path.exists(), "Build path for the test project does not exist."
+    monkeypatch.chdir(build_path)
+
+    import subprocess
+    import time
+    with subprocess.Popen(["docker-compose", "up", "-d"], stdout=subprocess.PIPE) as proc:
+        stdout = b""
+        while True:
+            stdout += proc.stdout.read()
+            output = stdout.decode('utf8')
+            assert "error" not in output.lower(), "Error running the docker compose file."
+            count = output.count("Started") 
+            if count >= 3:
+                break
+            time.sleep(0.1)
+    
+    subprocess.Popen(["docker-compose", "down"]) 
