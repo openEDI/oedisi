@@ -16,7 +16,7 @@ class BrokerConfig(BaseModel):
     
 class HeathCheck(BaseModel):
     hostname: str
-    host_ip : IPvAnyAddress
+    host_ip : str
 
 class ServerReply(BaseModel):
     detail : str
