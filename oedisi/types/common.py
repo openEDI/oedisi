@@ -1,6 +1,6 @@
 from pydantic.networks import IPvAnyAddress
 from pydantic import BaseModel
-from typing import Dict
+from typing import Dict, Optional
 
 BASE_DOCKER_IMAGE = "python:3.10.6-slim-bullseye"
 BROKER_SERVICE = "broker"
@@ -17,4 +17,7 @@ class BrokerConfig(BaseModel):
 class HeathCheck(BaseModel):
     hostname: str
     host_ip : IPvAnyAddress
-    
+
+class ServerReply(BaseModel):
+    detail : str
+    action: Optional[str]
