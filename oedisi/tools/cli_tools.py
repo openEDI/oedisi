@@ -221,7 +221,7 @@ def edit_docker_file(file_path, component:Component):
         f.write(f"RUN apt-get update\n")
         f.write(f"RUN apt-get install -y git ssh\n")
         f.write(f'RUN mkdir {component.name}\n')
-        f.write(f'COPY  * ./{component.name}\n')
+        f.write(f'COPY  . ./{component.name}\n')
         f.write(f'WORKDIR ./{component.name}\n')
         f.write(f"RUN pip install -r requirements.txt\n")
         f.write(f'EXPOSE {component.container_port}/tcp\n')
