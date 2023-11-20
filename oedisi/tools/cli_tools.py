@@ -244,6 +244,7 @@ def create_docker_compose_file(wiring_diagram:WiringDiagram, target_directory:st
             "build": {
                     "context": f'./broker/.'
                 },
+            "image": f"{DOCKER_HUB_USER}/{APP_NAME}_{BROKER_SERVICE}",
             "ports": [
                     f'{broker_port}:{broker_port}'
                 ],
@@ -259,6 +260,7 @@ def create_docker_compose_file(wiring_diagram:WiringDiagram, target_directory:st
             "build": {
                     "context": f'./{component.name}/.'
                 },
+            "image": f"{component.image}",
             "ports": [
                     f'{component.container_port}:{component.container_port}'
                 ],
