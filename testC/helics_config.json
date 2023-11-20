@@ -1,1 +1,0 @@
-{"name": "federate_name", "core_type": "zmq", "period": 1, "log_level": "warning", "terminate_on_error": true, "publications": [{"key": "pi", "type": "double"}]}
