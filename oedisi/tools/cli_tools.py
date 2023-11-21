@@ -149,7 +149,7 @@ def create_kubernetes_deployment(wiring_diagram: WiringDiagram, target_directory
             "ports" : [
                 {
                     "port": broker_port,
-                    "nodePort": broker_port
+                    "nodePort": node_port
                 }
             ]
         }
