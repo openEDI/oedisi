@@ -116,7 +116,7 @@ def build(target_directory, system, component_dict, multi_container, broker_port
         edit_docker_files(wiring_diagram, target_directory)
         create_docker_compose_file(wiring_diagram, target_directory, broker_port)
         clone_broker(yaml_file_path, target_directory)
-        create_kubernetes_deployment(wiring_diagram, target_directory, broker_port)
+        create_kubernetes_deployment(wiring_diagram, target_directory, broker_port, node_port)
 
 def validate_optional_inputs(wiring_diagram: WiringDiagram, component_dict_of_files):
     print(component_dict_of_files)
@@ -130,7 +130,7 @@ def validate_optional_inputs(wiring_diagram: WiringDiagram, component_dict_of_fi
         assert hasattr(component, "host"), f"host parameter required for component {component.name} for multi-continer model build"
         assert hasattr(component, "container_port"), f"post parameter required for component {component.name} for multi-continer model build"
 
-def create_kubernetes_deployment(wiring_diagram: WiringDiagram, target_directory, broker_port):
+def create_kubernetes_deployment(wiring_diagram: WiringDiagram, target_directory, broker_port, node_port):
     kube_folder = os.path.join(target_directory, "kubernetes")
     if not os.path.exists(kube_folder):
         os.mkdir(kube_folder)
