@@ -86,12 +86,11 @@ To check healh of the API server the runnig container, user can open a web brows
 and ``port`` are container specific (see ``docker-compose.yml``).
 
 
+Identify the ``ip``  and ``port`` information for ``oedisi_broker`` container from the  ``docker-compose.yml`` file. 
 
 Upload private data
 ++++++++++++++++++++
 
-#. 
-#. Identify the ``ip``  and ``port`` information for ``oedisi_feeder`` container from the  ``docker-compose.yml`` file. 
 #. Distribution models, compressed in ``zip`` format can be uploaded by making a POST request to the following endpoint ``http://{ip}:{port}/model``  
 #. Similarly, load profile, compressed in ``zip`` format can be uploaded by making a POST request to the following endpoint ``http://{ip}:{port}/profiles``  
 
@@ -100,7 +99,6 @@ These files are automatically unzipped server side after a sucessful upload.
 Launch the simulation
 +++++++++++++++++++++
 
-#. Identify the ``ip``  and ``port`` information for ``oedisi_broker`` container from the  ``docker-compose.yml`` file.
 #. Make a POST request to the following endpoint ``http://{ip}:{port}/run`` (no payload needed for the POST request)
 
 This starts the simulation. The Broker communicated with other container via REST API and singals them to start Helics co-simulation.
@@ -108,8 +106,8 @@ This starts the simulation. The Broker communicated with other container via RES
 Retrieve simulation results
 +++++++++++++++++++++++++++
 
-#. Identify the ``ips``  and ``ports`` information for ``recorder_*`` containers from the  ``docker-compose.yml`` file.
-#. For each ip and port ofrecorder type container, data can be downloaded by making a POST request to the following endpoint ``http://{ip}:{port}/download``
+#. Identify the ``ips``  and ``ports`` information for ``oedisi_broker`` containers from the  ``docker-compose.yml`` file.
+#. Data can be downloaded by making a POST request to the following endpoint ``http://{ip}:{port}/download``. This endpoint will communicate with all participating recorder federates ans retrieve the simulation results in a single zip file, 
 
 This will later be simplified so users are able to download all results using a single endpoint fromthe broker container.
 
