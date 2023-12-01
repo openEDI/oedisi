@@ -47,8 +47,8 @@ setup(
         "Programming Language :: Python :: 3.12",
     ],
     # test_suite="tests",
-    install_requires=["helics-apps>=3.2.1", "helics>=3.2.1", "pydantic>=1.7,<2", "psutil", "click", "pyyaml", "httpx", "fastapi", "uvicorn", "grequests"],
-    extras_require={"test":["pytest"]},
+    install_requires=["helics-apps>=3.2.1", "helics>=3.2.1", "pydantic>=1.7,<2", "psutil", "click", "pyyaml"],
+    extras_require={"test":["pytest", "httpx", "fastapi", "uvicorn", "grequests"]},
     entry_points = {
         'console_scripts': [
             'oedisi = oedisi.tools:cli'

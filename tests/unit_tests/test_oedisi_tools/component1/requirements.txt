@@ -3,4 +3,4 @@ helics-apps==3.4.0
 pydantic
 fastapi
 uvicorn
-git+https://github.com/openEDI/GADAL
+git+https://github.com/openEDI/oedisi
