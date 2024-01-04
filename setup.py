@@ -12,9 +12,7 @@ from warnings import warn
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-description = (
-    "Orchestration interface for HELICS power simulations"
-)
+description = "Orchestration interface for HELICS power simulations"
 
 with open("README.md") as f:
     readme = f.read()
@@ -24,7 +22,7 @@ setup(
     version="1.0.0",
     description=description,
     long_description=readme,
-    long_description_content_type='text/markdown',
+    long_description_content_type="text/markdown",
     author="Joseph McKinsey",
     author_email="joseph.mckinsey@nrel.gov",
     packages=find_packages(),
@@ -47,12 +45,15 @@ setup(
         "Programming Language :: Python :: 3.12",
     ],
     # test_suite="tests",
-    install_requires=["helics-apps>=3.2.1", "helics>=3.2.1", "pydantic>=1.7,<2", "psutil", "click", "pyyaml"],
-    extras_require={"test":["pytest", "httpx", "fastapi", "uvicorn", "grequests"]},
-    entry_points = {
-        'console_scripts': [
-            'oedisi = oedisi.tools:cli'
-        ]
-    }
+    install_requires=[
+        "helics-apps>=3.2.1",
+        "helics>=3.2.1",
+        "pydantic>=1.7,<2",
+        "psutil",
+        "click",
+        "pyyaml",
+    ],
+    extras_require={"test": ["pytest", "httpx", "fastapi", "uvicorn", "grequests"]},
+    entry_points={"console_scripts": ["oedisi = oedisi.tools:cli"]}
     # cmdclass={"develop": PostDevelopCommand},
 )

@@ -12,14 +12,10 @@ def get_inputs_outputs(graph_dict):
     for c in graph_dict["cores"]:
         for fed in c["federates"]:
             name = fed["attributes"]["name"]
-            federate_id2name[
-                fed["attributes"]["id"]
-            ] = name
+            federate_id2name[fed["attributes"]["id"]] = name
             pub_keys = []
             for pub in fed.get("publications", []):
-                federate_id_handle2key[
-                    (pub["federate"], pub["handle"])
-                ] = pub["key"]
+                federate_id_handle2key[(pub["federate"], pub["handle"])] = pub["key"]
                 pub_keys.append(pub["key"])
             federate_outputs[name] = pub_keys
 
@@ -29,9 +25,9 @@ def get_inputs_outputs(graph_dict):
             sub_keys = []
             for sub in fed.get("inputs", []):
                 for source in sub["sources"]:
-                    sub_keys.append(federate_id_handle2key[
-                        (source["federate"], source["handle"])
-                    ])
+                    sub_keys.append(
+                        federate_id_handle2key[(source["federate"], source["handle"])]
+                    )
             federate_inputs[name] = sub_keys
     return federate_inputs, federate_outputs
 
@@ -58,6 +54,7 @@ class TestingBroker:
             time.sleep(2)
             current_state = self.broker.query("broker", "current_state")
             cores = current_state["cores"]
-            if (len(cores) == 2 and
-                all((core["state"] == "init_requested" for core in cores))):
+            if len(cores) == 2 and all(
+                (core["state"] == "init_requested" for core in cores)
+            ):
                 return
