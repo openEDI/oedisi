@@ -86,10 +86,10 @@ def test_api_run(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     assert response.status_code == 200
 
 
-@pytest.mark.skipif(
-    IN_GITHUB_ACTIONS,
-    reason="Requires docker deamon running on the machine. Will not work with github actions",
-)
+# @pytest.mark.skipif(
+#    IN_GITHUB_ACTIONS,
+#    reason="Requires docker deamon running on the machine. Will not work with github actions",
+# )
 @pytest.mark.usefixtures("test_mc_build")
 def test_docker_compose(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     build_path = base_path / "build"
@@ -100,28 +100,32 @@ def test_docker_compose(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     import time
 
     with subprocess.Popen(
-        ["docker-compose", "up", "-d"], stdout=subprocess.PIPE
+        ["docker", "compose", "up", "-d"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
     ) as proc:
         assert (
             proc.returncode != 0
-        ), f"docker-compose failed with {proc.returncode}: {proc.stderr}"
+        ), f"docker-compose failed with {proc.returncode}: {proc.stderr.read()}"
         stdout = b""
         start = time.time()
         fail = True
+        stderr = b""
         while (time.time() - start) < 60:
-            logging.info("-")
             bytes = proc.stdout.read()
-            print(bytes, end="")
             stdout += bytes
-            output = stdout.decode("utf8")
+            stderr += proc.stderr.read()
+            output = stdout.decode("utf8") + stderr.decode("utf8")
             assert (
                 "error" not in output.lower()
             ), "Error running the docker compose file."
-            count = output.count("Started")
+            count = output.count("Started") + output.count("Running")
             if count >= 3:
                 fail = False
                 break
             time.sleep(0.1)
 
-    subprocess.Popen(["docker-compose", "down"])
-    assert not fail, f"Timeout Exceeded on docker-compose: {stdout}"
+    logging.debug(f"{stdout}")
+    logging.debug(f"{stderr}")
+    subprocess.Popen(["docker", "compose", "down"])
+    assert not fail, f"Timeout Exceeded on docker-compose: {stdout}, {stderr}"
