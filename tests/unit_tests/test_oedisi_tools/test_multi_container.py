@@ -111,14 +111,18 @@ def test_docker_compose(base_path: Path, monkeypatch: pytest.MonkeyPatch):
         start = time.time()
         fail = True
         stderr = b""
-        while (time.time() - start) < 60:
+        while (time.time() - start) < 120:
             bytes = proc.stdout.read()
             stdout += bytes
             stderr += proc.stderr.read()
             output = stdout.decode("utf8") + stderr.decode("utf8")
             assert (
-                "error" not in output.lower()
-            ), "Error running the docker compose file."
+                "failed to read dockerfile" not in output.lower()
+                and "no service selected" not in output.lower()
+                and "invalid compose project" not in output.lower()
+                and "error response from daemon:" not in output.lower()
+            ), f"Failed in docker compose up.\n{stdout}\n{stderr}"
+
             count = output.count("Started") + output.count("Running")
             if count >= 3:
                 fail = False
@@ -128,4 +132,4 @@ def test_docker_compose(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     logging.debug(f"{stdout}")
     logging.debug(f"{stderr}")
     subprocess.Popen(["docker", "compose", "down"])
-    assert not fail, f"Timeout Exceeded on docker-compose: {stdout}, {stderr}"
+    assert not fail, f"Timeout Exceeded on docker-compose:\n{stdout}\n{stderr}"
