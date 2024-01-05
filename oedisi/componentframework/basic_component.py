@@ -27,6 +27,7 @@ class ComponentDescription(BaseModel):
     dynamic_outputs :
         List of output types. Typically publications.
     """
+
     directory: str
     execute_function: str
     static_inputs: List[AnnotatedType]
@@ -65,7 +66,15 @@ def basic_component(comp_desc: ComponentDescription, type_checker):
         _dynamic_outputs = types_to_dict(comp_desc.dynamic_outputs)
         _static_inputs = types_to_dict(comp_desc.static_inputs)
 
-        def __init__(self, name, parameters: Dict[str, Any], directory: str, host:str, port:int, comp_type:str):
+        def __init__(
+            self,
+            name,
+            parameters: Dict[str, Any],
+            directory: str,
+            host: str,
+            port: int,
+            comp_type: str,
+        ):
             self._name = name
             self._directory = directory
             self._parameters = parameters
@@ -78,8 +87,7 @@ def basic_component(comp_desc: ComponentDescription, type_checker):
                 if parameter_type.port_name not in parameters:
                     return False
                 if not type_checker(
-                        parameter_type.type,
-                        parameters[parameter_type.port_name]
+                    parameter_type.type, parameters[parameter_type.port_name]
                 ):
                     return False
             return True

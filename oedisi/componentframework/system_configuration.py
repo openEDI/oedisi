@@ -25,6 +25,7 @@ from pydantic import BaseModel, validator
 from typing import List, Optional, Any, Dict
 from oedisi.types.common import DOCKER_HUB_USER, APP_NAME
 
+
 class AnnotatedType(BaseModel):
     "Class for representing the types of components and their interfaces"
     type: str
@@ -64,6 +65,7 @@ class ComponentType(ABC):
     Finally, the execute_function property defines the command
     to run the component.
     """
+
     @abstractmethod
     def generate_input_mapping(self, links: Dict[str, str]):
         pass
@@ -92,17 +94,19 @@ class Port(BaseModel):
     name: str
     port_name: str
 
-    def connect(self, port: 'Port'):
+    def connect(self, port: "Port"):
         return Link(
             source=self.name,
             source_port=self.port_name,
             target=port.name,
-            target_port=port.port_name
+            target_port=port.port_name,
         )
+
 
 class Component(BaseModel):
     """Component type used in WiringDiagram, includes name,
     component type, and initial parameters"""
+
     name: str
     type: str
     host: Optional[str]
@@ -112,13 +116,13 @@ class Component(BaseModel):
 
     def port(self, port_name: str):
         return Port(name=self.name, port_name=port_name)
-    
+
     @validator("image", pre=True, always=True)
     def validate_image(cls, v, values, **kwargs):
         if not v:
             return f"{DOCKER_HUB_USER}/{APP_NAME}_{values['name']}:latest"
-        return v 
-       
+        return v
+
 
 class WiringDiagram(BaseModel):
     "Cosimulation configuration. This may end up wrapped in another interface"
@@ -126,26 +130,27 @@ class WiringDiagram(BaseModel):
     components: List[Component]
     links: List[Link]
 
-    def clean_model(self, target_directory = '.'):
+    def clean_model(self, target_directory="."):
         for component in self.components:
             to_delete = os.path.join(target_directory, component.name)
-            log_file = os.path.join(target_directory, component.name+'.log')
+            log_file = os.path.join(target_directory, component.name + ".log")
             if not os.path.exists(to_delete):
-                logging.warning(f"The directory for {component.name} at {to_delete} does not exist")
+                logging.warning(
+                    f"The directory for {component.name} at {to_delete} does not exist"
+                )
             else:
                 shutil.rmtree(to_delete)
             if not os.path.exists(log_file):
-                logging.warning(f"The directory for {component.name} at {log_file} does not exist")
+                logging.warning(
+                    f"The directory for {component.name} at {log_file} does not exist"
+                )
             else:
                 os.remove(log_file)
-
 
         # TODO: Check for any processes using the HELICS port and kill them too
         for proc in psutil.process_iter():
             if proc.name() == "helics_broker":
                 proc.kill()
-
-
 
     @validator("components")
     def check_component_names(cls, components):
@@ -181,18 +186,19 @@ class Federate(BaseModel):
     name: str
     exec: str
 
+
 def get_federates_conn_info(wiring_diagram: WiringDiagram):
     data = ""
-    for component in wiring_diagram.components: 
-        data +=  f" {component.host} {component.port}"
+    for component in wiring_diagram.components:
+        data += f" {component.host} {component.port}"
     return data
-                
+
 
 def initialize_federates(
     wiring_diagram: WiringDiagram,
     component_types: Dict[str, Type[ComponentType]],
     compatability_checker,
-    target_directory="."
+    target_directory=".",
 ) -> List[Federate]:
     "Initialize all the federates"
     components = {}
@@ -203,7 +209,12 @@ def initialize_federates(
             os.makedirs(directory)
         component_type = component_types[component.type]
         initialized_component = component_type(
-            component.name, component.parameters, directory, component.host, component.port, component.type
+            component.name,
+            component.parameters,
+            directory,
+            component.host,
+            component.port,
+            component.type,
         )
         components[component.name] = initialized_component
 
@@ -228,13 +239,13 @@ def initialize_federates(
         component.generate_input_mapping(
             {l.target_port: f"{l.source}/{l.source_port}" for l in links}
         )
-        
+
         federates.append(
             Federate(directory=name, name=name, exec=component.execute_function)
         )
 
-
     return federates
+
 
 def get_link_map(wiring_diagram: WiringDiagram):
     link_map = defaultdict(list)
@@ -242,20 +253,22 @@ def get_link_map(wiring_diagram: WiringDiagram):
         link_map[link.target].append(link)
     return link_map
 
+
 class RunnerConfig(BaseModel):
     """HELICS running config for the full simulation
 
     Examples
     --------
     Save to JSON
-    
+
     >>> with open(filename, "w") as f:
     ...    f.write(config.json())
 
     Run Simulation
-    
+
     `$ helics run --path=filename`
     """
+
     name: str
     federates: List[Federate]
 
@@ -269,7 +282,7 @@ def generate_runner_config(
     wiring_diagram: WiringDiagram,
     component_types: Dict[str, Type[ComponentType]],
     compatibility_checker=bad_compatability_checker,
-    target_directory="."
+    target_directory=".",
 ):
     """Brings together a `WiringDiagram` and a dictionary of `ComponentTypes`
     to create a helics run configuration.

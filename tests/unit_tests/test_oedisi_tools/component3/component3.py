@@ -46,7 +46,6 @@ class TestFederate:
                 )
             logging.debug("Loaded subscription test1 at {port_mapping['test1']}")
 
-
     def run(self):
         self.fed.enter_executing_mode()
         logger.info("Entered HELICS execution mode")

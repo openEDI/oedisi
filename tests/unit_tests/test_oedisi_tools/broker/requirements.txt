@@ -1,0 +1,7 @@
+helics==3.4.0
+helics-apps==3.4.0
+pydantic
+grequests
+fastapi
+uvicorn
+git+https://github.com/openEDI/GADAL

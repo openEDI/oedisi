@@ -19,12 +19,13 @@ class PausingBroker:
         name_2_timedata = {}
         while h.helicsBrokerIsConnected(self.broker) is True:
             for time_data in get_time_data(self.broker):
-                if ((time_data.name not in name_2_timedata) or
-                    (name_2_timedata[time_data.name] != time_data)):
+                if (time_data.name not in name_2_timedata) or (
+                    name_2_timedata[time_data.name] != time_data
+                ):
                     name_2_timedata[time_data.name] = time_data
                     pprint_time_data(time_data)
 
-            new_t = click.prompt('Enter next time:', type=float, default=t)
+            new_t = click.prompt("Enter next time:", type=float, default=t)
             if new_t != t:
                 t = new_t
                 print(f"Setting time barrier to {t}")
