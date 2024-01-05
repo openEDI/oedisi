@@ -67,7 +67,14 @@ def run_simulation(services, component_map, broker_ip, api_port):
 @app.get("/")
 def read_root():
     hostname = socket.gethostname()
-    host_ip = socket.gethostbyname(hostname)
+    host_ip = "127.0.0.1"
+    try:
+        host_ip = socket.gethostbyname(socket.gethostname())
+    except socket.gaierror:
+        try:
+            host_ip = socket.gethostbyname(socket.gethostname() + ".local")
+        except socket.gaierror:
+            pass
     return {"hostname": hostname, "host_ip": host_ip}
 
 

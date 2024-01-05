@@ -1,3 +1,4 @@
+import logging
 from oedisi.types.common import BROKER_SERVICE, HeathCheck
 from fastapi.testclient import TestClient
 from click.testing import CliRunner
@@ -30,14 +31,10 @@ def test_mc_build(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     ), "Broker federate should be implemented before building a multicontainer problem."
 
     api_implementation = broker_path / API_FILE
-    assert (
-        api_implementation.exists()
-    ), f"A valid REST API implementatiion should exist in {api_implementation} before building a multicontainer problem."
+    assert api_implementation.exists(), f"A valid REST API implementatiion should exist in {api_implementation} before building a multicontainer problem."
 
     requirements_file = broker_path / "requirements.txt"
-    assert (
-        requirements_file.exists()
-    ), f"All components should have a valid requirements.txt file listing required python packages for the build."
+    assert requirements_file.exists(), f"All components should have a valid requirements.txt file listing required python packages for the build."
 
     result = runner.invoke(cli, ["build", "-m"])
     assert result.exit_code == 0
@@ -105,16 +102,26 @@ def test_docker_compose(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     with subprocess.Popen(
         ["docker-compose", "up", "-d"], stdout=subprocess.PIPE
     ) as proc:
+        assert (
+            proc.returncode != 0
+        ), f"docker-compose failed with {proc.returncode}: {proc.stderr}"
         stdout = b""
-        while True:
-            stdout += proc.stdout.read()
+        start = time.time()
+        fail = True
+        while (time.time() - start) < 60:
+            logging.info("-")
+            bytes = proc.stdout.read()
+            print(bytes, end="")
+            stdout += bytes
             output = stdout.decode("utf8")
             assert (
                 "error" not in output.lower()
             ), "Error running the docker compose file."
             count = output.count("Started")
             if count >= 3:
+                fail = False
                 break
             time.sleep(0.1)
 
     subprocess.Popen(["docker-compose", "down"])
+    assert not fail, f"Timeout Exceeded on docker-compose: {stdout}"
