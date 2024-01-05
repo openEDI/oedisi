@@ -1,13 +1,16 @@
-import logging
-from oedisi.types.common import BROKER_SERVICE, HeathCheck
-from fastapi.testclient import TestClient
-from click.testing import CliRunner
-from oedisi.tools import cli
-from pathlib import Path
 import importlib
-import pytest
-import sys
+import logging
 import os
+import subprocess
+import time
+from pathlib import Path
+
+import pytest
+from click.testing import CliRunner
+from fastapi.testclient import TestClient
+
+from oedisi.tools import cli
+from oedisi.types.common import BROKER_SERVICE, HeathCheck
 
 API_FILE = "server.py"
 
@@ -34,7 +37,7 @@ def test_mc_build(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     assert api_implementation.exists(), f"A valid REST API implementatiion should exist in {api_implementation} before building a multicontainer problem."
 
     requirements_file = broker_path / "requirements.txt"
-    assert requirements_file.exists(), f"All components should have a valid requirements.txt file listing required python packages for the build."
+    assert requirements_file.exists(), "All components should have a valid requirements.txt file listing required python packages for the build."
 
     result = runner.invoke(cli, ["build", "-m"])
     assert result.exit_code == 0
@@ -49,14 +52,13 @@ def test_api_heath_endpoint(base_path: Path, monkeypatch: pytest.MonkeyPatch):
             assert (
                 folder / "server.py"
             ).exists(), f"Server.py does not exist for path {folder}"
-            sys.path.insert(1, str(folder.absolute()))
+            monkeypatch.syspath_prepend(folder.absolute())
             module = importlib.import_module("server")
             app = getattr(module, "app")
             client = TestClient(app)
             response = client.get("/")
             assert response.status_code == 200
             HeathCheck.validate(response.json())
-            sys.path.remove(str(folder.absolute()))
 
 
 @pytest.mark.skipif(
@@ -72,7 +74,7 @@ def test_api_run(base_path: Path, monkeypatch: pytest.MonkeyPatch):
             assert (
                 folder / "server.py"
             ).exists(), f"Server.py does not exist for path {folder}"
-            sys.path.insert(1, str(folder.absolute()))
+            monkeypatch.syspath_prepend(folder.absolute())
             module = importlib.import_module("server")
             app = getattr(module, "app")
             client = TestClient(app)
@@ -95,9 +97,6 @@ def test_docker_compose(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     build_path = base_path / "build"
     assert build_path.exists(), "Build path for the test project does not exist."
     monkeypatch.chdir(build_path)
-
-    import subprocess
-    import time
 
     with subprocess.Popen(
         ["docker", "compose", "up", "-d"],
