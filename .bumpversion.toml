@@ -4,6 +4,9 @@ commit = true
 tag = true
 
 [[tool.bumpversion.files]]
+filename = "setup.py"
+
+[[tool.bumpversion.files]]
 filename = "oedisi/__init__.py"
 
 [[tool.bumpversion.files]]
