@@ -271,6 +271,9 @@ class Command(BaseModel):
     obj_property: str
     val: Union[int, float, str, List[int], List[float], List[str]]
 
+    class Config:
+        smart_union=True
+
 
 class CommandList(BaseModel):
     """List[Command] with JSON parsing."""
@@ -292,6 +295,7 @@ class InverterControlMode(Enum):
     voltvar = "VOLTVAR"
     voltwatt = "VOLTWATT"
     voltvar_voltwatt = "VV_VW"
+    fixed_control = "FIXED"
 
 
 class VVControl(BaseModel):
@@ -312,6 +316,12 @@ class VWControl(BaseModel):
     voltage: List[float]  # p.u. in V
     power_response: List[float]  # p.u. in VArs
 
+class FixedControl(BaseModel):
+    """OpenDSS setting for fixed P and Q setpoint control."""
+
+    p_value: float = None
+    q_value: float = None
+
 
 class InverterControl(BaseModel):
     """InverterControl with volt-var control and/or volt-watt control."""
@@ -319,6 +329,7 @@ class InverterControl(BaseModel):
     pvsystem_list: Optional[List[str]] = None
     vvcontrol: Optional[VVControl] = None
     vwcontrol: Optional[VWControl] = None
+    fixedcontrol: Optional[FixedControl] = None
     mode: InverterControlMode = InverterControlMode.voltvar
 
     @root_validator(pre=True)
