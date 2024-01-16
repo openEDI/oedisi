@@ -53,7 +53,18 @@ setup(
         "click",
         "pyyaml",
     ],
-    extras_require={"test": ["pytest", "httpx", "fastapi", "uvicorn", "grequests"]},
-    entry_points={"console_scripts": ["oedisi = oedisi.tools:cli"]}
+    extras_require={
+        "test": [
+            "pytest",
+            "httpx",
+            "fastapi",
+            "uvicorn",
+            "grequests",
+            "numpy",
+            "pandas",
+        ],
+        "metrics": ["pandas", "numpy"],
+    },
+    entry_points={"console_scripts": ["oedisi = oedisi.tools:cli"]},
     # cmdclass={"develop": PostDevelopCommand},
 )

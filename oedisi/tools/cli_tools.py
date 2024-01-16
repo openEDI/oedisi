@@ -22,6 +22,7 @@ from oedisi.componentframework.system_configuration import (
 )
 from .pausing_broker import PausingBroker
 from .testing_broker import TestingBroker
+from .metrics import evaluate_estimate
 
 from oedisi.types.common import (
     APP_NAME,
@@ -559,6 +560,8 @@ Command   : {foreground_fed.exec}
     _ = subprocess.run(foreground_fed.exec.split(), cwd=directory)
     helics_sim.wait()
 
+
+cli.add_command(evaluate_estimate)
 
 if __name__ == "__main__":
     cli()
