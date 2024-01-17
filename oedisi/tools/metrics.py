@@ -9,7 +9,6 @@ For angles:
 
 import click
 from pathlib import Path
-from oedisi.types.data_types import Topology
 
 try:
     import pandas as pd
@@ -33,7 +32,13 @@ else:
     type=click.Choice(["MARE", "RMSRE", "MAAE"]),
     help="metric to be used for evaluation",
 )
-def evaluate_estimate(path, metric):
+@click.option(
+    "--angle-unit",
+    default="radians",
+    type=click.Choice(["radians", "degrees"]),
+    help="Unit of estimated voltages",
+)
+def evaluate_estimate(path, metric, angle_unit):
     """Evaluate the estimate of the algorithm against the measurements.
 
     The measurements are assumed to be in the form of .feather files.
@@ -64,6 +69,7 @@ def evaluate_estimate(path, metric):
     metric : str
         Metric to be used for evaluation. The options are:
     """
+    path = Path(path)
     if not _has_dependencies:
         raise ImportError("numpy and pandas are required to do this.")
     # measurement files have columns with buses along with a time column
@@ -75,9 +81,27 @@ def evaluate_estimate(path, metric):
 
     time = true_voltages_real["time"]
     estimated_time = estimated_magnitude["time"]
-    assert list(time[1:]) == list(estimated_time)
-    true_voltages_real = true_voltages_real.iloc[1:, :]
-    true_voltages_imag = true_voltages_imag.iloc[1:, :]
+    common_time = set(time).intersection(estimated_time)
+
+    true_voltages_real = true_voltages_real[
+        true_voltages_real["time"].isin(common_time)
+    ]
+    true_voltages_imag = true_voltages_imag[
+        true_voltages_imag["time"].isin(common_time)
+    ]
+    estimated_magnitude = estimated_magnitude[
+        estimated_magnitude["time"].isin(common_time)
+    ]
+    estimated_angle = estimated_angle[estimated_angle["time"].isin(common_time)]
+
+    estimated_magnitude = estimated_magnitude.groupby("time").last().reset_index()
+    estimated_angle = estimated_angle.groupby("time").last().reset_index()
+
+    assert list(true_voltages_real["time"]) == list(
+        estimated_magnitude["time"]
+    ), f"""Time does not match between true voltages and estimated magnitudes:
+    
+    {list(true_voltages_real["time"])} vs {list(estimated_magnitude["time"])}"""
 
     # Strip time column from voltages
     true_voltages_real = true_voltages_real.drop(columns=["time"]).reset_index(
@@ -90,6 +114,8 @@ def evaluate_estimate(path, metric):
         drop=True
     )
     estimated_angle = estimated_angle.drop(columns=["time"]).reset_index(drop=True)
+    if angle_unit == "degrees":  # convert to radians
+        estimated_angle = estimated_angle * np.pi / 180
 
     # Convert true voltages to magnitude and angles
     true_magnitudes = np.hypot(true_voltages_real, true_voltages_imag)
