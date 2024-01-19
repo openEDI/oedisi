@@ -1,48 +1,54 @@
 {
-    "title": "AdmittanceSparse",
-    "type": "object",
     "properties": {
         "from_equipment": {
-            "title": "From Equipment",
-            "type": "array",
             "items": {
                 "type": "string"
-            }
+            },
+            "title": "From Equipment",
+            "type": "array"
         },
         "to_equipment": {
-            "title": "To Equipment",
-            "type": "array",
             "items": {
                 "type": "string"
-            }
+            },
+            "title": "To Equipment",
+            "type": "array"
         },
         "equipment_type": {
-            "title": "Equipment Type",
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
+            "anyOf": [
+                {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                {
+                    "type": "null"
+                }
+            ],
+            "default": null,
+            "title": "Equipment Type"
         },
         "admittance_list": {
-            "title": "Admittance List",
-            "type": "array",
             "items": {
-                "type": "array",
-                "minItems": 2,
                 "maxItems": 2,
-                "items": [
+                "minItems": 2,
+                "prefixItems": [
                     {
                         "type": "number"
                     },
                     {
                         "type": "number"
                     }
-                ]
-            }
+                ],
+                "type": "array"
+            },
+            "title": "Admittance List",
+            "type": "array"
         },
         "units": {
-            "title": "Units",
             "default": "S",
+            "title": "Units",
             "type": "string"
         }
     },
@@ -50,5 +56,7 @@
         "from_equipment",
         "to_equipment",
         "admittance_list"
-    ]
+    ],
+    "title": "AdmittanceSparse",
+    "type": "object"
 }
