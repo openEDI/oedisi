@@ -1,6 +1,5 @@
-from fastapi import FastAPI, BackgroundTasks, UploadFile
+from fastapi import FastAPI, BackgroundTasks
 from fastapi.exceptions import HTTPException
-from fastapi.responses import FileResponse
 
 from pathlib import Path
 
@@ -10,7 +9,6 @@ import traceback
 import uvicorn
 import logging
 import socket
-import time
 import yaml
 import sys
 import os
@@ -24,7 +22,7 @@ def read_settings():
     component_map = {}
     yaml_file = BASE_PATH / "docker-compose.yml"
     assert yaml_file.exists(), f"{yaml_file} does not exist"
-    with open(yaml_file, "r") as stream:
+    with open(yaml_file) as stream:
         config = yaml.safe_load(stream)
     services = config["services"]
     print(services)
@@ -46,7 +44,7 @@ def run_simulation(services, component_map, broker_ip, api_port):
     broker = h.helicsCreateBroker("zmq", "", initstring)
     logging.info(broker)
     isconnected = h.helicsBrokerIsConnected(broker)
-    logging.info(f"Broker connected: " + str(isconnected))
+    logging.info("Broker connected: " + str(isconnected))
     logging.info(str(component_map))
     replies = []
     for service_ip, service_port in component_map.items():
@@ -83,7 +81,7 @@ async def run_feeder(background_tasks: BackgroundTasks):
     try:
         data_input = read_settings()
         background_tasks.add_task(run_simulation, *data_input)
-    except Exception as e:
+    except Exception:
         err = traceback.format_exc()
         raise HTTPException(status_code=404, detail=str(err))
 

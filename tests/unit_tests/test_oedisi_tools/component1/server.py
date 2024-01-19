@@ -1,11 +1,8 @@
 from oedisi.types.common import BrokerConfig
 from component1 import TestFederate
 from fastapi import FastAPI, BackgroundTasks
-from pydantic import BaseModel
-from typing import List, Dict
 import uvicorn
 import socket
-import json
 import sys
 
 app = FastAPI()

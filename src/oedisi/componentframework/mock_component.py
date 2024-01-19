@@ -99,7 +99,7 @@ class MockFederate:
         self.fed = h.helicsCreateValueFederateFromConfig("helics_config.json")
         logger.info(f"Created federate {self.fed.name}")
 
-        with open("input_mapping.json", "r") as f:
+        with open("input_mapping.json") as f:
             port_mapping = json.load(f)
             self.subscriptions = {}
             for name, key in port_mapping.items():

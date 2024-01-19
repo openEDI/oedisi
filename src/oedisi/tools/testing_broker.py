@@ -55,6 +55,6 @@ class TestingBroker:
             current_state = self.broker.query("broker", "current_state")
             cores = current_state["cores"]
             if len(cores) == 2 and all(
-                (core["state"] == "init_requested" for core in cores)
+                core["state"] == "init_requested" for core in cores
             ):
                 return

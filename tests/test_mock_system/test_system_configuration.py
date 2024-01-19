@@ -3,7 +3,6 @@ from oedisi.componentframework.system_configuration import (
     WiringDiagram,
 )
 from oedisi.componentframework.mock_component import MockComponent
-import json
 
 component_types = {"MockComponent": MockComponent}
 wiring_diagram = WiringDiagram.parse_file("test_system.json")

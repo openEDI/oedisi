@@ -97,9 +97,9 @@ def build(
         oedisi build --component-dict components.json --system scenario.json
 
     \f
+
     Parameters
     ----------
-
     target_directory : str (default="build")
         build path
     system : str (default="system.json")
@@ -114,7 +114,7 @@ def build(
         The port exposed externally from k8s for external access on localhost
     """
     click.echo(f"Loading the components defined in {component_dict}")
-    with open(component_dict, "r") as f:
+    with open(component_dict) as f:
         component_dict_of_files = json.load(f)
         component_types = {
             name: get_basic_component(component_file)
@@ -227,12 +227,12 @@ def edit_docker_file(file_path, component: Component):
 
     with open(file_path, "w") as f:
         f.write(f"FROM {BASE_DOCKER_IMAGE}\n")
-        f.write(f"RUN apt-get update\n")
-        f.write(f"RUN apt-get install -y git ssh\n")
+        f.write("RUN apt-get update\n")
+        f.write("RUN apt-get install -y git ssh\n")
         f.write(f"RUN mkdir {component.name}\n")
         f.write(f"COPY  . ./{component.name}\n")
         f.write(f"WORKDIR ./{component.name}\n")
-        f.write(f"RUN pip install -r requirements.txt\n")
+        f.write("RUN pip install -r requirements.txt\n")
         f.write(f"EXPOSE {component.container_port}/tcp\n")
         cmd = f'CMD {["python", "server.py", component.host, str(component.container_port)]}\n'
         cmd = cmd.replace("'", '"')
@@ -252,7 +252,7 @@ def create_docker_compose_file(
     config = {"services": {}, "networks": {}}
 
     config["services"][f"{APP_NAME}_{BROKER_SERVICE}"] = {
-        "build": {"context": f"./broker/."},
+        "build": {"context": "./broker/."},
         "image": f"{DOCKER_HUB_USER}/{APP_NAME}_{BROKER_SERVICE}",
         "ports": [f"{broker_port}:{broker_port}"],
         "networks": {"custom-network": {"ipv4_address": "10.5.0.2"}},
@@ -414,9 +414,9 @@ def test_description(target_directory, component_desc, parameters):
 
 
     \f
+
     Parameters
     ----------
-
     target_directory : str
         build location
 
@@ -435,7 +435,6 @@ def test_description(target_directory, component_desc, parameters):
         inputs and outputs (basically recorder federate?)
     Create and run system with wiring diagram
     """
-
     comp_desc = ComponentDescription.parse_file(component_desc)
     comp_desc.directory = os.path.dirname(component_desc)
 
@@ -504,7 +503,7 @@ def remove_from_runner_config(runner_config, element):
 
 def remove_from_json(system_json, element):
     "Remove federate from configuration and resave with revised.json"
-    with open(system_json, "r") as f:
+    with open(system_json) as f:
         runner_config = RunnerConfig.parse_obj(json.load(f))
         new_config, without_feds = remove_from_runner_config(runner_config, element)
 
@@ -532,9 +531,9 @@ def debug_component(runner, foreground):
     and then run our debugging component in standard in / standard out.
 
     \f
+
     Parameters
     ----------
-
     runner : str
         filepath to system runner json
 
