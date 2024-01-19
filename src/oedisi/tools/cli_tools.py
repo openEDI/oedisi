@@ -34,6 +34,7 @@ from oedisi.types.common import (
     KUBERNETES_SERVICE_NAME,
 )
 
+
 @click.group()
 def cli():
     pass
@@ -47,7 +48,8 @@ def bad_type_checker(type, x):
 def get_basic_component(filename):
     # before, the runner would use the directory given _in_ the component description
     # which may be inaccurate
-    comp_desc = ComponentDescription.parse_file(filename)
+    with open(filename) as f:
+        comp_desc = ComponentDescription.model_validate(json.load(f))
     comp_desc.directory = os.path.dirname(filename)
     return basic_component(comp_desc, bad_type_checker)
 
@@ -121,7 +123,8 @@ def build(
         }
 
     click.echo(f"Loading system json {system}")
-    wiring_diagram = WiringDiagram.parse_file(system)
+    with open(system) as f:
+        wiring_diagram = WiringDiagram.model_validate(json.load(f))
 
     click.echo(f"Building system in {target_directory}")
 
@@ -130,10 +133,10 @@ def build(
             os.mkdir(target_directory)
         validate_optional_inputs(wiring_diagram, component_dict_of_files)
         edit_docker_files(wiring_diagram, component_types)
-        create_docker_compose_file(wiring_diagram, target_directory, broker_port, component_types)
-        create_kubernetes_deployment(
-            wiring_diagram, target_directory, broker_port
+        create_docker_compose_file(
+            wiring_diagram, target_directory, broker_port, component_types
         )
+        create_kubernetes_deployment(wiring_diagram, target_directory, broker_port)
 
     else:
         runner_config = generate_runner_config(
@@ -143,19 +146,18 @@ def build(
         with open(f"{target_directory}/system_runner.json", "w") as f:
             f.write(runner_config.json(indent=2))
 
-def validate_optional_inputs(
-    wiring_diagram: WiringDiagram, component_dict_of_files: dict
-):
+
+def validate_optional_inputs(wiring_diagram: WiringDiagram, component_dict_of_files: dict):
     for component in wiring_diagram.components:
-        assert hasattr(
-            component, "host"
-        ), f"host parameter required for component {component.name} for multi-continer model build"
-        assert hasattr(
-            component, "container_port"
-        ), f"post parameter required for component {component.name} for multi-continer model build"
+        assert hasattr(component, "host"), (
+            f"host parameter required for component {component.name} for multi-continer model build"
+        )
+        assert hasattr(component, "container_port"), (
+            f"post parameter required for component {component.name} for multi-continer model build"
+        )
 
 
-def drop_null_values(model: Any)-> dict:
+def drop_null_values(model: Any) -> dict:
     clean_model = {}
     assert isinstance(model, dict), "input to this function should be a dict"
     for k, v in model.items():
@@ -180,8 +182,9 @@ def drop_null_values(model: Any)-> dict:
             clean_model[key_name] = v
     return clean_model
 
+
 def create_kubernetes_deployment(
-    wiring_diagram: WiringDiagram, target_directory:Path|str, broker_port:int
+    wiring_diagram: WiringDiagram, target_directory: Path | str, broker_port: int
 ):
     kube_folder = os.path.join(target_directory, "kubernetes")
     if not os.path.exists(kube_folder):
@@ -190,12 +193,10 @@ def create_kubernetes_deployment(
     service = client.V1Service(
         api_version="v1",
         kind="Service",
-        metadata= client.V1ObjectMeta(
-            name = KUBERNETES_SERVICE_NAME
-        ),
+        metadata=client.V1ObjectMeta(name=KUBERNETES_SERVICE_NAME),
         spec=client.V1ServiceSpec(
             cluster_ip="None",
-            selector={"app" : APP_NAME},
+            selector={"app": APP_NAME},
         ),
     )
 
@@ -204,63 +205,62 @@ def create_kubernetes_deployment(
         yaml.dump(service_dict, f)
 
     broker_component = Component(
-        name=BROKER_SERVICE,
-        container_port=broker_port,
-        type = BROKER_SERVICE,
-        parameters={}
+        name=BROKER_SERVICE, container_port=broker_port, type=BROKER_SERVICE, parameters={}
     )
     create_single_kubernestes_deyployment(broker_component, kube_folder)
     for component in wiring_diagram.components:
         create_single_kubernestes_deyployment(component, kube_folder)
 
 
-def create_single_kubernestes_deyployment(component:Component, kube_folder:Path|str):
+def clone_broker(yaml_file_path, target_directory):
+    broker_folder = os.path.join(target_directory, "broker")
+    if not os.path.exists(broker_folder):
+        os.makedirs(broker_folder)
+    shutil.copytree("./broker", broker_folder, dirs_exist_ok=True)
+    shutil.copy(yaml_file_path, broker_folder)
+    return
 
-    fixed_container_name =  component.name.replace("_", "-")
+
+def create_single_kubernestes_deyployment(component: Component, kube_folder: Path | str):
+    fixed_container_name = component.name.replace("_", "-")
     my_container = client.V1Container(
-        name = fixed_container_name,
-        image = component.image,
-        env = [
-            client.V1EnvVar(
-                name="PORT",
-                value=str(component.container_port)
-            ),
+        name=fixed_container_name,
+        image=component.image,
+        env=[
+            client.V1EnvVar(name="PORT", value=str(component.container_port)),
             client.V1EnvVar(
                 name="SERVICE_NAME",
                 value=KUBERNETES_SERVICE_NAME,
-            )
+            ),
         ],
-        ports =  [
-            client.V1ContainerPort(
-                container_port = component.container_port
-            )],
-        )
+        ports=[client.V1ContainerPort(container_port=component.container_port)],
+    )
 
     pod = client.V1Pod(
         api_version="v1",
         kind="Pod",
         metadata=client.V1ObjectMeta(
             name=f"{fixed_container_name}-pod",
-            labels ={"app" : APP_NAME},
+            labels={"app": APP_NAME},
         ),
         spec=client.V1PodSpec(
             containers=[my_container],
             hostname=component.name.replace("_", "-"),
             subdomain="oedisi-service",
-            ),
-        )
+        ),
+    )
 
     pod_dict = drop_null_values(pod.to_dict())
     with open(os.path.join(kube_folder, f"{component.name}.yml"), "w") as f:
         yaml.dump(pod_dict, f)
 
-def edit_docker_file(file_path, component: Component):
 
+def edit_docker_file(file_path, component: Component):
     dir_path = os.path.abspath(os.path.join(file_path, os.pardir))
     server_file = os.path.join(dir_path, "server.py")
-    assert os.path.exists(
-        server_file
-    ), f"Server.py file missing for {component.name}.REST API implementation expected in a server.py file"
+    assert os.path.exists(server_file), (
+        f"Server.py file missing for {component.name}.REST API implementation expected in a server.py file"
+    )
 
     with open(file_path, "w") as f:
         f.write(f"FROM {BASE_DOCKER_IMAGE}\n")
@@ -271,14 +271,14 @@ def edit_docker_file(file_path, component: Component):
         f.write(f"WORKDIR ./{component.type}\n")
         f.write(f"RUN pip install -r requirements.txt\n")
         f.write(f"EXPOSE {component.container_port}/tcp\n")
-        cmd = f'CMD {["python", "server.py"]}\n'
+        cmd = f"CMD {['python', 'server.py']}\n"
         cmd = cmd.replace("'", '"')
         f.write(cmd)
     pass
 
 
 def edit_docker_files(wiring_diagram: WiringDiagram, component_types: Dict):
-    parsed_components  = []
+    parsed_components = []
     for component in wiring_diagram.components:
         if component.type not in parsed_components:
             parsed_components.append(component.type)
@@ -288,15 +288,18 @@ def edit_docker_files(wiring_diagram: WiringDiagram, component_types: Dict):
 
 
 def create_docker_compose_file(
-    wiring_diagram: WiringDiagram, target_directory: str, broker_port: int, component_types: Dict
+    wiring_diagram: WiringDiagram,
+    target_directory: str,
+    broker_port: int,
+    component_types: Dict,
 ):
     config = {"services": {}, "networks": {}}
 
     config["services"][f"{APP_NAME}_{BROKER_SERVICE}"] = {
         "build": {"context": f"../{BROKER_SERVICE}/."},
         "image": f"{DOCKER_HUB_USER}/{APP_NAME}_{BROKER_SERVICE}",
-        "hostname" : f"{BROKER_SERVICE}",
-        "environment" : {"PORT": str(broker_port)},
+        "hostname": f"{BROKER_SERVICE}",
+        "environment": {"PORT": str(broker_port)},
         "ports": [f"{broker_port}:{broker_port}"],
         "networks": {"custom-network": {}},
     }
@@ -306,8 +309,8 @@ def create_docker_compose_file(
         config["services"][f"{APP_NAME}_{component.name}"] = {
             "build": {"context": f"../{component_type._origin_directory}/."},
             "image": f"{component.image}",
-            "hostname" : f"{component.name.replace('_', '-')}",
-            "environment" : {"PORT": str(component.container_port)},
+            "hostname": f"{component.name.replace('_', '-')}",
+            "environment": {"PORT": str(component.container_port)},
             "ports": [f"{component.container_port}:{component.container_port}"],
             "networks": {"custom-network": {}},
         }
@@ -414,16 +417,16 @@ def run_mc(runner, kubernetes, docker_compose):
     os.system("docker system prune --all")
     os.system("docker network prune --all")
     if docker_compose:
-        assert (
-            file_name == "docker-compose.yml"
-        ), f"{file_name} is not a valid docker-compose.yml file"
+        assert file_name == "docker-compose.yml", (
+            f"{file_name} is not a valid docker-compose.yml file"
+        )
         build_path = os.path.dirname(os.path.abspath(runner))
         os.chdir(build_path)
         os.system("docker-compose up")
     elif kubernetes:
-        assert (
-            file_name == "deployment.yml"
-        ), f"{file_name} is not a valid deployment.yml file for kubernetes."
+        assert file_name == "deployment.yml", (
+            f"{file_name} is not a valid deployment.yml file for kubernetes."
+        )
         build_path = os.path.dirname(os.path.abspath(runner))
         os.system(f"kubectl apply -f {build_path}")
     else:
@@ -437,9 +440,7 @@ def run_mc(runner, kubernetes, docker_compose):
     type=click.Path(),
     help="Target directory to put the system in",
 )
-@click.option(
-    "--component-desc", type=click.Path(), help="Path to component description"
-)
+@click.option("--component-desc", type=click.Path(), help="Path to component description")
 @click.option(
     "--parameters",
     default=None,
@@ -483,7 +484,8 @@ def test_description(target_directory, component_desc, parameters):
     Create and run system with wiring diagram
     """
 
-    comp_desc = ComponentDescription.parse_file(component_desc)
+    with open(component_desc) as f:
+        comp_desc = ComponentDescription.model_validate(json.load(f))
     comp_desc.directory = os.path.dirname(component_desc)
 
     if parameters is None:
@@ -521,7 +523,7 @@ def test_description(target_directory, component_desc, parameters):
     )
     runner_config, _ = remove_from_runner_config(runner_config, "broker")
     with open(f"{target_directory}/system_runner.json", "w") as f:
-        f.write(runner_config.json())
+        f.write(runner_config.model_dump_json())
 
     background_runner = subprocess.Popen(
         ["helics", "run", f"--path={target_directory}/system_runner.json"]
@@ -534,14 +536,18 @@ def test_description(target_directory, component_desc, parameters):
     actual_inputs = sorted(
         list(map(lambda x: x.split("/")[1], federate_inputs["component"]))
     )
-    assert expected_inputs == actual_inputs, f"Input mismatch: expected {expected_inputs}, got {actual_inputs}"
+    assert expected_inputs == actual_inputs, (
+        f"Input mismatch: expected {expected_inputs}, got {actual_inputs}"
+    )
     print("✓")
     print("Testing dynamic output names")
     expected_outputs = sorted(
         list(map(lambda x: "component/" + x.port_name, comp_desc.dynamic_outputs))
     )
     actual_outputs = sorted(federate_outputs["component"])
-    assert expected_outputs == actual_outputs, f"Output mismatch: expected {expected_outputs}, got {actual_outputs}"
+    assert expected_outputs == actual_outputs, (
+        f"Output mismatch: expected {expected_outputs}, got {actual_outputs}"
+    )
     print("✓")
 
 
@@ -556,13 +562,13 @@ def remove_from_runner_config(runner_config, element):
 def remove_from_json(system_json, element):
     "Remove federate from configuration and resave with revised.json"
     with open(system_json, "r") as f:
-        runner_config = RunnerConfig.parse_obj(json.load(f))
+        runner_config = RunnerConfig.model_validate(json.load(f))
         new_config, without_feds = remove_from_runner_config(runner_config, element)
 
         new_path = system_json + "revised.json"
         click.echo(f"Saving new json to {new_path}")
         with open(new_path, "w") as f:
-            f.write(new_config.json())
+            f.write(new_config.model_dump_json())
         return new_config, new_path, without_feds
 
 

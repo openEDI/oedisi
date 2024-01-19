@@ -1,7 +1,7 @@
 from __future__ import annotations
 import datetime
 from enum import Enum
-from pydantic import BaseModel, root_validator
+from pydantic import model_validator, BaseModel, RootModel
 from typing import List, Optional, Union, Tuple
 
 ### Supporting Functions ###
@@ -22,7 +22,7 @@ class StateArray(BaseModel):
 
     values: List[int]
     ids: List[str]
-    time: Optional[datetime.datetime]
+    time: Optional[datetime.datetime] = None
 
 
 class SwitchStates(StateArray):
@@ -51,7 +51,7 @@ class CostArray(BaseModel):
     values: List[List[float]]
     ids: List[str]
     units: str = "$"
-    time: Optional[datetime.datetime]
+    time: Optional[datetime.datetime] = None
 
 
 class RealCostFunctions(CostArray):
@@ -85,9 +85,9 @@ class MeasurementArray(BaseModel):
     values: List[float]
     ids: List[str]
     units: str
-    accuracy: Optional[List[float]]
-    bad_data_threshold: Optional[List[float]]
-    time: Optional[datetime.datetime]
+    accuracy: Optional[List[float]] = None
+    bad_data_threshold: Optional[List[float]] = None
+    time: Optional[datetime.datetime] = None
 
 
 class BusArray(MeasurementArray):
@@ -223,16 +223,16 @@ class StatesOfCharge(EquipmentArray):
 class Topology(BaseModel):
     admittance: Union[AdmittanceSparse, AdmittanceMatrix]
     injections: Injection
-    incidences: Optional[IncidenceList]
-    base_voltage_angles: Optional[VoltagesAngle]
-    base_voltage_magnitudes: Optional[VoltagesMagnitude]
+    incidences: Optional[IncidenceList] = None
+    base_voltage_angles: Optional[VoltagesAngle] = None
+    base_voltage_magnitudes: Optional[VoltagesMagnitude] = None
     slack_bus: List[str] = []
 
 
 class Incidence(BaseModel):
     from_equipment: List[str]
     to_equipment: List[str]
-    equipment_type: Optional[List[str]]
+    equipment_type: Optional[List[str]] = None
 
 
 class IncidenceList(Incidence):
@@ -260,9 +260,6 @@ class Injection(BaseModel):
     impedance_imaginary: ImpedanceImaginary = {"values": [], "ids": [], "node_ids": []}
 
 
-Topology.update_forward_refs()
-
-
 class Command(BaseModel):
     """JSON Configuration for external object commands.
 
@@ -276,10 +273,7 @@ class Command(BaseModel):
     val: str
 
 
-class CommandList(BaseModel):
-    """List[Command] with JSON parsing."""
-
-    __root__: List[Command]
+CommandList = RootModel[List[Command]]
 
 
 class ReactivePowerSetting(Enum):
@@ -325,7 +319,8 @@ class InverterControl(BaseModel):
     vwcontrol: Optional[VWControl] = None
     mode: InverterControlMode = InverterControlMode.voltvar
 
-    @root_validator(pre=True)
+    @model_validator(mode="before")
+    @classmethod
     def check_mode(cls, values):
         """Make sure that mode reflects vvcontrol and vwcontrol data."""
         if "mode" not in values or (
@@ -341,7 +336,4 @@ class InverterControl(BaseModel):
         return values
 
 
-class InverterControlList(BaseModel):
-    """List[InverterControl] with JSON parsing."""
-
-    __root__: List[InverterControl]
+InverterControlList = RootModel[List[InverterControl]]

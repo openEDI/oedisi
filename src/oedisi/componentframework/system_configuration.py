@@ -1,5 +1,5 @@
 """
-This module defines common types and methods for configuration.
+Define common types and methods for configuration.
 
 The final method `generate_runner_config` brings together
 a `WiringDiagram` and a dictionary of `ComponentTypes` with
@@ -14,27 +14,28 @@ and the links between them.
 """
 
 from collections import defaultdict
-from typing import List, Dict, Type, Any
+from typing import List, Dict, Type, Any, Optional
 import os
 import logging
 import shutil
 import psutil
 from abc import ABC, abstractmethod, abstractproperty
 
-from pydantic import BaseModel, validator
-from typing import List, Optional, Any, Dict
+from pydantic import field_validator, BaseModel, ValidationInfo
 from oedisi.types.common import DOCKER_HUB_USER, APP_NAME
 
 
 class AnnotatedType(BaseModel):
-    "Class for representing the types of components and their interfaces"
+    """Represent the types of components and their interfaces."""
+
     type: str
-    description: Optional[str]
-    unit: Optional[str]
-    port_id: Optional[str]
+    description: Optional[str] = None
+    unit: Optional[str] = None
+    port_id: Optional[str] = None
 
     @property
     def port_name(self):
+        """Get name of port (which is prepended with name in HELICS)."""
         if self.port_id is None:
             return self.type
         return self.port_id
@@ -104,31 +105,35 @@ class Port(BaseModel):
 
 
 class Component(BaseModel):
-    """Component type used in WiringDiagram, includes name,
-    component type, and initial parameters"""
+    """A component type in WiringDiagram, includes name, type, and initial parameters."""
 
     name: str
     type: str
-    host: Optional[str]
-    container_port: Optional[int]
+    host: Optional[str] = None
+    container_port: Optional[int] = None
     image: str = ""
     parameters: Dict[str, Any]
 
     def port(self, port_name: str):
         return Port(name=self.name, port_name=port_name)
 
-    @validator("image", pre=True, always=True)
-    def validate_image(cls, v, values, **kwargs):
+    @field_validator("image", mode="before")
+    @classmethod
+    def validate_image(cls, v, info: ValidationInfo):
+        """Add latest tag to name if not specified."""
         if not v:
-            return f"{DOCKER_HUB_USER}/{APP_NAME}_{values['type'].lower()}:latest"
+            return f"{DOCKER_HUB_USER}/{APP_NAME}_{info.data['type']}:latest"
         return v
 
+
 class ComponentStruct(BaseModel):
-    component : Component
-    links : List[Link]
+    component: Component
+    links: List[Link]
+
 
 class WiringDiagram(BaseModel):
     "Cosimulation configuration. This may end up wrapped in another interface"
+
     name: str
     components: List[Component]
     links: List[Link]
@@ -155,17 +160,21 @@ class WiringDiagram(BaseModel):
             if proc.name() == "helics_broker":
                 proc.kill()
 
-    @validator("components")
+    @field_validator("components")
+    @classmethod
     def check_component_names(cls, components):
         "Check that the components all have unique names"
         names = set(map(lambda c: c.name, components))
         assert len(names) == len(components)
         return components
 
-    @validator("links")
-    def check_link_names(cls, links, values, **kwargs):
-        if "components" in values:
-            components = values["components"]
+    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
+    @field_validator("links")
+    @classmethod
+    def check_link_names(cls, links, info: ValidationInfo):
+        if "components" in info.data:
+            components = info.data["components"]
             names = set(map(lambda c: c.name, components))
             for link in links:
                 assert link.source in names and link.target in names
@@ -184,6 +193,7 @@ class WiringDiagram(BaseModel):
 
 class Federate(BaseModel):
     "Federate configuration for HELICS CLI"
+
     directory: str
     hostname: str = "localhost"
     name: str
@@ -224,17 +234,15 @@ def initialize_federates(
     for l in wiring_diagram.links:
         source_types = components[l.source].dynamic_outputs
         target_types = components[l.target].dynamic_inputs
-        assert (
-            l.source_port in source_types
-        ), f"{l.source} does not have {l.source_port}"
-        assert (
-            l.target_port in target_types
-        ), f"{l.target} does not have dynamic input {l.target_port}"
+        assert l.source_port in source_types, f"{l.source} does not have {l.source_port}"
+        assert l.target_port in target_types, (
+            f"{l.target} does not have dynamic input {l.target_port}"
+        )
         source_type = source_types[l.source_port]
         target_type = target_types[l.target_port]
-        assert compatability_checker(
-            source_type, target_type
-        ), f"{source_type} is not compatible with {target_type}"
+        assert compatability_checker(source_type, target_type), (
+            f"{source_type} is not compatible with {target_type}"
+        )
 
     federates = []
     for name, component in components.items():
@@ -265,7 +273,7 @@ class RunnerConfig(BaseModel):
     Save to JSON
 
     >>> with open(filename, "w") as f:
-    ...    f.write(config.json())
+    ...    f.write(config.model_dump_json())
 
     Run Simulation
 
@@ -314,6 +322,4 @@ def generate_runner_config(
         name="broker",
         exec=f"helics_broker -f {len(federates)} --loglevel=warning",
     )
-    return RunnerConfig(
-        name=wiring_diagram.name, federates=(federates + [broker_federate])
-    )
+    return RunnerConfig(name=wiring_diagram.name, federates=(federates + [broker_federate]))

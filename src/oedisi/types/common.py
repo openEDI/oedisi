@@ -27,4 +27,4 @@ class HeathCheck(BaseModel):
 
 class ServerReply(BaseModel):
     detail: str
-    action: Optional[str]
+    action: Optional[str] = None
