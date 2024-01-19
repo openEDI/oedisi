@@ -25,7 +25,7 @@ classifiers = [
 dependencies = [
   "helics-apps>=3.2.1",
   "helics>=3.2.1",
-  "pydantic>=1.7,<2",
+  "pydantic~=2",
   "psutil",
   "click",
   "pyyaml==5.3.1",
