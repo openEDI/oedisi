@@ -4,19 +4,19 @@ commit = true
 tag = true
 
 [[tool.bumpversion.files]]
-filename = "setup.py"
+filename = "pyproject.toml"
 
 [[tool.bumpversion.files]]
-filename = "oedisi/__init__.py"
+filename = "src/oedisi/__init__.py"
 
 [[tool.bumpversion.files]]
-filename = "oedisi/tools/__init__.py"
+filename = "src/oedisi/tools/__init__.py"
 
 [[tool.bumpversion.files]]
-filename = "oedisi/types/__init__.py"
+filename = "src/oedisi/types/__init__.py"
 
 [[tool.bumpversion.files]]
-filename = "oedisi/componentframework/__init__.py"
+filename = "src/oedisi/componentframework/__init__.py"
 
 [[tool.bumpversion.files]]
 filename = "CITATION.cff"
