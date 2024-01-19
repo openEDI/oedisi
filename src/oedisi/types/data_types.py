@@ -2,7 +2,7 @@ from __future__ import annotations
 import datetime
 from enum import Enum
 from pydantic import BaseModel, root_validator
-from typing import Optional, Union, Tuple
+from typing import Tuple
 
 ### Supporting Functions ###
 # TODO: Connect with CIM values
@@ -16,13 +16,13 @@ class StateArray(BaseModel):
     Extended by classes:
         "SwitchStates",
         "CapacitorStates",
-        "RegulatorStates"
+        "RegulatorStates".
 
     """
 
     values: list[int]
     ids: list[str]
-    time: Optional[datetime.datetime]
+    time: datetime.datetime | None
 
 
 class SwitchStates(StateArray):
@@ -44,14 +44,14 @@ class CostArray(BaseModel):
         "ReactiveCostFunctions",
         "RealWholesalePrices",
         "ReactiveWholesalePrices",
-        "OperationalCosts"
+        "OperationalCosts".
 
     """
 
     values: list[list[float]]
     ids: list[str]
     units: str = "$"
-    time: Optional[datetime.datetime]
+    time: datetime.datetime | None
 
 
 class RealCostFunctions(CostArray):
@@ -79,15 +79,15 @@ class MeasurementArray(BaseModel):
     Extended by classes:
         "BusArray",
         "EquipmentArray",
-        "EquipmentNodeArray"
+        "EquipmentNodeArray".
     """
 
     values: list[float]
     ids: list[str]
     units: str
-    accuracy: Optional[list[float]]
-    bad_data_threshold: Optional[list[float]]
-    time: Optional[datetime.datetime]
+    accuracy: list[float] | None
+    bad_data_threshold: list[float] | None
+    time: datetime.datetime | None
 
 
 class BusArray(MeasurementArray):
@@ -96,7 +96,7 @@ class BusArray(MeasurementArray):
         "VoltagesMagnitude",
         "VoltagesAngle",
         "VoltagesReal",
-        "VoltagesImaginary"
+        "VoltagesImaginary".
     """
 
     pass
@@ -116,7 +116,7 @@ class EquipmentArray(MeasurementArray):
         "ImpedanceMagnitude",
         "ImpedanceAngle",
         "ImpedanceReal",
-        "ImpedanceImaginary",
+        "ImpedanceImaginary",.
     """
 
     pass
@@ -221,18 +221,18 @@ class StatesOfCharge(EquipmentArray):
 
 
 class Topology(BaseModel):
-    admittance: Union[AdmittanceSparse, AdmittanceMatrix]
+    admittance: AdmittanceSparse | AdmittanceMatrix
     injections: Injection
-    incidences: Optional[IncidenceList]
-    base_voltage_angles: Optional[VoltagesAngle]
-    base_voltage_magnitudes: Optional[VoltagesMagnitude]
+    incidences: IncidenceList | None = None
+    base_voltage_angles: VoltagesAngle | None = None
+    base_voltage_magnitudes: VoltagesMagnitude | None = None
     slack_bus: list[str] = []
 
 
 class Incidence(BaseModel):
     from_equipment: list[str]
     to_equipment: list[str]
-    equipment_type: Optional[list[str]]
+    equipment_type: list[str] | None
 
 
 class IncidenceList(Incidence):
@@ -273,7 +273,7 @@ class Command(BaseModel):
 
     obj_name: str
     obj_property: str
-    val: Union[int, float, str, list[int], list[float], list[str]]
+    val: int | float | str | list[int] | list[float] | list[str]
 
 
 class CommandList(BaseModel):
@@ -320,9 +320,9 @@ class VWControl(BaseModel):
 class InverterControl(BaseModel):
     """InverterControl with volt-var control and/or volt-watt control."""
 
-    pvsystem_list: Optional[list[str]] = None
-    vvcontrol: Optional[VVControl] = None
-    vwcontrol: Optional[VWControl] = None
+    pvsystem_list: list[str] | None = None
+    vvcontrol: VVControl | None = None
+    vwcontrol: VWControl | None = None
     mode: InverterControlMode = InverterControlMode.voltvar
 
     @root_validator(pre=True)

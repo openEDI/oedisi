@@ -27,7 +27,7 @@ from oedisi.types.common import DOCKER_HUB_USER, APP_NAME
 
 
 class AnnotatedType(BaseModel):
-    "Class for representing the types of components and their interfaces"
+    "Class for representing the types of components and their interfaces."
 
     type: str
     description: Optional[str]
@@ -106,7 +106,7 @@ class Port(BaseModel):
 
 class Component(BaseModel):
     """Component type used in WiringDiagram, includes name,
-    component type, and initial parameters
+    component type, and initial parameters.
     """
 
     name: str
@@ -127,7 +127,7 @@ class Component(BaseModel):
 
 
 class WiringDiagram(BaseModel):
-    "Cosimulation configuration. This may end up wrapped in another interface"
+    "Cosimulation configuration. This may end up wrapped in another interface."
 
     name: str
     components: List[Component]
@@ -157,7 +157,7 @@ class WiringDiagram(BaseModel):
 
     @validator("components")
     def check_component_names(cls, components):
-        "Check that the components all have unique names"
+        "Check that the components all have unique names."
         names = set(map(lambda c: c.name, components))
         assert len(names) == len(components)
         return components
@@ -183,7 +183,7 @@ class WiringDiagram(BaseModel):
 
 
 class Federate(BaseModel):
-    "Federate configuration for HELICS CLI"
+    "Federate configuration for HELICS CLI."
 
     directory: str
     hostname: str = "localhost"
@@ -204,7 +204,7 @@ def initialize_federates(
     compatability_checker,
     target_directory=".",
 ) -> List[Federate]:
-    "Initialize all the federates"
+    "Initialize all the federates."
     components = {}
     link_map = get_link_map(wiring_diagram)
     for component in wiring_diagram.components:
@@ -259,7 +259,7 @@ def get_link_map(wiring_diagram: WiringDiagram):
 
 
 class RunnerConfig(BaseModel):
-    """HELICS running config for the full simulation
+    """HELICS running config for the full simulation.
 
     Examples
     --------
@@ -316,5 +316,5 @@ def generate_runner_config(
         exec=f"helics_broker -f {len(federates)} --loglevel=warning",
     )
     return RunnerConfig(
-        name=wiring_diagram.name, federates=(federates + [broker_federate])
+        name=wiring_diagram.name, federates=([*federates, broker_federate])
     )

@@ -11,7 +11,7 @@ MockFederate defines the corresponding implementation.
 
 import helics as h
 import logging
-from typing import Dict
+from typing import Dict, Optional
 import json
 import os
 from . import system_configuration
@@ -29,9 +29,9 @@ class MockComponent(system_configuration.ComponentType):
         name,
         parameters: Dict[str, Dict[str, str]],
         directory: str,
-        host: str = None,
-        port: int = None,
-        comp_type: str = None,
+        host: Optional[str] = None,
+        port: Optional[int] = None,
+        comp_type: Optional[str] = None,
     ):
         self._name = name
         self._directory = directory

@@ -1,6 +1,4 @@
-"""
-Generate basic component from description JSON
-"""
+"""Generate basic component from description JSON."""
 
 import json
 import os
@@ -12,7 +10,7 @@ from typing import List, Any, Dict
 
 
 class ComponentDescription(BaseModel):
-    """Component description for simple ComponentType
+    """Component description for simple ComponentType.
 
     Parameters
     ----------
@@ -45,7 +43,7 @@ def component_from_json(f, type_checker):
 
 
 def basic_component(comp_desc: ComponentDescription, type_checker):
-    """Uses data in component_definition to create a new component type
+    """Uses data in component_definition to create a new component type.
 
     Parameters
     ----------

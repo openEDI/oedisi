@@ -19,7 +19,7 @@ IN_GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS") == "true"
 
 @pytest.fixture
 def base_path() -> Path:
-    """Get the current folder of the test"""
+    """Get the current folder of the test."""
     return Path(__file__).parent
 
 
