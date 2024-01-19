@@ -17,7 +17,7 @@
             "$ref": "#/definitions/Injection"
         },
         "incidences": {
-            "$ref": "#/definitions/Incidence"
+            "$ref": "#/definitions/IncidenceList"
         },
         "base_voltage_angles": {
             "$ref": "#/definitions/VoltagesAngle"
@@ -529,8 +529,8 @@
                 }
             }
         },
-        "Incidence": {
-            "title": "Incidence",
+        "IncidenceList": {
+            "title": "IncidenceList",
             "type": "object",
             "properties": {
                 "from_equipment": {
@@ -553,11 +553,19 @@
                     "items": {
                         "type": "string"
                     }
+                },
+                "ids": {
+                    "title": "Ids",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             },
             "required": [
                 "from_equipment",
-                "to_equipment"
+                "to_equipment",
+                "ids"
             ]
         },
         "VoltagesAngle": {

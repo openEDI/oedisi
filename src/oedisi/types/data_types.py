@@ -223,7 +223,7 @@ class StatesOfCharge(EquipmentArray):
 class Topology(BaseModel):
     admittance: Union[AdmittanceSparse, AdmittanceMatrix]
     injections: Injection
-    incidences: Optional[Incidence]
+    incidences: Optional[IncidenceList]
     base_voltage_angles: Optional[VoltagesAngle]
     base_voltage_magnitudes: Optional[VoltagesMagnitude]
     slack_bus: List[str] = []
@@ -233,6 +233,10 @@ class Incidence(BaseModel):
     from_equipment: List[str]
     to_equipment: List[str]
     equipment_type: Optional[List[str]]
+
+
+class IncidenceList(Incidence):
+    ids: List[str]
 
 
 class AdmittanceSparse(Incidence):
