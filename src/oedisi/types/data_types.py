@@ -116,7 +116,7 @@ class EquipmentArray(MeasurementArray):
         "ImpedanceMagnitude",
         "ImpedanceAngle",
         "ImpedanceReal",
-        "ImpedanceImaginary",.
+        "ImpedanceImaginary".
     """
 
     pass
@@ -133,7 +133,7 @@ class EquipmentNodeArray(MeasurementArray):
         "PowersMagnitude",
         "PowersAngle",
         "PowersReal",
-        "PowersImaginary",
+        "PowersImaginary".
 
     """
 
