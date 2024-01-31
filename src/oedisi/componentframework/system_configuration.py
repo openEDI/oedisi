@@ -168,8 +168,6 @@ class WiringDiagram(BaseModel):
         assert len(names) == len(components)
         return components
 
-    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
-    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
     @field_validator("links")
     @classmethod
     def check_link_names(cls, links, info: ValidationInfo):
