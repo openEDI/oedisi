@@ -236,7 +236,7 @@ class Incidence(BaseModel):
 
 
 class IncidenceList(Incidence):
-    ids: List[str]
+    ids: list[str]
 
 
 class AdmittanceSparse(Incidence):
@@ -258,9 +258,6 @@ class Injection(BaseModel):
     power_imaginary: PowersImaginary = {"values": [], "ids": [], "node_ids": []}
     impedance_real: ImpedanceReal = {"values": [], "ids": [], "node_ids": []}
     impedance_imaginary: ImpedanceImaginary = {"values": [], "ids": [], "node_ids": []}
-
-
-Topology.update_forward_refs()
 
 
 class Command(BaseModel):
