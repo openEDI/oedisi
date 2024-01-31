@@ -260,6 +260,9 @@ class Injection(BaseModel):
     impedance_imaginary: ImpedanceImaginary = {"values": [], "ids": [], "node_ids": []}
 
 
+Topology.update_forward_refs()
+
+
 class Command(BaseModel):
     """JSON Configuration for external object commands.
 
