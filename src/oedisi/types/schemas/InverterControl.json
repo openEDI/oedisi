@@ -42,7 +42,7 @@
             "properties": {
                 "deltaq_factor": {
                     "title": "Deltaq Factor",
-                    "default": 0.7,
+                    "default": -1.0,
                     "type": "number"
                 },
                 "varchangetolerance": {
@@ -90,7 +90,7 @@
             "properties": {
                 "deltap_factor": {
                     "title": "Deltap Factor",
-                    "default": 1.0,
+                    "default": -1.0,
                     "type": "number"
                 },
                 "voltage": {

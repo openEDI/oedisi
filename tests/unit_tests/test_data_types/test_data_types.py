@@ -1,8 +1,8 @@
-import os
 import json
 import pytest
-import importlib
 from pathlib import Path
+import logging
+import importlib
 
 DATADIR = Path(__file__).parent / "data"
 
@@ -14,5 +14,6 @@ def test_all_formats(filepath):
     name = filepath.name.split(".")[0]
     with open(filepath) as f_in:
         json_data = json.load(f_in)
+        logging.info(filepath)
         class_name = getattr(importlib.import_module("oedisi.types.data_types"), name)
         class_name.parse_obj(json_data)
