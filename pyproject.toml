@@ -28,7 +28,7 @@ dependencies = [
   "pydantic>=1.7,<2",
   "psutil",
   "click",
-  "pyyaml==5.3.1",
+  "pyyaml~=6.0",
 ]
 
 [project.license]
