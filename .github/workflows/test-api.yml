@@ -28,7 +28,7 @@ jobs:
     - name: Install python package
       shell: bash -l {0}
       run: |
-        pip install -e .
+        pip install .
     - name: Run integration tests
       shell: bash -l {0}
       run: |
