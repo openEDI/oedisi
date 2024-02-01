@@ -1,7 +1,7 @@
 from oedisi.types.common import BrokerConfig
 from component2 import TestFederate
 from fastapi import FastAPI, BackgroundTasks
-from pydantic import BaseModel
+from pydantic.v1 import BaseModel
 from typing import List, Dict
 import uvicorn
 import socket

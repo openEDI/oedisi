@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic.v1 import BaseModel
 from typing import Dict, Optional
 
 BASE_DOCKER_IMAGE = "python:3.10.6-slim-bullseye"

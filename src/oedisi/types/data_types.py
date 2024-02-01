@@ -1,7 +1,7 @@
 from __future__ import annotations
 import datetime
 from enum import Enum
-from pydantic import BaseModel, root_validator
+from pydantic.v1 import BaseModel, root_validator
 from typing import List, Optional, Union, Tuple
 
 ### Supporting Functions ###

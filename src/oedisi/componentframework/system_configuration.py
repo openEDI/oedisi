@@ -21,13 +21,14 @@ import shutil
 import psutil
 from abc import ABC, abstractmethod, abstractproperty
 
-from pydantic import BaseModel, validator
+from pydantic.v1 import BaseModel, validator
 from typing import List, Optional, Any, Dict
 from oedisi.types.common import DOCKER_HUB_USER, APP_NAME
 
 
 class AnnotatedType(BaseModel):
     "Class for representing the types of components and their interfaces"
+
     type: str
     description: Optional[str]
     unit: Optional[str]
@@ -126,6 +127,7 @@ class Component(BaseModel):
 
 class WiringDiagram(BaseModel):
     "Cosimulation configuration. This may end up wrapped in another interface"
+
     name: str
     components: List[Component]
     links: List[Link]
@@ -181,6 +183,7 @@ class WiringDiagram(BaseModel):
 
 class Federate(BaseModel):
     "Federate configuration for HELICS CLI"
+
     directory: str
     hostname: str = "localhost"
     name: str
@@ -221,9 +224,7 @@ def initialize_federates(
     for l in wiring_diagram.links:
         source_types = components[l.source].dynamic_outputs
         target_types = components[l.target].dynamic_inputs
-        assert (
-            l.source_port in source_types
-        ), f"{l.source} does not have {l.source_port}"
+        assert l.source_port in source_types, f"{l.source} does not have {l.source_port}"
         assert (
             l.target_port in target_types
         ), f"{l.target} does not have dynamic input {l.target_port}"
@@ -311,6 +312,4 @@ def generate_runner_config(
         name="broker",
         exec=f"helics_broker -f {len(federates)} --loglevel=warning",
     )
-    return RunnerConfig(
-        name=wiring_diagram.name, federates=(federates + [broker_federate])
-    )
+    return RunnerConfig(name=wiring_diagram.name, federates=(federates + [broker_federate]))
