@@ -28,4 +28,4 @@ jobs:
     - name: Run unit tests
       shell: bash -l {0}
       run: |
-        pytest tests/unit_tests/ --cov=. --cov-report xml
+        pytest -s tests/unit_tests/ --cov=. --cov-report xml
