@@ -28,7 +28,6 @@ def test_debug(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     assert result.exit_code == 0
 
 
-@pytest.mark.skip(reason="Testing")
 def test_build_description(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     monkeypatch.chdir(base_path)
 
