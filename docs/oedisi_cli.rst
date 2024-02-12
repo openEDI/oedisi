@@ -57,8 +57,8 @@ Multi-Container REST API endpoint requirements
 |                 |                 | model           |                 |
 +-----------------+-----------------+-----------------+-----------------+
 | /results        | GET             | Enables users   | Broker federate |
-|                 |                 | to fetch        | + all recorder  |
-|                 |                 | results from    | federates       |
+|                 |                 | to fetch        |                 |
+|                 |                 | results from all|                 |
 |                 |                 | the recorder    |                 |
 |                 |                 | federates       |                 |
 +-----------------+-----------------+-----------------+-----------------+
@@ -79,7 +79,12 @@ Multi-Container REST API endpoint requirements
 |                 |                 | available       |                 |
 |                 |                 | sensors         |                 |
 +-----------------+-----------------+-----------------+-----------------+
-
+| /download       | GET             | Enables users   | Recorder        |
+|                 |                 | to fetch        | federates only  |
+|                 |                 | results from a  |                 |
+|                 |                 | recorder        |                 |
+|                 |                 | federate        |                 |
++-----------------+-----------------+-----------------+-----------------+
 
 Multi-Container Model Setup
 ---------------------------
