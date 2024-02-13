@@ -253,6 +253,7 @@ def create_docker_compose_file(
     config["services"][f"{APP_NAME}_{BROKER_SERVICE}"] = {
         "build": {"context": f"./broker/."},
         "image": f"{DOCKER_HUB_USER}/{APP_NAME}_{BROKER_SERVICE}",
+        "environment" : {"PORT": str(broker_port)},
         "ports": [f"{broker_port}:{broker_port}"],
         "networks": {"custom-network": {"ipv4_address": "10.5.0.2"}},
     }
@@ -261,6 +262,7 @@ def create_docker_compose_file(
         config["services"][f"{APP_NAME}_{component.name}"] = {
             "build": {"context": f"./{component.name}/."},
             "image": f"{component.image}",
+            "environment" : {"PORT": str(component.container_port)},
             "ports": [f"{component.container_port}:{component.container_port}"],
             "networks": {"custom-network": {"ipv4_address": component.host}},
         }
