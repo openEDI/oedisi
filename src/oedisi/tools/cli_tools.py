@@ -120,13 +120,11 @@ def build(
             name: get_basic_component(component_file)
             for name, component_file in component_dict_of_files.items()
         }
-        print(f"{component_types=}")
 
     click.echo(f"Loading system json {system}")
     wiring_diagram = WiringDiagram.parse_file(system)
 
     click.echo(f"Building system in {target_directory}")
-    print(f"{wiring_diagram=}")
 
     runner_config = generate_runner_config(
         wiring_diagram, component_types, target_directory=target_directory
@@ -157,7 +155,6 @@ def validate_optional_inputs(
         assert hasattr(
             component, "container_port"
         ), f"post parameter required for component {component.name} for multi-continer model build"
-        print(component.type, component.image)
 
 def create_kubernetes_deployment(
     wiring_diagram: WiringDiagram, target_directory, broker_port, node_port
