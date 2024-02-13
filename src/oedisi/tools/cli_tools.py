@@ -156,7 +156,6 @@ def validate_optional_inputs(
             component, "container_port"
         ), f"post parameter required for component {component.name} for multi-continer model build"
 
-
 def create_kubernetes_deployment(
     wiring_diagram: WiringDiagram, target_directory, broker_port, node_port
 ):
@@ -229,9 +228,9 @@ def edit_docker_file(file_path, component: Component):
         f.write(f"FROM {BASE_DOCKER_IMAGE}\n")
         f.write(f"RUN apt-get update\n")
         f.write(f"RUN apt-get install -y git ssh\n")
-        f.write(f"RUN mkdir {component.name}\n")
-        f.write(f"COPY  . ./{component.name}\n")
-        f.write(f"WORKDIR ./{component.name}\n")
+        f.write(f"RUN mkdir {component.type}\n")
+        f.write(f"COPY  . ./{component.type}\n")
+        f.write(f"WORKDIR ./{component.type}\n")
         f.write(f"RUN pip install -r requirements.txt\n")
         f.write(f"EXPOSE {component.container_port}/tcp\n")
         cmd = f'CMD {["python", "server.py", component.host, str(component.container_port)]}\n'
