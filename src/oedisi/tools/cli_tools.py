@@ -194,11 +194,13 @@ def create_kubernetes_deployment(
     for component in wiring_diagram.components:
         container["name"] = component.name.replace("_", "-")
         container["image"] = component.image
+        container["env"] = [{"name": "PORT", "value" : str(component.container_port)}]
         container["ports"] = [{"containerPort": component.container_port}]
         deployment["spec"]["template"]["spec"]["containers"].append(container.copy())
 
     container["name"] = BROKER_SERVICE.replace("_", "-")
     container["image"] = f"{DOCKER_HUB_USER}/{APP_NAME}_{BROKER_SERVICE}:latest"
+    container["env"] = [{"name": "PORT", "value" : str(broker_port)}]
     container["ports"] = [{"containerPort": broker_port}]
     deployment["spec"]["template"]["spec"]["containers"].append(container.copy())
 
