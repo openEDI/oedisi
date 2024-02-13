@@ -120,11 +120,13 @@ def build(
             name: get_basic_component(component_file)
             for name, component_file in component_dict_of_files.items()
         }
+        print(f"{component_types=}")
 
     click.echo(f"Loading system json {system}")
     wiring_diagram = WiringDiagram.parse_file(system)
 
     click.echo(f"Building system in {target_directory}")
+    print(f"{wiring_diagram=}")
 
     runner_config = generate_runner_config(
         wiring_diagram, component_types, target_directory=target_directory
@@ -155,7 +157,7 @@ def validate_optional_inputs(
         assert hasattr(
             component, "container_port"
         ), f"post parameter required for component {component.name} for multi-continer model build"
-
+        print(component.type, component.image)
 
 def create_kubernetes_deployment(
     wiring_diagram: WiringDiagram, target_directory, broker_port, node_port
@@ -229,9 +231,9 @@ def edit_docker_file(file_path, component: Component):
         f.write(f"FROM {BASE_DOCKER_IMAGE}\n")
         f.write(f"RUN apt-get update\n")
         f.write(f"RUN apt-get install -y git ssh\n")
-        f.write(f"RUN mkdir {component.name}\n")
-        f.write(f"COPY  . ./{component.name}\n")
-        f.write(f"WORKDIR ./{component.name}\n")
+        f.write(f"RUN mkdir {component.type}\n")
+        f.write(f"COPY  . ./{component.type}\n")
+        f.write(f"WORKDIR ./{component.type}\n")
         f.write(f"RUN pip install -r requirements.txt\n")
         f.write(f"EXPOSE {component.container_port}/tcp\n")
         cmd = f'CMD {["python", "server.py", component.host, str(component.container_port)]}\n'

@@ -11,6 +11,10 @@ from typing import List, Optional, Union, Tuple
 Complex = Tuple[float, float]
 
 
+class DefaultFileNames(str, Enum):
+    INPUT_MAPPING = "input_mapping.json"
+    STATIC_INPUTS = "static_inputs.json"
+
 class StateArray(BaseModel):
     """
     Extended by classes:
