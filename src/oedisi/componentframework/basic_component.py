@@ -7,7 +7,7 @@ import os
 from shutil import copytree
 from . import system_configuration
 from .system_configuration import AnnotatedType
-from pydantic import BaseModel
+from pydantic.v1 import BaseModel
 from typing import List, Any, Dict
 
 
