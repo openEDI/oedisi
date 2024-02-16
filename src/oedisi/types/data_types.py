@@ -273,7 +273,7 @@ class Command(BaseModel):
 
     obj_name: str
     obj_property: str
-    val: Union[int, float, str, List[int], List[float], List[str]]
+    val: str
 
 
 class CommandList(BaseModel):

@@ -28,6 +28,64 @@ Build and run::
     oedisi build
     oedisi run
 
+Multi-Container REST API endpoint requirements
+----------------------------------------------
+
++-----------------+-----------------+-----------------+-----------------+
+| Endpoint        | Type            | Usage           | Reqired by      |
++=================+=================+=================+=================+
+| /               | GET             | Heath check.    | All containers  |
+|                 |                 | Returns         |                 |
+|                 |                 | hostname and ip |                 |
++-----------------+-----------------+-----------------+-----------------+
+| /profiles       | POST            | Enables upload  | Broker federate |
+|                 |                 | of user defined | + simulator     |
+|                 |                 | profiles to the | federate        |
+|                 |                 | container       | (feeder         |
+|                 |                 |                 | federate in     |
+|                 |                 |                 | sigdal example) |
++-----------------+-----------------+-----------------+-----------------+
+| /model          | POST            | Enables upload  | Broker federate |
+|                 |                 | of user defined | + simulator     |
+|                 |                 | distribution    | federate        |
+|                 |                 | model to the    |                 |
+|                 |                 | feeder          |                 |
+|                 |                 | container.      |                 |
+|                 |                 | Upload requires |                 |
+|                 |                 | a zipped        |                 |
+|                 |                 | distribution    |                 |
+|                 |                 | model           |                 |
++-----------------+-----------------+-----------------+-----------------+
+| /results        | GET             | Enables users   | Broker federate |
+|                 |                 | to fetch        |                 |
+|                 |                 | results from all|                 |
+|                 |                 | the recorder    |                 |
+|                 |                 | federates       |                 |
++-----------------+-----------------+-----------------+-----------------+
+| /terminate      | GET             | Closes the      | Broker federate |
+|                 |                 | HELICS library  | only            |
+|                 |                 | and ternimates  | (co-simulation  |
+|                 |                 | the             | orchestrator)   |
+|                 |                 | co-simulation   |                 |
++-----------------+-----------------+-----------------+-----------------+
+| /run            | POST            | Starts federate | All containers  |
+|                 |                 | simulaton       |                 |
+|                 |                 | allowing to     |                 |
+|                 |                 | enter HELICS    |                 |
+|                 |                 | execution mode  |                 |
++-----------------+-----------------+-----------------+-----------------+
+| /sensor         | GET             | Enables         | Simulator       |
+|                 |                 | retrieval of    | federate only   |
+|                 |                 | available       |                 |
+|                 |                 | sensors         |                 |
++-----------------+-----------------+-----------------+-----------------+
+| /download       | GET             | Enables users   | Recorder        |
+|                 |                 | to fetch        | federates only  |
+|                 |                 | results from a  |                 |
+|                 |                 | recorder        |                 |
+|                 |                 | federate        |                 |
++-----------------+-----------------+-----------------+-----------------+
+
 Multi-Container Model Setup
 ---------------------------
 
@@ -110,6 +168,8 @@ Retrieve simulation results
 #. Data can be downloaded by making a POST request to the following endpoint ``http://{ip}:{port}/download``. This endpoint will communicate with all participating recorder federates ans retrieve the simulation results in a single zip file, 
 
 This will later be simplified so users are able to download all results using a single endpoint fromthe broker container.
+
+
 
 
 Debugging

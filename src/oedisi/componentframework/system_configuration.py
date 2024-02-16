@@ -121,9 +121,12 @@ class Component(BaseModel):
     @validator("image", pre=True, always=True)
     def validate_image(cls, v, values, **kwargs):
         if not v:
-            return f"{DOCKER_HUB_USER}/{APP_NAME}_{values['name']}:latest"
+            return f"{DOCKER_HUB_USER}/{APP_NAME}_{values['type'].lower()}:latest"
         return v
 
+class ComponentStruct(BaseModel):
+    component : Component
+    links : List[Link]
 
 class WiringDiagram(BaseModel):
     "Cosimulation configuration. This may end up wrapped in another interface"

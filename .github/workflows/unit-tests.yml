@@ -24,8 +24,8 @@ jobs:
     - name: Install python package
       shell: bash -l {0}
       run: |
-        pip install -e.[test]
+        pip install .[test]
     - name: Run unit tests
       shell: bash -l {0}
       run: |
-        pytest tests/unit_tests/ --cov=. --cov-report xml
+        pytest -s tests/unit_tests/ --cov=. --cov-report xml

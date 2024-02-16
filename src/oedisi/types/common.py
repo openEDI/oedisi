@@ -1,10 +1,16 @@
 from pydantic.v1 import BaseModel
 from typing import Dict, Optional
+from enum import Enum
 
 BASE_DOCKER_IMAGE = "python:3.10.6-slim-bullseye"
 BROKER_SERVICE = "broker"
 APP_NAME = "oedisi"
 DOCKER_HUB_USER = "aadillatif"
+
+
+class DefaultFileNames(str, Enum):
+    INPUT_MAPPING = "input_mapping.json"
+    STATIC_INPUTS = "static_inputs.json"
 
 
 class BrokerConfig(BaseModel):

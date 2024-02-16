@@ -1,7 +1,7 @@
 # This CITATION.cff file was generated with cffinit.
 # Visit https://bit.ly/cffinit to generate yours today!
 
-cff-version: 1.2.0
+cff-version: 1.2.1
 title: OEDI-SI
 message: >-
   If you use this software, please cite it using the
@@ -31,5 +31,5 @@ keywords:
   - Power Simulation
 license: BSD-3-Clause
 commit: a253c78e43c122d6624bbd098813a3d7033d7d0c
-version: 1.1.1
+version: 1.2.1
 date-released: '2023-05-24'
