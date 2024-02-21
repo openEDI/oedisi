@@ -296,17 +296,17 @@ def create_docker_compose_file(
         "hostname" : f"{BROKER_SERVICE}",
         "environment" : {"PORT": str(broker_port)},
         "ports": [f"{broker_port}:{broker_port}"],
-        "networks": {"custom-network": {"ipv4_address": "10.5.0.2"}},
+        "networks": {"custom-network": {}},
     }
 
     for component in wiring_diagram.components:
         config["services"][f"{APP_NAME}_{component.name}"] = {
             "build": {"context": f"./{component.name}/."},
             "image": f"{component.image}",
-            "hostname" : f"{component.name}",
+            "hostname" : f"{component.name.replace("_", "-")}",
             "environment" : {"PORT": str(component.container_port)},
             "ports": [f"{component.container_port}:{component.container_port}"],
-            "networks": {"custom-network": {"ipv4_address": component.host}},
+            "networks": {"custom-network": {}},
         }
 
     config["networks"] = {
