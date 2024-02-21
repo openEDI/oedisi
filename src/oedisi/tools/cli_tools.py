@@ -5,7 +5,8 @@ import yaml
 import json
 import os
 from pathlib import Path
-
+from kubernetes import client, config
+from typing import Any
 
 from distutils.dir_util import copy_tree
 
@@ -30,7 +31,6 @@ from oedisi.types.common import (
     BROKER_SERVICE,
     DOCKER_HUB_USER,
 )
-
 
 @click.group()
 def cli():
@@ -156,59 +156,97 @@ def validate_optional_inputs(
             component, "container_port"
         ), f"post parameter required for component {component.name} for multi-continer model build"
 
+
+def drop_null_values(model: Any)-> dict:
+    clean_model = {}
+    assert isinstance(model, dict), "input to this function should be a dict"
+    for k, v in model.items():
+        if "_" in k:
+            key_name = k.split("_")
+            if len(key_name[1]) > 2:
+                key_name[1] = key_name[1].capitalize()
+            else:
+                key_name[1] = key_name[1].upper()
+            key_name = "".join(key_name)
+        else:
+            key_name = k    
+                
+        if isinstance(v, dict):
+            clean_model[key_name] = drop_null_values(v)
+        elif isinstance(v, list):
+            new_list = []
+            for val in v:
+                new_list.append(drop_null_values(val))
+            clean_model[key_name] =new_list
+        elif v is not None:
+            clean_model[key_name] = v
+    return clean_model
+
 def create_kubernetes_deployment(
     wiring_diagram: WiringDiagram, target_directory, broker_port, node_port
 ):
     kube_folder = os.path.join(target_directory, "kubernetes")
     if not os.path.exists(kube_folder):
         os.mkdir(kube_folder)
+    
+    SERVICE_NAME = "oedisi-service"
+    
+    service = client.V1Service(
+        api_version="v1",
+        kind="Service",
+        metadata= client.V1ObjectMeta(
+            name = SERVICE_NAME
+        ),
+        spec=client.V1ServiceSpec(
+            cluster_ip="None",
+            selector={"app" : APP_NAME},
+        ),
+    )
 
-    service = {
-        "apiVersion": "v1",
-        "kind": "Service",
-        "metadata": {
-            "name": f"{APP_NAME}-service",
-        },
-        "spec": {
-            "type": "NodePort",
-            "selector": {"app": APP_NAME},
-            "ports": [{"port": broker_port, "nodePort": node_port}],
-        },
-    }
+    service_dict = drop_null_values(service.to_dict())
+    with open(os.path.join(kube_folder, f"service.yml"), "w") as f:
+        yaml.dump(service_dict, f)
 
-    deployment = {
-        "apiVersion": "apps/v1",
-        "kind": "Deployment",
-        "metadata": {"name": f"{APP_NAME}-deployment", "labels": {"app": APP_NAME}},
-        "spec": {
-            "replicas": 1,
-            "selector": {"matchLabels": {"app": APP_NAME}},
-            "template": {
-                "metadata": {"labels": {"app": APP_NAME}},
-                "spec": {"containers": []},
-            },
-        },
-    }
-
-    container = {}
     for component in wiring_diagram.components:
-        container["name"] = component.name.replace("_", "-")
-        container["image"] = component.image
-        container["env"] = [{"name": "PORT", "value" : str(component.container_port)}]
-        container["ports"] = [{"containerPort": component.container_port}]
-        deployment["spec"]["template"]["spec"]["containers"].append(container.copy())
 
-    container["name"] = BROKER_SERVICE.replace("_", "-")
-    container["image"] = f"{DOCKER_HUB_USER}/{APP_NAME}_{BROKER_SERVICE}:latest"
-    container["env"] = [{"name": "PORT", "value" : str(broker_port)}]
-    container["ports"] = [{"containerPort": broker_port}]
-    deployment["spec"]["template"]["spec"]["containers"].append(container.copy())
+        fixed_container_name =  component.name.replace("_", "-")
+        my_container = client.V1Container(            
+            name = fixed_container_name,
+            image = component.image,
+            env = [
+                client.V1EnvVar(
+                    name="PORT", 
+                    value=str(component.container_port)
+                ),
+                client.V1EnvVar(
+                    name="SERVICE_NAME", 
+                    value=SERVICE_NAME,
+                )
+            ],
+            ports =  [
+                client.V1ContainerPort(
+                    container_port = component.container_port
+                )],
+            )
+       
+        pod = client.V1Pod(
+            api_version="v1",
+            kind="Pod",
+            metadata=client.V1ObjectMeta(
+                name=f"{fixed_container_name}-pod",
+                labels ={"app" : APP_NAME},
+            ),
+            spec=client.V1PodSpec(
+                containers=[my_container],
+                hostname=component.name.replace("_", "-"),
+                subdomain="oedisi-service",
+                #node_port=int(component.container_port), #maybe
+                ),
+            )
 
-    with open(os.path.join(kube_folder, "deployment.yml"), "w") as f:
-        yaml.dump(deployment, f)
-    with open(os.path.join(kube_folder, "service.yml"), "w") as f:
-        yaml.dump(service, f)
-
+        pod_dict = drop_null_values(pod.to_dict())
+        with open(os.path.join(kube_folder, f"{component.name}.yml"), "w") as f:
+            yaml.dump(pod_dict, f)
 
 def clone_broker(yaml_file_path, target_directory):
     broker_folder = os.path.join(target_directory, "broker")
@@ -255,6 +293,7 @@ def create_docker_compose_file(
     config["services"][f"{APP_NAME}_{BROKER_SERVICE}"] = {
         "build": {"context": f"./broker/."},
         "image": f"{DOCKER_HUB_USER}/{APP_NAME}_{BROKER_SERVICE}",
+        "hostname" : f"{BROKER_SERVICE}",
         "environment" : {"PORT": str(broker_port)},
         "ports": [f"{broker_port}:{broker_port}"],
         "networks": {"custom-network": {"ipv4_address": "10.5.0.2"}},
@@ -264,6 +303,7 @@ def create_docker_compose_file(
         config["services"][f"{APP_NAME}_{component.name}"] = {
             "build": {"context": f"./{component.name}/."},
             "image": f"{component.image}",
+            "hostname" : f"{component.name}",
             "environment" : {"PORT": str(component.container_port)},
             "ports": [f"{component.container_port}:{component.container_port}"],
             "networks": {"custom-network": {"ipv4_address": component.host}},
