@@ -83,15 +83,9 @@ def evaluate_estimate(path, metric, angle_unit):
     estimated_time = estimated_magnitude["time"]
     common_time = set(time).intersection(estimated_time)
 
-    true_voltages_real = true_voltages_real[
-        true_voltages_real["time"].isin(common_time)
-    ]
-    true_voltages_imag = true_voltages_imag[
-        true_voltages_imag["time"].isin(common_time)
-    ]
-    estimated_magnitude = estimated_magnitude[
-        estimated_magnitude["time"].isin(common_time)
-    ]
+    true_voltages_real = true_voltages_real[true_voltages_real["time"].isin(common_time)]
+    true_voltages_imag = true_voltages_imag[true_voltages_imag["time"].isin(common_time)]
+    estimated_magnitude = estimated_magnitude[estimated_magnitude["time"].isin(common_time)]
     estimated_angle = estimated_angle[estimated_angle["time"].isin(common_time)]
 
     estimated_magnitude = estimated_magnitude.groupby("time").last().reset_index()
@@ -104,15 +98,9 @@ def evaluate_estimate(path, metric, angle_unit):
     {list(true_voltages_real["time"])} vs {list(estimated_magnitude["time"])}"""
 
     # Strip time column from voltages
-    true_voltages_real = true_voltages_real.drop(columns=["time"]).reset_index(
-        drop=True
-    )
-    true_voltages_imag = true_voltages_imag.drop(columns=["time"]).reset_index(
-        drop=True
-    )
-    estimated_magnitude = estimated_magnitude.drop(columns=["time"]).reset_index(
-        drop=True
-    )
+    true_voltages_real = true_voltages_real.drop(columns=["time"]).reset_index(drop=True)
+    true_voltages_imag = true_voltages_imag.drop(columns=["time"]).reset_index(drop=True)
+    estimated_magnitude = estimated_magnitude.drop(columns=["time"]).reset_index(drop=True)
     estimated_angle = estimated_angle.drop(columns=["time"]).reset_index(drop=True)
     if angle_unit == "degrees":  # convert to radians
         estimated_angle = estimated_angle * np.pi / 180
@@ -138,6 +126,18 @@ def evaluate_estimate(path, metric, angle_unit):
             * 100
         )
         click.echo(magnitude_error)
+    elif metric == "MAE":
+        # Use radians
+        # Use p.u. and discard when base voltage is zero
+        # \frac{1}{N} \sum_i |\hat{x_i} - x_i|
+        # N = 2n - 1 (?!?!?)
+        # There's a corresponding the table for scoring
+        raise NotImplementedError
+    elif metric == "MMR":
+        # Take estimation for voltage, use the Y-matrix and compute the implied power.
+        # We also take the measurements from the oedisi simulation.
+        # Compare the estimated voltage, implied power vs the measurements from the oedisi simulation.
+        raise NotImplementedError
     elif metric == "RMSRE":
         # Calculate root mean squared relative error
         magnitude_error = np.sqrt(
