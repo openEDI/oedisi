@@ -30,6 +30,7 @@ from oedisi.types.common import (
     BASE_DOCKER_IMAGE,
     BROKER_SERVICE,
     DOCKER_HUB_USER,
+    KUBERNETES_SERVICE_NAME,
 )
 
 @click.group()
@@ -177,7 +178,7 @@ def drop_null_values(model: Any)-> dict:
             new_list = []
             for val in v:
                 new_list.append(drop_null_values(val))
-            clean_model[key_name] =new_list
+            clean_model[key_name] = new_list
         elif v is not None:
             clean_model[key_name] = v
     return clean_model
@@ -189,13 +190,13 @@ def create_kubernetes_deployment(
     if not os.path.exists(kube_folder):
         os.mkdir(kube_folder)
     
-    SERVICE_NAME = "oedisi-service"
+    
     
     service = client.V1Service(
         api_version="v1",
         kind="Service",
         metadata= client.V1ObjectMeta(
-            name = SERVICE_NAME
+            name = KUBERNETES_SERVICE_NAME
         ),
         spec=client.V1ServiceSpec(
             cluster_ip="None",
@@ -220,7 +221,7 @@ def create_kubernetes_deployment(
                 ),
                 client.V1EnvVar(
                     name="SERVICE_NAME", 
-                    value=SERVICE_NAME,
+                    value=KUBERNETES_SERVICE_NAME,
                 )
             ],
             ports =  [
@@ -240,7 +241,6 @@ def create_kubernetes_deployment(
                 containers=[my_container],
                 hostname=component.name.replace("_", "-"),
                 subdomain="oedisi-service",
-                #node_port=int(component.container_port), #maybe
                 ),
             )
 

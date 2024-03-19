@@ -29,7 +29,7 @@ dependencies = [
   "psutil",
   "click",
   "pyyaml~=6.0",
-  "kubernetes",
+  "kubernetes>=29.0",
 ]
 
 [project.license]
