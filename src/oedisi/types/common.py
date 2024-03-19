@@ -11,7 +11,6 @@ KUBERNETES_SERVICE_NAME = "oedisi-service"
 class DefaultFileNames(str, Enum):
     INPUT_MAPPING = "input_mapping.json"
     STATIC_INPUTS = "static_inputs.json"
-    WIRING_DIAGRAM = "system.json"
 
 class BrokerConfig(BaseModel):
     broker_port: int = 23404
