@@ -70,7 +70,7 @@ def test_api_run(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     assert build_path.exists(), "Build path for the test project does not exist."
     clients = {}
     for folder in build_path.iterdir():
-        if folder.is_dir() and folder.name not in ["kubernetes", "tester"]:
+        if folder.is_dir() and folder.name in ["broker", "comp_abc", "comp_xyz"]:
             assert (
                 folder / "server.py"
             ).exists(), f"Server.py does not exist for path {folder}"
@@ -85,8 +85,7 @@ def test_api_run(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     ), f"No broker client in list of tested services. Available services {list(clients.keys())}"
     client = clients[BROKER_SERVICE]
     response = client.post("/run")
-    assert response.status_code == 200
-
+    assert response.status_code == 200, response.text
 
 # @pytest.mark.skipif(
 #    IN_GITHUB_ACTIONS,
