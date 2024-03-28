@@ -5,10 +5,8 @@ import yaml
 import json
 import os
 from pathlib import Path
-from kubernetes import client, config
+from kubernetes import client
 from typing import Any, Dict
-
-from distutils.dir_util import copy_tree
 
 from oedisi.componentframework.basic_component import (
     basic_component,
@@ -128,11 +126,13 @@ def build(
     click.echo(f"Building system in {target_directory}")
     
     if multi_container:
+        if not Path(target_directory).exists():
+            os.mkdir(target_directory)
         validate_optional_inputs(wiring_diagram, component_dict_of_files)
         edit_docker_files(wiring_diagram, component_types)
         create_docker_compose_file(wiring_diagram, target_directory, broker_port, component_types)
         create_kubernetes_deployment(
-            wiring_diagram, target_directory
+            wiring_diagram, target_directory, broker_port
         )
 
     else:
@@ -181,7 +181,7 @@ def drop_null_values(model: Any)-> dict:
     return clean_model
 
 def create_kubernetes_deployment(
-    wiring_diagram: WiringDiagram, target_directory
+    wiring_diagram: WiringDiagram, target_directory:Path|str, broker_port:int
 ):
     kube_folder = os.path.join(target_directory, "kubernetes")
     if not os.path.exists(kube_folder):
@@ -203,46 +203,56 @@ def create_kubernetes_deployment(
     with open(os.path.join(kube_folder, f"service.yml"), "w") as f:
         yaml.dump(service_dict, f)
 
+    broker_component = Component(
+        name=BROKER_SERVICE,
+        container_port=broker_port,
+        type = BROKER_SERVICE,
+        parameters={}
+    )
+    create_single_kubernestes_deyployment(broker_component, kube_folder)
     for component in wiring_diagram.components:
+        create_single_kubernestes_deyployment(component, kube_folder)
+        
 
-        fixed_container_name =  component.name.replace("_", "-")
-        my_container = client.V1Container(            
-            name = fixed_container_name,
-            image = component.image,
-            env = [
-                client.V1EnvVar(
-                    name="PORT", 
-                    value=str(component.container_port)
-                ),
-                client.V1EnvVar(
-                    name="SERVICE_NAME", 
-                    value=KUBERNETES_SERVICE_NAME,
-                )
-            ],
-            ports =  [
-                client.V1ContainerPort(
-                    container_port = component.container_port
-                )],
-            )
-       
-        pod = client.V1Pod(
-            api_version="v1",
-            kind="Pod",
-            metadata=client.V1ObjectMeta(
-                name=f"{fixed_container_name}-pod",
-                labels ={"app" : APP_NAME},
+def create_single_kubernestes_deyployment(component:Component, kube_folder:Path|str):
+
+    fixed_container_name =  component.name.replace("_", "-")
+    my_container = client.V1Container(            
+        name = fixed_container_name,
+        image = component.image,
+        env = [
+            client.V1EnvVar(
+                name="PORT", 
+                value=str(component.container_port)
             ),
-            spec=client.V1PodSpec(
-                containers=[my_container],
-                hostname=component.name.replace("_", "-"),
-                subdomain="oedisi-service",
-                ),
+            client.V1EnvVar(
+                name="SERVICE_NAME", 
+                value=KUBERNETES_SERVICE_NAME,
             )
+        ],
+        ports =  [
+            client.V1ContainerPort(
+                container_port = component.container_port
+            )],
+        )
+    
+    pod = client.V1Pod(
+        api_version="v1",
+        kind="Pod",
+        metadata=client.V1ObjectMeta(
+            name=f"{fixed_container_name}-pod",
+            labels ={"app" : APP_NAME},
+        ),
+        spec=client.V1PodSpec(
+            containers=[my_container],
+            hostname=component.name.replace("_", "-"),
+            subdomain="oedisi-service",
+            ),
+        )
 
-        pod_dict = drop_null_values(pod.to_dict())
-        with open(os.path.join(kube_folder, f"{component.name}.yml"), "w") as f:
-            yaml.dump(pod_dict, f)
-
+    pod_dict = drop_null_values(pod.to_dict())
+    with open(os.path.join(kube_folder, f"{component.name}.yml"), "w") as f:
+        yaml.dump(pod_dict, f)
 
 def edit_docker_file(file_path, component: Component):
  
