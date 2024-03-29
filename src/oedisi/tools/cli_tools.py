@@ -328,9 +328,7 @@ def create_docker_compose_file(
     yaml_file_path = f"{target_directory}/docker-compose.yml"
     with open(yaml_file_path, "w") as file:
         yaml.dump(config, file)
-    yaml_file_path = f"{BROKER_SERVICE}/docker-compose.yml"
-    with open(yaml_file_path, "w") as file:
-        yaml.dump(config, file)
+ 
     return yaml_file_path
 
 
