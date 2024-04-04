@@ -27,17 +27,16 @@ def read_settings():
     with open(yaml_file, "r") as stream:
         config = yaml.safe_load(stream)
     services = config["services"]
-    print(services)
     broker = services.pop("oedisi_broker")
-    broker_ip = broker["networks"]["custom-network"]["ipv4_address"]
+    broker_host = broker["hostname"]
     api_port = int(broker["ports"][0].split(":")[0])
 
     for service in services:
-        ip = services[service]["networks"]["custom-network"]["ipv4_address"]
+        ip = services[service]["hostname"]
         port = int(services[service]["ports"][0].split(":")[0])
         component_map[ip] = port
 
-    return services, component_map, broker_ip, api_port
+    return services, component_map, broker_host, api_port
 
 
 def run_simulation(services, component_map, broker_ip, api_port):
@@ -51,7 +50,6 @@ def run_simulation(services, component_map, broker_ip, api_port):
     replies = []
     for service_ip, service_port in component_map.items():
         url = f"http://{service_ip}:{service_port}/run/"
-        print(url)
         myobj = {
             "broker_port": 23404,
             "broker_ip": broker_ip,
@@ -62,7 +60,6 @@ def run_simulation(services, component_map, broker_ip, api_port):
 
     print(grequests.map(replies))
     return
-
 
 @app.get("/")
 def read_root():

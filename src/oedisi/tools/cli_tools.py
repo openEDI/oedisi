@@ -5,14 +5,14 @@ import yaml
 import json
 import os
 from pathlib import Path
-
-
-from distutils.dir_util import copy_tree
+from kubernetes import client
+from typing import Any, Dict
 
 from oedisi.componentframework.basic_component import (
     basic_component,
     ComponentDescription,
 )
+
 from oedisi.componentframework.mock_component import MockComponent
 from oedisi.componentframework.system_configuration import (
     RunnerConfig,
@@ -20,6 +20,8 @@ from oedisi.componentframework.system_configuration import (
     WiringDiagram,
     Component,
 )
+
+
 from .pausing_broker import PausingBroker
 from .testing_broker import TestingBroker
 from .metrics import evaluate_estimate
@@ -29,8 +31,8 @@ from oedisi.types.common import (
     BASE_DOCKER_IMAGE,
     BROKER_SERVICE,
     DOCKER_HUB_USER,
+    KUBERNETES_SERVICE_NAME,
 )
-
 
 @click.group()
 def cli():
@@ -86,7 +88,6 @@ def build(
     component_dict,
     multi_container,
     broker_port,
-    node_port=30000,
 ):
     """Build to the simulation folder
 
@@ -110,8 +111,6 @@ def build(
         A boolean specifying whether or not we're using the multi-container approach
     broker_port: float
         The port of the broker. If using kubernetes, is internal to k8s
-    node_port: float (default=30000)
-        The port exposed externally from k8s for external access on localhost
     """
     click.echo(f"Loading the components defined in {component_dict}")
     with open(component_dict, "r") as f:
@@ -120,30 +119,29 @@ def build(
             name: get_basic_component(component_file)
             for name, component_file in component_dict_of_files.items()
         }
-
+    
     click.echo(f"Loading system json {system}")
     wiring_diagram = WiringDiagram.parse_file(system)
 
     click.echo(f"Building system in {target_directory}")
-
-    runner_config = generate_runner_config(
-        wiring_diagram, component_types, target_directory=target_directory
-    )
-
-    with open(f"{target_directory}/system_runner.json", "w") as f:
-        f.write(runner_config.json(indent=2))
-
-    yaml_file_path = f"{target_directory}/docker-compose.yml"
-
+    
     if multi_container:
+        if not Path(target_directory).exists():
+            os.mkdir(target_directory)
         validate_optional_inputs(wiring_diagram, component_dict_of_files)
-        edit_docker_files(wiring_diagram, target_directory)
-        create_docker_compose_file(wiring_diagram, target_directory, broker_port)
-        clone_broker(yaml_file_path, target_directory)
+        edit_docker_files(wiring_diagram, component_types)
+        create_docker_compose_file(wiring_diagram, target_directory, broker_port, component_types)
         create_kubernetes_deployment(
-            wiring_diagram, target_directory, broker_port, node_port
+            wiring_diagram, target_directory, broker_port
         )
 
+    else:
+        runner_config = generate_runner_config(
+            wiring_diagram, component_types, target_directory=target_directory
+        )
+
+        with open(f"{target_directory}/system_runner.json", "w") as f:
+            f.write(runner_config.json(indent=2))
 
 def validate_optional_inputs(
     wiring_diagram: WiringDiagram, component_dict_of_files: dict
@@ -156,68 +154,108 @@ def validate_optional_inputs(
             component, "container_port"
         ), f"post parameter required for component {component.name} for multi-continer model build"
 
+
+def drop_null_values(model: Any)-> dict:
+    clean_model = {}
+    assert isinstance(model, dict), "input to this function should be a dict"
+    for k, v in model.items():
+        if "_" in k:
+            key_name = k.split("_")
+            if len(key_name[1]) > 2:
+                key_name[1] = key_name[1].capitalize()
+            else:
+                key_name[1] = key_name[1].upper()
+            key_name = "".join(key_name)
+        else:
+            key_name = k    
+                
+        if isinstance(v, dict):
+            clean_model[key_name] = drop_null_values(v)
+        elif isinstance(v, list):
+            new_list = []
+            for val in v:
+                new_list.append(drop_null_values(val))
+            clean_model[key_name] = new_list
+        elif v is not None:
+            clean_model[key_name] = v
+    return clean_model
+
 def create_kubernetes_deployment(
-    wiring_diagram: WiringDiagram, target_directory, broker_port, node_port
+    wiring_diagram: WiringDiagram, target_directory:Path|str, broker_port:int
 ):
     kube_folder = os.path.join(target_directory, "kubernetes")
     if not os.path.exists(kube_folder):
         os.mkdir(kube_folder)
+    
+    service = client.V1Service(
+        api_version="v1",
+        kind="Service",
+        metadata= client.V1ObjectMeta(
+            name = KUBERNETES_SERVICE_NAME
+        ),
+        spec=client.V1ServiceSpec(
+            cluster_ip="None",
+            selector={"app" : APP_NAME},
+        ),
+    )
 
-    service = {
-        "apiVersion": "v1",
-        "kind": "Service",
-        "metadata": {
-            "name": f"{APP_NAME}-service",
-        },
-        "spec": {
-            "type": "NodePort",
-            "selector": {"app": APP_NAME},
-            "ports": [{"port": broker_port, "nodePort": node_port}],
-        },
-    }
+    service_dict = drop_null_values(service.to_dict())
+    with open(os.path.join(kube_folder, f"service.yml"), "w") as f:
+        yaml.dump(service_dict, f)
 
-    deployment = {
-        "apiVersion": "apps/v1",
-        "kind": "Deployment",
-        "metadata": {"name": f"{APP_NAME}-deployment", "labels": {"app": APP_NAME}},
-        "spec": {
-            "replicas": 1,
-            "selector": {"matchLabels": {"app": APP_NAME}},
-            "template": {
-                "metadata": {"labels": {"app": APP_NAME}},
-                "spec": {"containers": []},
-            },
-        },
-    }
-
-    container = {}
+    broker_component = Component(
+        name=BROKER_SERVICE,
+        container_port=broker_port,
+        type = BROKER_SERVICE,
+        parameters={}
+    )
+    create_single_kubernestes_deyployment(broker_component, kube_folder)
     for component in wiring_diagram.components:
-        container["name"] = component.name.replace("_", "-")
-        container["image"] = component.image
-        container["ports"] = [{"containerPort": component.container_port}]
-        deployment["spec"]["template"]["spec"]["containers"].append(container.copy())
+        create_single_kubernestes_deyployment(component, kube_folder)
+        
 
-    container["name"] = BROKER_SERVICE.replace("_", "-")
-    container["image"] = f"{DOCKER_HUB_USER}/{APP_NAME}_{BROKER_SERVICE}:latest"
-    container["ports"] = [{"containerPort": broker_port}]
-    deployment["spec"]["template"]["spec"]["containers"].append(container.copy())
+def create_single_kubernestes_deyployment(component:Component, kube_folder:Path|str):
 
-    with open(os.path.join(kube_folder, "deployment.yml"), "w") as f:
-        yaml.dump(deployment, f)
-    with open(os.path.join(kube_folder, "service.yml"), "w") as f:
-        yaml.dump(service, f)
+    fixed_container_name =  component.name.replace("_", "-")
+    my_container = client.V1Container(            
+        name = fixed_container_name,
+        image = component.image,
+        env = [
+            client.V1EnvVar(
+                name="PORT", 
+                value=str(component.container_port)
+            ),
+            client.V1EnvVar(
+                name="SERVICE_NAME", 
+                value=KUBERNETES_SERVICE_NAME,
+            )
+        ],
+        ports =  [
+            client.V1ContainerPort(
+                container_port = component.container_port
+            )],
+        )
+    
+    pod = client.V1Pod(
+        api_version="v1",
+        kind="Pod",
+        metadata=client.V1ObjectMeta(
+            name=f"{fixed_container_name}-pod",
+            labels ={"app" : APP_NAME},
+        ),
+        spec=client.V1PodSpec(
+            containers=[my_container],
+            hostname=component.name.replace("_", "-"),
+            subdomain="oedisi-service",
+            ),
+        )
 
-
-def clone_broker(yaml_file_path, target_directory):
-    broker_folder = os.path.join(target_directory, "broker")
-    if not os.path.exists(broker_folder):
-        os.makedirs(broker_folder)
-    copy_tree("./broker", broker_folder)
-    shutil.copy(yaml_file_path, broker_folder)
-    return
-
+    pod_dict = drop_null_values(pod.to_dict())
+    with open(os.path.join(kube_folder, f"{component.name}.yml"), "w") as f:
+        yaml.dump(pod_dict, f)
 
 def edit_docker_file(file_path, component: Component):
+ 
     dir_path = os.path.abspath(os.path.join(file_path, os.pardir))
     server_file = os.path.join(dir_path, "server.py")
     assert os.path.exists(
@@ -233,36 +271,45 @@ def edit_docker_file(file_path, component: Component):
         f.write(f"WORKDIR ./{component.type}\n")
         f.write(f"RUN pip install -r requirements.txt\n")
         f.write(f"EXPOSE {component.container_port}/tcp\n")
-        cmd = f'CMD {["python", "server.py", component.host, str(component.container_port)]}\n'
+        cmd = f'CMD {["python", "server.py"]}\n'
         cmd = cmd.replace("'", '"')
         f.write(cmd)
     pass
 
 
-def edit_docker_files(wiring_diagram: WiringDiagram, target_directory: str):
+def edit_docker_files(wiring_diagram: WiringDiagram, component_types: Dict):
+    parsed_components  = []
     for component in wiring_diagram.components:
-        docker_path = os.path.join(target_directory, component.name, "Dockerfile")
-        edit_docker_file(docker_path, component)
+        if component.type not in parsed_components:
+            parsed_components.append(component.type)
+            component_type = component_types[component.type]
+            docker_path = os.path.join(component_type._origin_directory, "Dockerfile")
+            edit_docker_file(docker_path, component)
 
 
 def create_docker_compose_file(
-    wiring_diagram: WiringDiagram, target_directory: str, broker_port: int
+    wiring_diagram: WiringDiagram, target_directory: str, broker_port: int, component_types: Dict
 ):
     config = {"services": {}, "networks": {}}
 
     config["services"][f"{APP_NAME}_{BROKER_SERVICE}"] = {
-        "build": {"context": f"./broker/."},
+        "build": {"context": f"../{BROKER_SERVICE}/."},
         "image": f"{DOCKER_HUB_USER}/{APP_NAME}_{BROKER_SERVICE}",
+        "hostname" : f"{BROKER_SERVICE}",
+        "environment" : {"PORT": str(broker_port)},
         "ports": [f"{broker_port}:{broker_port}"],
-        "networks": {"custom-network": {"ipv4_address": "10.5.0.2"}},
+        "networks": {"custom-network": {}},
     }
 
     for component in wiring_diagram.components:
+        component_type = component_types[component.type]
         config["services"][f"{APP_NAME}_{component.name}"] = {
-            "build": {"context": f"./{component.name}/."},
+            "build": {"context": f"../{component_type._origin_directory}/."},
             "image": f"{component.image}",
+            "hostname" : f"{component.name.replace("_", "-")}",
+            "environment" : {"PORT": str(component.container_port)},
             "ports": [f"{component.container_port}:{component.container_port}"],
-            "networks": {"custom-network": {"ipv4_address": component.host}},
+            "networks": {"custom-network": {}},
         }
 
     config["networks"] = {
@@ -281,6 +328,7 @@ def create_docker_compose_file(
     yaml_file_path = f"{target_directory}/docker-compose.yml"
     with open(yaml_file_path, "w") as file:
         yaml.dump(config, file)
+ 
     return yaml_file_path
 
 
