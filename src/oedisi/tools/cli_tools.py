@@ -119,12 +119,12 @@ def build(
             name: get_basic_component(component_file)
             for name, component_file in component_dict_of_files.items()
         }
-    
+
     click.echo(f"Loading system json {system}")
     wiring_diagram = WiringDiagram.parse_file(system)
 
     click.echo(f"Building system in {target_directory}")
-    
+
     if multi_container:
         if not Path(target_directory).exists():
             os.mkdir(target_directory)
@@ -167,8 +167,8 @@ def drop_null_values(model: Any)-> dict:
                 key_name[1] = key_name[1].upper()
             key_name = "".join(key_name)
         else:
-            key_name = k    
-                
+            key_name = k
+
         if isinstance(v, dict):
             clean_model[key_name] = drop_null_values(v)
         elif isinstance(v, list):
@@ -186,7 +186,7 @@ def create_kubernetes_deployment(
     kube_folder = os.path.join(target_directory, "kubernetes")
     if not os.path.exists(kube_folder):
         os.mkdir(kube_folder)
-    
+
     service = client.V1Service(
         api_version="v1",
         kind="Service",
@@ -212,21 +212,21 @@ def create_kubernetes_deployment(
     create_single_kubernestes_deyployment(broker_component, kube_folder)
     for component in wiring_diagram.components:
         create_single_kubernestes_deyployment(component, kube_folder)
-        
+
 
 def create_single_kubernestes_deyployment(component:Component, kube_folder:Path|str):
 
     fixed_container_name =  component.name.replace("_", "-")
-    my_container = client.V1Container(            
+    my_container = client.V1Container(
         name = fixed_container_name,
         image = component.image,
         env = [
             client.V1EnvVar(
-                name="PORT", 
+                name="PORT",
                 value=str(component.container_port)
             ),
             client.V1EnvVar(
-                name="SERVICE_NAME", 
+                name="SERVICE_NAME",
                 value=KUBERNETES_SERVICE_NAME,
             )
         ],
@@ -235,7 +235,7 @@ def create_single_kubernestes_deyployment(component:Component, kube_folder:Path|
                 container_port = component.container_port
             )],
         )
-    
+
     pod = client.V1Pod(
         api_version="v1",
         kind="Pod",
@@ -255,7 +255,7 @@ def create_single_kubernestes_deyployment(component:Component, kube_folder:Path|
         yaml.dump(pod_dict, f)
 
 def edit_docker_file(file_path, component: Component):
- 
+
     dir_path = os.path.abspath(os.path.join(file_path, os.pardir))
     server_file = os.path.join(dir_path, "server.py")
     assert os.path.exists(
@@ -306,7 +306,7 @@ def create_docker_compose_file(
         config["services"][f"{APP_NAME}_{component.name}"] = {
             "build": {"context": f"../{component_type._origin_directory}/."},
             "image": f"{component.image}",
-            "hostname" : f"{component.name.replace("_", "-")}",
+            "hostname" : f"{component.name.replace('_', '-')}",
             "environment" : {"PORT": str(component.container_port)},
             "ports": [f"{component.container_port}:{component.container_port}"],
             "networks": {"custom-network": {}},
@@ -328,7 +328,7 @@ def create_docker_compose_file(
     yaml_file_path = f"{target_directory}/docker-compose.yml"
     with open(yaml_file_path, "w") as file:
         yaml.dump(config, file)
- 
+
     return yaml_file_path
 
 
