@@ -5,6 +5,6 @@ Examples
 
 - Power Flow: opendss simulation
 - A measurement apparent
-- State estimator algorithm
+- State estimator -
 - Recorder federates
 - Optimization algorithm in progress
