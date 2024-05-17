@@ -9,6 +9,7 @@ Welcome to oedisi's documentation!
    examples.rst
    design.rst
    oedisi_cli.rst
+   multi_container.rst
 
 
 Indices and tables

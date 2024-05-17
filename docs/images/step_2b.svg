@@ -1,0 +1,21 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 370.85833844217757 116.21789302765501" width="370.85833844217757" height="116.21789302765501">
+  <!-- svg-source:excalidraw -->
+  
+  <defs>
+    <style class="style-fonts">
+      @font-face {
+        font-family: "Virgil";
+        src: url("https://excalidraw.com/Virgil.woff2");
+      }
+      @font-face {
+        font-family: "Cascadia";
+        src: url("https://excalidraw.com/Cascadia.woff2");
+      }
+      @font-face {
+        font-family: "Assistant";
+        src: url("https://excalidraw.com/Assistant-Regular.woff2");
+      }
+    </style>
+    
+  </defs>
+  <g transform="translate(39.14436347370474 10) rotate(0 14.303947448730469 11.384500696257078)"><text x="0" y="15.956516175873944" font-family="Virgil, Segoe UI Emoji" font-size="18.21520111401135px" fill="#2f9e44" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">cd </text></g><g transform="translate(10 12.049230970969575) rotate(0 4.415924072265625 11.384500696257078)"><text x="0" y="15.956516175873944" font-family="Virgil, Segoe UI Emoji" font-size="18.21520111401135px" fill="#e03131" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">&gt;</text></g><g transform="translate(39.8230601570574 44.80876158712408) rotate(0 81.7264175415039 11.384500696257078)"><text x="0" y="15.956516175873944" font-family="Virgil, Segoe UI Emoji" font-size="18.21520111401135px" fill="#2f9e44" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">docker compose up</text></g><g transform="translate(10.678696683352655 46.857992558093656) rotate(0 4.415924072265625 11.384500696257078)"><text x="0" y="15.956516175873944" font-family="Virgil, Segoe UI Emoji" font-size="18.21520111401135px" fill="#e03131" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">&gt;</text></g><g transform="translate(158.65045269999007 86.21789302765501) rotate(0 101.10394287109375 10)"><text x="0" y="14.016" font-family="Virgil, Segoe UI Emoji" font-size="16px" fill="#9c36b5" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Starts all the containers</text></g><g stroke-linecap="round"><g transform="translate(144.33825787577143 96.35952122166327) rotate(0 -22.5 -10.870809519367413)"><path d="M-0.11 1.05 C-3.6 0.28, -13.01 -1.66, -20.67 -5.54 C-28.33 -9.41, -42.11 -19.65, -46.07 -22.18 M-1.62 0.56 C-5.19 0.01, -14.01 -0.7, -21.02 -4.31 C-28.04 -7.92, -39.93 -18.02, -43.73 -21.09" stroke="#9c36b5" stroke-width="2" fill="none"></path></g><g transform="translate(144.33825787577143 96.35952122166327) rotate(0 -22.5 -10.870809519367413)"><path d="M-30.21 -16.36 C-33.29 -16.55, -39.63 -20.7, -43.73 -21.09 M-30.21 -16.36 C-33.35 -17.06, -37.42 -18.1, -43.73 -21.09" stroke="#9c36b5" stroke-width="2" fill="none"></path></g><g transform="translate(144.33825787577143 96.35952122166327) rotate(0 -22.5 -10.870809519367413)"><path d="M-36.41 -8.78 C-37.43 -11.42, -41.77 -18.02, -43.73 -21.09 M-36.41 -8.78 C-37.95 -11.53, -40.38 -14.56, -43.73 -21.09" stroke="#9c36b5" stroke-width="2" fill="none"></path></g></g><mask></mask><g transform="translate(73.13824566874018 13.517926596990947) rotate(0 52.5279541015625 10)"><text x="0" y="14.016" font-family="Virgil, Segoe UI Emoji" font-size="16px" fill="#f08c00" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">&lt;build folder&gt;</text></g></svg>
