@@ -1,9 +1,10 @@
 import helics as h
-from pydantic import BaseModel
+from pydantic.v1 import BaseModel
 
 
 class TimeData(BaseModel):
     "Time data for a federate"
+
     name: str
     granted_time: float
     send_time: float

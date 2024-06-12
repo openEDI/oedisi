@@ -1,5 +1,5 @@
+from pydantic.v1 import BaseModel
 from typing import Dict, Optional
-from pydantic import BaseModel
 from enum import Enum
 
 BASE_DOCKER_IMAGE = "python:3.10.6-slim-bullseye"
@@ -8,9 +8,11 @@ APP_NAME = "oedisi"
 DOCKER_HUB_USER = "aadillatif"
 KUBERNETES_SERVICE_NAME = "oedisi-service"
 
+
 class DefaultFileNames(str, Enum):
     INPUT_MAPPING = "input_mapping.json"
     STATIC_INPUTS = "static_inputs.json"
+
 
 class BrokerConfig(BaseModel):
     broker_port: int = 23404
@@ -18,6 +20,7 @@ class BrokerConfig(BaseModel):
     api_port: int = 12345
     feeder_host: str | None = None
     feeder_port: int | None = None
+
 
 
 class HeathCheck(BaseModel):
