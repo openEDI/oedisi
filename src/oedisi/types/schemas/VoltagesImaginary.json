@@ -19,7 +19,7 @@
         },
         "units": {
             "title": "Units",
-            "default": "kV",
+            "default": "V",
             "type": "string"
         },
         "accuracy": {

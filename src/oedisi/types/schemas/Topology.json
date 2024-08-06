@@ -589,7 +589,7 @@
                 },
                 "units": {
                     "title": "Units",
-                    "default": "degrees",
+                    "default": "radians",
                     "type": "string"
                 },
                 "accuracy": {
@@ -638,7 +638,7 @@
                 },
                 "units": {
                     "title": "Units",
-                    "default": "kV",
+                    "default": "V",
                     "type": "string"
                 },
                 "accuracy": {

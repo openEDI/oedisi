@@ -141,19 +141,19 @@ class EquipmentNodeArray(MeasurementArray):
 
 
 class VoltagesMagnitude(BusArray):
-    units: str = "kV"
+    units: str = "V"
 
 
 class VoltagesAngle(BusArray):
-    units: str = "degrees"
+    units: str = "radians"
 
 
 class VoltagesReal(BusArray):
-    units: str = "kV"
+    units: str = "V"
 
 
 class VoltagesImaginary(BusArray):
-    units: str = "kV"
+    units: str = "V"
 
 
 class CurrentsMagnitude(EquipmentArray):
@@ -161,7 +161,7 @@ class CurrentsMagnitude(EquipmentArray):
 
 
 class CurrentsAngle(EquipmentArray):
-    units: str = "degrees"
+    units: str = "radians"
 
 
 class CurrentsReal(EquipmentArray):
@@ -185,7 +185,7 @@ class ImpedanceMagnitude(EquipmentArray):
 
 
 class ImpedanceAngle(EquipmentArray):
-    units: str = "degrees"
+    units: str = "radians"
 
 
 class PowersMagnitude(EquipmentNodeArray):
@@ -193,7 +193,7 @@ class PowersMagnitude(EquipmentNodeArray):
 
 
 class PowersAngle(EquipmentNodeArray):
-    units: str = "degrees"
+    units: str = "radians"
 
 
 class PowersReal(EquipmentNodeArray):
