@@ -19,7 +19,7 @@
         },
         "units": {
             "title": "Units",
-            "default": "degrees",
+            "default": "radians",
             "type": "string"
         },
         "accuracy": {
