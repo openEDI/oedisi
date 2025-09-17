@@ -194,8 +194,13 @@ def create_kubernetes_deployment(
             name = KUBERNETES_SERVICE_NAME
         ),
         spec=client.V1ServiceSpec(
-            cluster_ip="None",
+            type = "NodePort",
             selector={"app" : APP_NAME},
+            ports = [client.V1ServicePort(
+                protocol = "TCP",
+                port = broker_port,
+                target_port = broker_port,
+                )]
         ),
     )
 
