@@ -51,7 +51,7 @@ test = [
   "httpx",
   "fastapi~=0.104",
   "uvicorn",
-  "grequests",
+  "httpx",
   "numpy",
   "pandas",
   "pyarrow",

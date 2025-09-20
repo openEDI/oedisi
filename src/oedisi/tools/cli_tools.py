@@ -271,6 +271,7 @@ def edit_docker_file(file_path, component: Component):
         f.write(f"FROM {BASE_DOCKER_IMAGE}\n")
         f.write(f"RUN apt-get update\n")
         f.write(f"RUN apt-get install -y git ssh\n")
+        f.write(f"RUN apt install build-essential cmake git python3-dev -y\n")
         f.write(f"RUN mkdir {component.type}\n")
         f.write(f"COPY  . ./{component.type}\n")
         f.write(f"WORKDIR ./{component.type}\n")

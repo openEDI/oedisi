@@ -1,7 +1,9 @@
-helics==3.4.0
-helics-apps==3.4.0
-pydantic
-grequests
+helics
+helics-apps
+oedisi>=2.0.2,<3
+pyyaml
 fastapi
 uvicorn
-git+https://github.com/openEDI/GADAL
+httpx
+python-multipart
+

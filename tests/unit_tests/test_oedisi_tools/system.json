@@ -3,12 +3,14 @@
   "components": [
     {
       "name": "comp_xyz",
+      "host": "comp-xyz",
       "type": "ComponentOne",
       "container_port": 5678,
       "parameters": {}
     },
     {
       "name": "comp_abc",
+      "host": "comp-abc",
       "type": "ComponentTwo",
       "container_port": 5679,
       "parameters": {}
