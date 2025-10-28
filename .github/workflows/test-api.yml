@@ -24,8 +24,6 @@ jobs:
     - name: Install python dependencies
       run: |
         uv sync
-        uv pip install helics==3.4
-        uv pip install helics-apps==3.4
     - name: Run integration tests
       run: |
         uv run bash tests/runtests.sh
