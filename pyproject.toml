@@ -39,10 +39,6 @@ text = "BSD 3-Clause"
 test = [
   "black",
   "bump-my-version",
-  "ipython",
-  "ipdb",
-  "gamspy",
-  "memory_profiler",
   "mypy~=1.0",
   "pre-commit",
   "pytest",
