@@ -530,14 +530,18 @@ def test_description(target_directory, component_desc, parameters):
     federate_inputs, federate_outputs = broker.run()
     background_runner.kill()
     print("Testing dynamic input names")
-    assert sorted(list(map(lambda x: x.port_name, comp_desc.dynamic_inputs))) == sorted(
+    expected_inputs = sorted(list(map(lambda x: x.port_name, comp_desc.dynamic_inputs)))
+    actual_inputs = sorted(
         list(map(lambda x: x.split("/")[1], federate_inputs["component"]))
     )
+    assert expected_inputs == actual_inputs, f"Input mismatch: expected {expected_inputs}, got {actual_inputs}"
     print("✓")
     print("Testing dynamic output names")
-    assert sorted(
+    expected_outputs = sorted(
         list(map(lambda x: "component/" + x.port_name, comp_desc.dynamic_outputs))
-    ) == sorted(federate_outputs["component"])
+    )
+    actual_outputs = sorted(federate_outputs["component"])
+    assert expected_outputs == actual_outputs, f"Output mismatch: expected {expected_outputs}, got {actual_outputs}"
     print("✓")
 
 
