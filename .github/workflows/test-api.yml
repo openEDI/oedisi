@@ -23,14 +23,12 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install python dependencies
       run: |
+        uv sync
         uv pip install helics==3.4
         uv pip install helics-apps==3.4
-    - name: Install python package
-      run: |
-        uv pip install .
     - name: Run integration tests
       run: |
-        bash tests/runtests.sh
+        uv run bash tests/runtests.sh
     - name: Archive test logs
       uses: actions/upload-artifact@v5
       if: always()

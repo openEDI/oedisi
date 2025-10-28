@@ -19,10 +19,10 @@ jobs:
         python-version: '3.10'
     - name: Install python dependencies and build sphinx
       run: |
+        uv sync
         uv pip install -r docs/requirements.txt
-        uv pip install .
         cd docs
-        make html
+        uv run make html
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
