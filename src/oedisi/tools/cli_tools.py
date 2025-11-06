@@ -144,7 +144,7 @@ def build(
         )
 
         with open(f"{target_directory}/system_runner.json", "w") as f:
-            f.write(runner_config.json(indent=2))
+            f.write(runner_config.model_dump_json(indent=2))
 
 
 def validate_optional_inputs(wiring_diagram: WiringDiagram, component_dict_of_files: dict):
