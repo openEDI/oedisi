@@ -6,10 +6,8 @@ import helics as h
 import logging
 import json
 import os
-import time
 
-
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("uvicorn.error")
 logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.DEBUG)
 
@@ -23,14 +21,18 @@ def destroy_federate(fed):
 
 class TestFederate:
     def __init__(self, broker_config: BrokerConfig = None):
+        print(broker_config)
         logger.info(f"Current Working Directory: {os.path.abspath(os.curdir)}")
         with open("static_inputs.json") as f:
             self.parameters = json.load(f)
 
         fedinfo = h.helicsCreateFederateInfo()
+        h.helicsFederateInfoSetBroker(fedinfo, broker_config.broker_ip)
+        h.helicsFederateInfoSetBrokerPort(fedinfo, broker_config.broker_port)
+        logger.info(f"Federate connected to {broker_config.broker_ip}@{broker_config.broker_port}")
         fedinfo.core_name = self.parameters["name"]
         fedinfo.core_type = h.HELICS_CORE_TYPE_ZMQ
-        fedinfo.core_init = "--federates=1"
+        fedinfo.core_init = "--federates=1 --loglevel=trace"
 
         self.fed = h.helicsCreateValueFederate(self.parameters["name"], fedinfo)
         logger.info(f"Created federate {self.fed.name}")
@@ -42,7 +44,7 @@ class TestFederate:
                 self.subscriptions["test1"] = self.fed.register_subscription(
                     port_mapping["test1"]
                 )
-            logging.debug("Loaded subscription test1 at {port_mapping['test1']}")
+            logger.debug(f"Loaded subscription test1 at {port_mapping['test1']}")
 
         self.publications = {}
         self.publications["test2"] = self.fed.register_publication(
