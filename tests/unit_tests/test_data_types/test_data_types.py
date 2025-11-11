@@ -16,4 +16,4 @@ def test_all_formats(filepath):
         json_data = json.load(f_in)
         logging.info(filepath)
         class_name = getattr(importlib.import_module("oedisi.types.data_types"), name)
-        class_name.parse_obj(json_data)
+        class_name.model_validate(json_data)

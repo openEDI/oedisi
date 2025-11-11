@@ -128,6 +128,7 @@ This is saved at `test_system_runner.json`.
         WiringDiagram,
     )
     from oedisi.componentframework.mock_component import MockComponent
+    import json
 
 
     def bad_type_checker(type, x):
@@ -139,11 +140,12 @@ This is saved at `test_system_runner.json`.
     )
     component_types = {"TestComponent": TestComponent, "MockComponent": MockComponent}
 
-    wiring_diagram = WiringDiagram.parse_file("test_basic_system.json")
+    with open("test_basic_system.json") as f:
+        wiring_diagram = WiringDiagram.model_validate(json.load(f))
     runner_config = generate_runner_config(wiring_diagram, component_types)
 
     with open("test_system_runner.json", "w") as f:
-        f.write(runner_config.json(indent=2))
+        f.write(runner_config.model_dump_json(indent=2))
 
 Running the simulation
 ----------------------

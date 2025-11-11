@@ -1,30 +1,37 @@
 {
-    "title": "RegulatorStates",
-    "description": "Extended by classes:\n    \"SwitchStates\",\n    \"CapacitorStates\",\n    \"RegulatorStates\"",
-    "type": "object",
     "properties": {
         "values": {
-            "title": "Values",
-            "type": "array",
             "items": {
                 "type": "integer"
-            }
+            },
+            "title": "Values",
+            "type": "array"
         },
         "ids": {
-            "title": "Ids",
-            "type": "array",
             "items": {
                 "type": "string"
-            }
+            },
+            "title": "Ids",
+            "type": "array"
         },
         "time": {
-            "title": "Time",
-            "type": "string",
-            "format": "date-time"
+            "anyOf": [
+                {
+                    "format": "date-time",
+                    "type": "string"
+                },
+                {
+                    "type": "null"
+                }
+            ],
+            "default": null,
+            "title": "Time"
         }
     },
     "required": [
         "values",
         "ids"
-    ]
+    ],
+    "title": "RegulatorStates",
+    "type": "object"
 }
