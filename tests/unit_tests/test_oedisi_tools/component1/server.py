@@ -28,7 +28,7 @@ def read_root():
         host_ip = s.getsockname()[0]
     finally:
         s.close()
-    response = HeathCheck(hostname=hostname, host_ip=host_ip).dict()
+    response = HeathCheck(hostname=hostname, host_ip=host_ip).model_dump()
     return JSONResponse(response, 200)
 
 
@@ -58,7 +58,7 @@ async def configure(component_struct:ComponentStruct):
     json.dump(params , open(DefaultFileNames.STATIC_INPUTS.value, "w"))
     response = ServerReply(
             detail = f"Sucessfully updated configuration files."
-        ).dict() 
+        ).model_dump() 
     return JSONResponse(response, 200)
 
 if __name__ == "__main__":
