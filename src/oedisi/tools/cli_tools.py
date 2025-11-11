@@ -1,12 +1,13 @@
+from typing import Any, Dict
+from pathlib import Path
+from uuid import uuid4
 import subprocess
-import shutil
-import click
 import yaml
 import json
 import os
-from pathlib import Path
+
 from kubernetes import client
-from typing import Any, Dict
+import click
 
 from oedisi.componentframework.basic_component import (
     basic_component,
@@ -31,7 +32,7 @@ from oedisi.types.common import (
     BASE_DOCKER_IMAGE,
     BROKER_SERVICE,
     DOCKER_HUB_USER,
-    KUBERNETES_SERVICE_NAME,
+    KUBERNETES_SERVICE_PREFIX,
 )
 
 @click.group()
@@ -82,12 +83,16 @@ def get_basic_component(filename):
 @click.option(
     "-p", "--broker-port", default=8766, show_default=True, help="Pass the broker port."
 )
+@click.option(
+    "-i", "--simulation-id", help="Simulation ID for kubernetres or docker compose configurations."
+)
 def build(
     target_directory,
     system,
     component_dict,
     multi_container,
     broker_port,
+    simulation_id
 ):
     """Build to the simulation folder
 
@@ -112,6 +117,7 @@ def build(
     broker_port: float
         The port of the broker. If using kubernetes, is internal to k8s
     """
+
     click.echo(f"Loading the components defined in {component_dict}")
     with open(component_dict, "r") as f:
         component_dict_of_files = json.load(f)
@@ -125,14 +131,20 @@ def build(
 
     click.echo(f"Building system in {target_directory}")
 
-    if multi_container:
-        if not Path(target_directory).exists():
-            os.mkdir(target_directory)
+    if multi_container:        
+        if simulation_id is None:
+            simulation_id = str(uuid4())
+        
+        simulation_dir = os.path.join(target_directory, simulation_id)
+
+        if not Path(simulation_dir).exists():
+            os.makedirs(simulation_dir, exist_ok=True)
+        
         validate_optional_inputs(wiring_diagram, component_dict_of_files)
         edit_docker_files(wiring_diagram, component_types)
-        create_docker_compose_file(wiring_diagram, target_directory, broker_port, component_types)
+        create_docker_compose_file(wiring_diagram, simulation_dir, broker_port, component_types, simulation_id)
         create_kubernetes_deployment(
-            wiring_diagram, target_directory, broker_port
+            wiring_diagram, simulation_dir, broker_port, simulation_id
         )
 
     else:
@@ -181,17 +193,19 @@ def drop_null_values(model: Any)-> dict:
     return clean_model
 
 def create_kubernetes_deployment(
-    wiring_diagram: WiringDiagram, target_directory:Path|str, broker_port:int
+    wiring_diagram: WiringDiagram, target_directory:Path|str, broker_port:int, simulation_id:str
 ):
     kube_folder = os.path.join(target_directory, "kubernetes")
     if not os.path.exists(kube_folder):
-        os.mkdir(kube_folder)
+        os.makedirs(kube_folder, exist_ok=True)
+
+    kube_network_svc = f"{KUBERNETES_SERVICE_PREFIX}-{simulation_id}".lower()
 
     service = client.V1Service(
         api_version="v1",
         kind="Service",
         metadata= client.V1ObjectMeta(
-            name = KUBERNETES_SERVICE_NAME
+            name = kube_network_svc
         ),
         spec=client.V1ServiceSpec(
             type = "NodePort",
@@ -214,13 +228,14 @@ def create_kubernetes_deployment(
         type = BROKER_SERVICE,
         parameters={}
     )
-    create_single_kubernestes_deyployment(broker_component, kube_folder)
+    create_single_kubernestes_deyployment(broker_component, kube_folder, simulation_id)
     for component in wiring_diagram.components:
-        create_single_kubernestes_deyployment(component, kube_folder)
+        create_single_kubernestes_deyployment(component, kube_folder, simulation_id)
 
 
-def create_single_kubernestes_deyployment(component:Component, kube_folder:Path|str):
+def create_single_kubernestes_deyployment(component:Component, kube_folder:Path|str, simulation_id:str):
 
+    kube_network_svc = f"{KUBERNETES_SERVICE_PREFIX}-{simulation_id}".lower()
     fixed_container_name =  component.name.replace("_", "-")
     my_container = client.V1Container(
         name = fixed_container_name,
@@ -232,7 +247,7 @@ def create_single_kubernestes_deyployment(component:Component, kube_folder:Path|
             ),
             client.V1EnvVar(
                 name="SERVICE_NAME",
-                value=KUBERNETES_SERVICE_NAME,
+                value=kube_network_svc,
             )
         ],
         ports =  [
@@ -245,13 +260,13 @@ def create_single_kubernestes_deyployment(component:Component, kube_folder:Path|
         api_version="v1",
         kind="Pod",
         metadata=client.V1ObjectMeta(
-            name=f"{fixed_container_name}-pod",
+            name=f"{fixed_container_name}-{simulation_id}-pod",
             labels ={"app" : APP_NAME},
         ),
         spec=client.V1PodSpec(
             containers=[my_container],
             hostname=component.name.replace("_", "-"),
-            subdomain="oedisi-service",
+            subdomain=kube_network_svc,
             ),
         )
 
@@ -294,12 +309,12 @@ def edit_docker_files(wiring_diagram: WiringDiagram, component_types: Dict):
 
 
 def create_docker_compose_file(
-    wiring_diagram: WiringDiagram, target_directory: str, broker_port: int, component_types: Dict
+    wiring_diagram: WiringDiagram, target_directory: str, broker_port: int, component_types: Dict, simulation_id: str
 ):
     config = {"services": {}, "networks": {}}
 
     config["services"][f"{APP_NAME}_{BROKER_SERVICE}"] = {
-        "build": {"context": f"../{BROKER_SERVICE}/."},
+        "build": {"context": f"../../{BROKER_SERVICE}/."},
         "image": f"{DOCKER_HUB_USER}/{APP_NAME}_{BROKER_SERVICE}",
         "hostname" : f"{BROKER_SERVICE}",
         "environment" : {"PORT": str(broker_port)},
@@ -310,7 +325,7 @@ def create_docker_compose_file(
     for component in wiring_diagram.components:
         component_type = component_types[component.type]
         config["services"][f"{APP_NAME}_{component.name}"] = {
-            "build": {"context": f"../{component_type._origin_directory}/."},
+            "build": {"context": f"../../{component_type._origin_directory}/."},
             "image": f"{component.image}",
             "hostname" : f"{component.name.replace('_', '-')}",
             "environment" : {"PORT": str(component.container_port)},

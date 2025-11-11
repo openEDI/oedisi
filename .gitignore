@@ -159,3 +159,9 @@ cython_debug/
 
 #backup files
 *.bak
+tests/.DS_Store
+tests/unit_tests/.DS_Store
+tests/unit_tests/test_oedisi_tools/.DS_Store
+.DS_Store
+.DS_Store
+.DS_Store

@@ -6,8 +6,6 @@ import helics as h
 import logging
 import json
 import os
-import time
-
 
 logger = logging.getLogger("uvicorn.error")
 logger.addHandler(logging.StreamHandler())
@@ -34,7 +32,7 @@ class TestFederate:
         logger.info(f"Federate connected to {broker_config.broker_ip}@{broker_config.broker_port}")
         fedinfo.core_name = self.parameters["name"]
         fedinfo.core_type = h.HELICS_CORE_TYPE_ZMQ
-        fedinfo.core_init = "--federates=1"
+        fedinfo.core_init = "--federates=1 --loglevel=trace"
 
         self.fed = h.helicsCreateValueFederate(self.parameters["name"], fedinfo)
         logger.info(f"Created federate {self.fed.name}")
@@ -46,7 +44,7 @@ class TestFederate:
                 self.subscriptions["test1"] = self.fed.register_subscription(
                     port_mapping["test1"]
                 )
-            logging.debug("Loaded subscription test1 at {port_mapping['test1']}")
+            logger.debug(f"Loaded subscription test1 at {port_mapping['test1']}")
 
         self.publications = {}
         self.publications["test2"] = self.fed.register_publication(
