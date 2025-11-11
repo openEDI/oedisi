@@ -24,7 +24,7 @@ def get_inputs_outputs(graph_dict):
             name = fed["attributes"]["name"]
             sub_keys = []
             for sub in fed.get("inputs", []):
-                for source in sub["sources"]:
+                for source in sub.get("sources", []):
                     sub_keys.append(
                         federate_id_handle2key[(source["federate"], source["handle"])]
                     )

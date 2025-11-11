@@ -1,12 +1,13 @@
+from typing import Any, Dict
+from pathlib import Path
+from uuid import uuid4
 import subprocess
-import shutil
-import click
 import yaml
 import json
 import os
-from pathlib import Path
+
 from kubernetes import client
-from typing import Any, Dict
+import click
 
 from oedisi.componentframework.basic_component import (
     basic_component,
@@ -31,8 +32,9 @@ from oedisi.types.common import (
     BASE_DOCKER_IMAGE,
     BROKER_SERVICE,
     DOCKER_HUB_USER,
-    KUBERNETES_SERVICE_NAME,
+    KUBERNETES_SERVICE_PREFIX,
 )
+
 
 @click.group()
 def cli():
@@ -47,7 +49,8 @@ def bad_type_checker(type, x):
 def get_basic_component(filename):
     # before, the runner would use the directory given _in_ the component description
     # which may be inaccurate
-    comp_desc = ComponentDescription.parse_file(filename)
+    with open(filename) as f:
+        comp_desc = ComponentDescription.model_validate(json.load(f))
     comp_desc.directory = os.path.dirname(filename)
     return basic_component(comp_desc, bad_type_checker)
 
@@ -82,12 +85,16 @@ def get_basic_component(filename):
 @click.option(
     "-p", "--broker-port", default=8766, show_default=True, help="Pass the broker port."
 )
+@click.option(
+    "-i", "--simulation-id", help="Simulation ID for kubernetres or docker compose configurations."
+)
 def build(
     target_directory,
     system,
     component_dict,
     multi_container,
     broker_port,
+    simulation_id
 ):
     """Build to the simulation folder
 
@@ -112,6 +119,7 @@ def build(
     broker_port: float
         The port of the broker. If using kubernetes, is internal to k8s
     """
+
     click.echo(f"Loading the components defined in {component_dict}")
     with open(component_dict, "r") as f:
         component_dict_of_files = json.load(f)
@@ -121,19 +129,27 @@ def build(
         }
 
     click.echo(f"Loading system json {system}")
-    wiring_diagram = WiringDiagram.parse_file(system)
+    with open(system) as f:
+        wiring_diagram = WiringDiagram.model_validate(json.load(f))
 
     click.echo(f"Building system in {target_directory}")
 
-    if multi_container:
-        if not Path(target_directory).exists():
-            os.mkdir(target_directory)
+    if multi_container:        
+        if simulation_id is None:
+            simulation_id = str(uuid4())
+        
+        simulation_dir = os.path.join(target_directory, simulation_id)
+
+        if not Path(simulation_dir).exists():
+            os.makedirs(simulation_dir, exist_ok=True)
+        
         validate_optional_inputs(wiring_diagram, component_dict_of_files)
         edit_docker_files(wiring_diagram, component_types)
-        create_docker_compose_file(wiring_diagram, target_directory, broker_port, component_types)
+        create_docker_compose_file(wiring_diagram, simulation_dir, broker_port, component_types, simulation_id)
         create_kubernetes_deployment(
-            wiring_diagram, target_directory, broker_port
+            wiring_diagram, simulation_dir, broker_port, simulation_id
         )
+        # create_kubernetes_deployment(wiring_diagram, target_directory, broker_port)
 
     else:
         runner_config = generate_runner_config(
@@ -141,21 +157,20 @@ def build(
         )
 
         with open(f"{target_directory}/system_runner.json", "w") as f:
-            f.write(runner_config.json(indent=2))
+            f.write(runner_config.model_dump_json(indent=2))
 
-def validate_optional_inputs(
-    wiring_diagram: WiringDiagram, component_dict_of_files: dict
-):
+
+def validate_optional_inputs(wiring_diagram: WiringDiagram, component_dict_of_files: dict):
     for component in wiring_diagram.components:
-        assert hasattr(
-            component, "host"
-        ), f"host parameter required for component {component.name} for multi-continer model build"
-        assert hasattr(
-            component, "container_port"
-        ), f"post parameter required for component {component.name} for multi-continer model build"
+        assert hasattr(component, "host"), (
+            f"host parameter required for component {component.name} for multi-continer model build"
+        )
+        assert hasattr(component, "container_port"), (
+            f"post parameter required for component {component.name} for multi-continer model build"
+        )
 
 
-def drop_null_values(model: Any)-> dict:
+def drop_null_values(model: Any) -> dict:
     clean_model = {}
     assert isinstance(model, dict), "input to this function should be a dict"
     for k, v in model.items():
@@ -180,22 +195,30 @@ def drop_null_values(model: Any)-> dict:
             clean_model[key_name] = v
     return clean_model
 
+
 def create_kubernetes_deployment(
-    wiring_diagram: WiringDiagram, target_directory:Path|str, broker_port:int
+    wiring_diagram: WiringDiagram, target_directory:Path|str, broker_port:int, simulation_id:str
 ):
     kube_folder = os.path.join(target_directory, "kubernetes")
     if not os.path.exists(kube_folder):
-        os.mkdir(kube_folder)
+        os.makedirs(kube_folder, exist_ok=True)
+
+    kube_network_svc = f"{KUBERNETES_SERVICE_PREFIX}-{simulation_id}".lower()
 
     service = client.V1Service(
         api_version="v1",
         kind="Service",
         metadata= client.V1ObjectMeta(
-            name = KUBERNETES_SERVICE_NAME
+            name = kube_network_svc
         ),
         spec=client.V1ServiceSpec(
-            cluster_ip="None",
+            type = "NodePort",
             selector={"app" : APP_NAME},
+            ports = [client.V1ServicePort(
+                protocol = "TCP",
+                port = broker_port,
+                target_port = broker_port,
+                )]
         ),
     )
 
@@ -204,49 +227,41 @@ def create_kubernetes_deployment(
         yaml.dump(service_dict, f)
 
     broker_component = Component(
-        name=BROKER_SERVICE,
-        container_port=broker_port,
-        type = BROKER_SERVICE,
-        parameters={}
+        name=BROKER_SERVICE, container_port=broker_port, type=BROKER_SERVICE, parameters={}
     )
-    create_single_kubernestes_deyployment(broker_component, kube_folder)
+    create_single_kubernestes_deyployment(broker_component, kube_folder, simulation_id)
     for component in wiring_diagram.components:
-        create_single_kubernestes_deyployment(component, kube_folder)
+        create_single_kubernestes_deyployment(component, kube_folder, simulation_id)
 
 
-def create_single_kubernestes_deyployment(component:Component, kube_folder:Path|str):
+def create_single_kubernestes_deyployment(component:Component, kube_folder:Path|str, simulation_id:str):
 
+    kube_network_svc = f"{KUBERNETES_SERVICE_PREFIX}-{simulation_id}".lower()
     fixed_container_name =  component.name.replace("_", "-")
     my_container = client.V1Container(
-        name = fixed_container_name,
-        image = component.image,
-        env = [
-            client.V1EnvVar(
-                name="PORT",
-                value=str(component.container_port)
-            ),
+        name=fixed_container_name,
+        image=component.image,
+        env=[
+            client.V1EnvVar(name="PORT", value=str(component.container_port)),
             client.V1EnvVar(
                 name="SERVICE_NAME",
-                value=KUBERNETES_SERVICE_NAME,
+                value=kube_network_svc,
             )
         ],
-        ports =  [
-            client.V1ContainerPort(
-                container_port = component.container_port
-            )],
-        )
+        ports=[client.V1ContainerPort(container_port=component.container_port)],
+    )
 
     pod = client.V1Pod(
         api_version="v1",
         kind="Pod",
         metadata=client.V1ObjectMeta(
-            name=f"{fixed_container_name}-pod",
+            name=f"{fixed_container_name}-{simulation_id}-pod",
             labels ={"app" : APP_NAME},
         ),
         spec=client.V1PodSpec(
             containers=[my_container],
             hostname=component.name.replace("_", "-"),
-            subdomain="oedisi-service",
+            subdomain=kube_network_svc,
             ),
         )
 
@@ -254,31 +269,32 @@ def create_single_kubernestes_deyployment(component:Component, kube_folder:Path|
     with open(os.path.join(kube_folder, f"{component.name}.yml"), "w") as f:
         yaml.dump(pod_dict, f)
 
-def edit_docker_file(file_path, component: Component):
 
+def edit_docker_file(file_path, component: Component):
     dir_path = os.path.abspath(os.path.join(file_path, os.pardir))
     server_file = os.path.join(dir_path, "server.py")
-    assert os.path.exists(
-        server_file
-    ), f"Server.py file missing for {component.name}.REST API implementation expected in a server.py file"
+    assert os.path.exists(server_file), (
+        f"Server.py file missing for {component.name}.REST API implementation expected in a server.py file"
+    )
 
     with open(file_path, "w") as f:
         f.write(f"FROM {BASE_DOCKER_IMAGE}\n")
         f.write(f"RUN apt-get update\n")
         f.write(f"RUN apt-get install -y git ssh\n")
+        f.write(f"RUN apt install build-essential cmake git python3-dev -y\n")
         f.write(f"RUN mkdir {component.type}\n")
         f.write(f"COPY  . ./{component.type}\n")
         f.write(f"WORKDIR ./{component.type}\n")
         f.write(f"RUN pip install -r requirements.txt\n")
         f.write(f"EXPOSE {component.container_port}/tcp\n")
-        cmd = f'CMD {["python", "server.py"]}\n'
+        cmd = f"CMD {['python', 'server.py']}\n"
         cmd = cmd.replace("'", '"')
         f.write(cmd)
     pass
 
 
 def edit_docker_files(wiring_diagram: WiringDiagram, component_types: Dict):
-    parsed_components  = []
+    parsed_components = []
     for component in wiring_diagram.components:
         if component.type not in parsed_components:
             parsed_components.append(component.type)
@@ -288,15 +304,15 @@ def edit_docker_files(wiring_diagram: WiringDiagram, component_types: Dict):
 
 
 def create_docker_compose_file(
-    wiring_diagram: WiringDiagram, target_directory: str, broker_port: int, component_types: Dict
+    wiring_diagram: WiringDiagram, target_directory: str, broker_port: int, component_types: Dict, simulation_id: str
 ):
     config = {"services": {}, "networks": {}}
 
     config["services"][f"{APP_NAME}_{BROKER_SERVICE}"] = {
-        "build": {"context": f"../{BROKER_SERVICE}/."},
+        "build": {"context": f"../../{BROKER_SERVICE}/."},
         "image": f"{DOCKER_HUB_USER}/{APP_NAME}_{BROKER_SERVICE}",
-        "hostname" : f"{BROKER_SERVICE}",
-        "environment" : {"PORT": str(broker_port)},
+        "hostname": f"{BROKER_SERVICE}",
+        "environment": {"PORT": str(broker_port)},
         "ports": [f"{broker_port}:{broker_port}"],
         "networks": {"custom-network": {}},
     }
@@ -304,10 +320,10 @@ def create_docker_compose_file(
     for component in wiring_diagram.components:
         component_type = component_types[component.type]
         config["services"][f"{APP_NAME}_{component.name}"] = {
-            "build": {"context": f"../{component_type._origin_directory}/."},
+            "build": {"context": f"../../{component_type._origin_directory}/."},
             "image": f"{component.image}",
-            "hostname" : f"{component.name.replace('_', '-')}",
-            "environment" : {"PORT": str(component.container_port)},
+            "hostname": f"{component.name.replace('_', '-')}",
+            "environment": {"PORT": str(component.container_port)},
             "ports": [f"{component.container_port}:{component.container_port}"],
             "networks": {"custom-network": {}},
         }
@@ -414,16 +430,16 @@ def run_mc(runner, kubernetes, docker_compose):
     os.system("docker system prune --all")
     os.system("docker network prune --all")
     if docker_compose:
-        assert (
-            file_name == "docker-compose.yml"
-        ), f"{file_name} is not a valid docker-compose.yml file"
+        assert file_name == "docker-compose.yml", (
+            f"{file_name} is not a valid docker-compose.yml file"
+        )
         build_path = os.path.dirname(os.path.abspath(runner))
         os.chdir(build_path)
         os.system("docker-compose up")
     elif kubernetes:
-        assert (
-            file_name == "deployment.yml"
-        ), f"{file_name} is not a valid deployment.yml file for kubernetes."
+        assert file_name == "deployment.yml", (
+            f"{file_name} is not a valid deployment.yml file for kubernetes."
+        )
         build_path = os.path.dirname(os.path.abspath(runner))
         os.system(f"kubectl apply -f {build_path}")
     else:
@@ -437,9 +453,7 @@ def run_mc(runner, kubernetes, docker_compose):
     type=click.Path(),
     help="Target directory to put the system in",
 )
-@click.option(
-    "--component-desc", type=click.Path(), help="Path to component description"
-)
+@click.option("--component-desc", type=click.Path(), help="Path to component description")
 @click.option(
     "--parameters",
     default=None,
@@ -483,7 +497,8 @@ def test_description(target_directory, component_desc, parameters):
     Create and run system with wiring diagram
     """
 
-    comp_desc = ComponentDescription.parse_file(component_desc)
+    with open(component_desc) as f:
+        comp_desc = ComponentDescription.model_validate(json.load(f))
     comp_desc.directory = os.path.dirname(component_desc)
 
     if parameters is None:
@@ -521,7 +536,7 @@ def test_description(target_directory, component_desc, parameters):
     )
     runner_config, _ = remove_from_runner_config(runner_config, "broker")
     with open(f"{target_directory}/system_runner.json", "w") as f:
-        f.write(runner_config.json())
+        f.write(runner_config.model_dump_json())
 
     background_runner = subprocess.Popen(
         ["helics", "run", f"--path={target_directory}/system_runner.json"]
@@ -530,14 +545,22 @@ def test_description(target_directory, component_desc, parameters):
     federate_inputs, federate_outputs = broker.run()
     background_runner.kill()
     print("Testing dynamic input names")
-    assert sorted(list(map(lambda x: x.port_name, comp_desc.dynamic_inputs))) == sorted(
+    expected_inputs = sorted(list(map(lambda x: x.port_name, comp_desc.dynamic_inputs)))
+    actual_inputs = sorted(
         list(map(lambda x: x.split("/")[1], federate_inputs["component"]))
+    )
+    assert expected_inputs == actual_inputs, (
+        f"Input mismatch: expected {expected_inputs}, got {actual_inputs}"
     )
     print("✓")
     print("Testing dynamic output names")
-    assert sorted(
+    expected_outputs = sorted(
         list(map(lambda x: "component/" + x.port_name, comp_desc.dynamic_outputs))
-    ) == sorted(federate_outputs["component"])
+    )
+    actual_outputs = sorted(federate_outputs["component"])
+    assert expected_outputs == actual_outputs, (
+        f"Output mismatch: expected {expected_outputs}, got {actual_outputs}"
+    )
     print("✓")
 
 
@@ -552,13 +575,13 @@ def remove_from_runner_config(runner_config, element):
 def remove_from_json(system_json, element):
     "Remove federate from configuration and resave with revised.json"
     with open(system_json, "r") as f:
-        runner_config = RunnerConfig.parse_obj(json.load(f))
+        runner_config = RunnerConfig.model_validate(json.load(f))
         new_config, without_feds = remove_from_runner_config(runner_config, element)
 
         new_path = system_json + "revised.json"
         click.echo(f"Saving new json to {new_path}")
         with open(new_path, "w") as f:
-            f.write(new_config.json())
+            f.write(new_config.model_dump_json())
         return new_config, new_path, without_feds
 
 

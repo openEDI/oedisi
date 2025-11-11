@@ -116,14 +116,21 @@ Stopping containers using Docker-compose::
     docker compose down
 
 Alternately, Kubernetes setup files can be used to orchestrate the launch of all the required containers.
-Navigate to the ``kubernetes`` folder inside the build folder. It should contain ``deployment.yml`` and 
-``service.yml`` files. Use the command below to run the model within the Kubernetes cluster. 
-It is to be noted that these files can be modified to serve a unique usecases.
+Kubernetes deploment files are generated within the ``kubernetes`` folder inside the build folder.
+All files can be deployed using a file command (Both deployment and service files).
+ter. It is to be noted that these files can be modified to serve a unique usecases.
 
 Running containers using Kubernetes::
 
-    kubectl apply -f deployment.yml
-    kubectl apply -f service.yml
+    kubectl apply -f kubernetes
+
+To access the REST API endpoint of the broker container, port forwarding can be used to expose the
+container port to the local machine. The command below forwards port 8766 of the broker container
+to port 8080 on the local machine.
+
+    kubectl port-forward service/oedisi-service 8080:8766
+
+The REST API endpoint can then be accessed at ``http://localhost:8080``
 
 By default, the deployment file is configured to download required images from Docker Hub. 
 Users have to option to modify the deployment file and use a local registery (https://docs.docker.com/registry/) 

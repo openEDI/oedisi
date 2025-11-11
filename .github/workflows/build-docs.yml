@@ -10,19 +10,19 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: Set up Python 3.10
-      uses: conda-incubator/setup-miniconda@v2
+    - uses: actions/checkout@v2
+    - name: Set up uv
+      uses: astral-sh/setup-uv@v6
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v6
       with:
-        auto-update-conda: true
-        python-version: '3.10'
+        python-version: '3.12'
     - name: Install python dependencies and build sphinx
-      shell: bash -l {0}
       run: |
-        pip install -r docs/requirements.txt
-        pip install .
+        uv sync
+        uv pip install -r docs/requirements.txt
         cd docs
-        make html
+        uv run make html
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}

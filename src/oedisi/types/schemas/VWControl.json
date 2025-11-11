@@ -1,30 +1,30 @@
 {
-    "title": "VWControl",
     "description": "OpenDSS setting for volt-watt control.",
-    "type": "object",
     "properties": {
         "deltap_factor": {
-            "title": "Deltap Factor",
             "default": -1.0,
+            "title": "Deltap Factor",
             "type": "number"
         },
         "voltage": {
-            "title": "Voltage",
-            "type": "array",
             "items": {
                 "type": "number"
-            }
+            },
+            "title": "Voltage",
+            "type": "array"
         },
         "power_response": {
-            "title": "Power Response",
-            "type": "array",
             "items": {
                 "type": "number"
-            }
+            },
+            "title": "Power Response",
+            "type": "array"
         }
     },
     "required": [
         "voltage",
         "power_response"
-    ]
+    ],
+    "title": "VWControl",
+    "type": "object"
 }

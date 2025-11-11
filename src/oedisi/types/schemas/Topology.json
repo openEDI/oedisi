@@ -1,89 +1,98 @@
 {
-    "title": "Topology",
-    "type": "object",
-    "properties": {
-        "admittance": {
-            "title": "Admittance",
-            "anyOf": [
-                {
-                    "$ref": "#/definitions/AdmittanceSparse"
+    "$defs": {
+        "AdmittanceMatrix": {
+            "properties": {
+                "admittance_matrix": {
+                    "items": {
+                        "items": {
+                            "maxItems": 2,
+                            "minItems": 2,
+                            "prefixItems": [
+                                {
+                                    "type": "number"
+                                },
+                                {
+                                    "type": "number"
+                                }
+                            ],
+                            "type": "array"
+                        },
+                        "type": "array"
+                    },
+                    "title": "Admittance Matrix",
+                    "type": "array"
                 },
-                {
-                    "$ref": "#/definitions/AdmittanceMatrix"
+                "ids": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Ids",
+                    "type": "array"
+                },
+                "units": {
+                    "default": "S",
+                    "title": "Units",
+                    "type": "string"
                 }
-            ]
+            },
+            "required": [
+                "admittance_matrix",
+                "ids"
+            ],
+            "title": "AdmittanceMatrix",
+            "type": "object"
         },
-        "injections": {
-            "$ref": "#/definitions/Injection"
-        },
-        "incidences": {
-            "$ref": "#/definitions/IncidenceList"
-        },
-        "base_voltage_angles": {
-            "$ref": "#/definitions/VoltagesAngle"
-        },
-        "base_voltage_magnitudes": {
-            "$ref": "#/definitions/VoltagesMagnitude"
-        },
-        "slack_bus": {
-            "title": "Slack Bus",
-            "default": [],
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
-        }
-    },
-    "required": [
-        "admittance",
-        "injections"
-    ],
-    "definitions": {
         "AdmittanceSparse": {
-            "title": "AdmittanceSparse",
-            "type": "object",
             "properties": {
                 "from_equipment": {
-                    "title": "From Equipment",
-                    "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "title": "From Equipment",
+                    "type": "array"
                 },
                 "to_equipment": {
-                    "title": "To Equipment",
-                    "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "title": "To Equipment",
+                    "type": "array"
                 },
                 "equipment_type": {
-                    "title": "Equipment Type",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                    "anyOf": [
+                        {
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Equipment Type"
                 },
                 "admittance_list": {
-                    "title": "Admittance List",
-                    "type": "array",
                     "items": {
-                        "type": "array",
-                        "minItems": 2,
                         "maxItems": 2,
-                        "items": [
+                        "minItems": 2,
+                        "prefixItems": [
                             {
                                 "type": "number"
                             },
                             {
                                 "type": "number"
                             }
-                        ]
-                    }
+                        ],
+                        "type": "array"
+                    },
+                    "title": "Admittance List",
+                    "type": "array"
                 },
                 "units": {
-                    "title": "Units",
                     "default": "S",
+                    "title": "Units",
                     "type": "string"
                 }
             },
@@ -91,580 +100,765 @@
                 "from_equipment",
                 "to_equipment",
                 "admittance_list"
-            ]
-        },
-        "AdmittanceMatrix": {
-            "title": "AdmittanceMatrix",
-            "type": "object",
-            "properties": {
-                "admittance_matrix": {
-                    "title": "Admittance Matrix",
-                    "type": "array",
-                    "items": {
-                        "type": "array",
-                        "items": {
-                            "type": "array",
-                            "minItems": 2,
-                            "maxItems": 2,
-                            "items": [
-                                {
-                                    "type": "number"
-                                },
-                                {
-                                    "type": "number"
-                                }
-                            ]
-                        }
-                    }
-                },
-                "ids": {
-                    "title": "Ids",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "units": {
-                    "title": "Units",
-                    "default": "S",
-                    "type": "string"
-                }
-            },
-            "required": [
-                "admittance_matrix",
-                "ids"
-            ]
-        },
-        "CurrentsReal": {
-            "title": "CurrentsReal",
-            "description": "Extended by classes:\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"ImpedanceMagnitude\",\n    \"ImpedanceAngle\",\n    \"ImpedanceReal\",\n    \"ImpedanceImaginary\",",
-            "type": "object",
-            "properties": {
-                "values": {
-                    "title": "Values",
-                    "type": "array",
-                    "items": {
-                        "type": "number"
-                    }
-                },
-                "ids": {
-                    "title": "Ids",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "units": {
-                    "title": "Units",
-                    "default": "A",
-                    "type": "string"
-                },
-                "accuracy": {
-                    "title": "Accuracy",
-                    "type": "array",
-                    "items": {
-                        "type": "number"
-                    }
-                },
-                "bad_data_threshold": {
-                    "title": "Bad Data Threshold",
-                    "type": "array",
-                    "items": {
-                        "type": "number"
-                    }
-                },
-                "time": {
-                    "title": "Time",
-                    "type": "string",
-                    "format": "date-time"
-                }
-            },
-            "required": [
-                "values",
-                "ids"
-            ]
+            ],
+            "title": "AdmittanceSparse",
+            "type": "object"
         },
         "CurrentsImaginary": {
-            "title": "CurrentsImaginary",
-            "description": "Extended by classes:\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"ImpedanceMagnitude\",\n    \"ImpedanceAngle\",\n    \"ImpedanceReal\",\n    \"ImpedanceImaginary\",",
-            "type": "object",
             "properties": {
                 "values": {
-                    "title": "Values",
-                    "type": "array",
                     "items": {
                         "type": "number"
-                    }
+                    },
+                    "title": "Values",
+                    "type": "array"
                 },
                 "ids": {
-                    "title": "Ids",
-                    "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "title": "Ids",
+                    "type": "array"
                 },
                 "units": {
-                    "title": "Units",
                     "default": "A",
+                    "title": "Units",
                     "type": "string"
                 },
                 "accuracy": {
-                    "title": "Accuracy",
-                    "type": "array",
-                    "items": {
-                        "type": "number"
-                    }
+                    "anyOf": [
+                        {
+                            "items": {
+                                "type": "number"
+                            },
+                            "type": "array"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Accuracy"
                 },
                 "bad_data_threshold": {
-                    "title": "Bad Data Threshold",
-                    "type": "array",
-                    "items": {
-                        "type": "number"
-                    }
+                    "anyOf": [
+                        {
+                            "items": {
+                                "type": "number"
+                            },
+                            "type": "array"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Bad Data Threshold"
                 },
                 "time": {
-                    "title": "Time",
-                    "type": "string",
-                    "format": "date-time"
+                    "anyOf": [
+                        {
+                            "format": "date-time",
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Time"
                 }
             },
             "required": [
                 "values",
                 "ids"
-            ]
+            ],
+            "title": "CurrentsImaginary",
+            "type": "object"
         },
-        "PowersReal": {
-            "title": "PowersReal",
-            "description": "Primary key is ids + equipment_ids.\n\n- ids corresponding node id, so \"113.1\", \"113.2\", \"113.3\"\n- equipment_id corresponds to PVSystem.113\n\nExtended by classes:\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",",
-            "type": "object",
+        "CurrentsReal": {
             "properties": {
                 "values": {
-                    "title": "Values",
-                    "type": "array",
                     "items": {
                         "type": "number"
-                    }
+                    },
+                    "title": "Values",
+                    "type": "array"
                 },
                 "ids": {
-                    "title": "Ids",
-                    "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "title": "Ids",
+                    "type": "array"
                 },
                 "units": {
+                    "default": "A",
                     "title": "Units",
-                    "default": "kW",
                     "type": "string"
                 },
                 "accuracy": {
-                    "title": "Accuracy",
-                    "type": "array",
-                    "items": {
-                        "type": "number"
-                    }
+                    "anyOf": [
+                        {
+                            "items": {
+                                "type": "number"
+                            },
+                            "type": "array"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Accuracy"
                 },
                 "bad_data_threshold": {
-                    "title": "Bad Data Threshold",
-                    "type": "array",
-                    "items": {
-                        "type": "number"
-                    }
+                    "anyOf": [
+                        {
+                            "items": {
+                                "type": "number"
+                            },
+                            "type": "array"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Bad Data Threshold"
                 },
                 "time": {
-                    "title": "Time",
-                    "type": "string",
-                    "format": "date-time"
-                },
-                "equipment_ids": {
-                    "title": "Equipment Ids",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            },
-            "required": [
-                "values",
-                "ids",
-                "equipment_ids"
-            ]
-        },
-        "PowersImaginary": {
-            "title": "PowersImaginary",
-            "description": "Primary key is ids + equipment_ids.\n\n- ids corresponding node id, so \"113.1\", \"113.2\", \"113.3\"\n- equipment_id corresponds to PVSystem.113\n\nExtended by classes:\n    \"PowersMagnitude\",\n    \"PowersAngle\",\n    \"PowersReal\",\n    \"PowersImaginary\",",
-            "type": "object",
-            "properties": {
-                "values": {
-                    "title": "Values",
-                    "type": "array",
-                    "items": {
-                        "type": "number"
-                    }
-                },
-                "ids": {
-                    "title": "Ids",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "units": {
-                    "title": "Units",
-                    "default": "kVAR",
-                    "type": "string"
-                },
-                "accuracy": {
-                    "title": "Accuracy",
-                    "type": "array",
-                    "items": {
-                        "type": "number"
-                    }
-                },
-                "bad_data_threshold": {
-                    "title": "Bad Data Threshold",
-                    "type": "array",
-                    "items": {
-                        "type": "number"
-                    }
-                },
-                "time": {
-                    "title": "Time",
-                    "type": "string",
-                    "format": "date-time"
-                },
-                "equipment_ids": {
-                    "title": "Equipment Ids",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            },
-            "required": [
-                "values",
-                "ids",
-                "equipment_ids"
-            ]
-        },
-        "ImpedanceReal": {
-            "title": "ImpedanceReal",
-            "description": "Extended by classes:\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"ImpedanceMagnitude\",\n    \"ImpedanceAngle\",\n    \"ImpedanceReal\",\n    \"ImpedanceImaginary\",",
-            "type": "object",
-            "properties": {
-                "values": {
-                    "title": "Values",
-                    "type": "array",
-                    "items": {
-                        "type": "number"
-                    }
-                },
-                "ids": {
-                    "title": "Ids",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "units": {
-                    "title": "Units",
-                    "default": "Ohm",
-                    "type": "string"
-                },
-                "accuracy": {
-                    "title": "Accuracy",
-                    "type": "array",
-                    "items": {
-                        "type": "number"
-                    }
-                },
-                "bad_data_threshold": {
-                    "title": "Bad Data Threshold",
-                    "type": "array",
-                    "items": {
-                        "type": "number"
-                    }
-                },
-                "time": {
-                    "title": "Time",
-                    "type": "string",
-                    "format": "date-time"
+                    "anyOf": [
+                        {
+                            "format": "date-time",
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Time"
                 }
             },
             "required": [
                 "values",
                 "ids"
-            ]
+            ],
+            "title": "CurrentsReal",
+            "type": "object"
         },
         "ImpedanceImaginary": {
-            "title": "ImpedanceImaginary",
-            "description": "Extended by classes:\n    \"SolarIrradiances\",\n    \"Temperatures\",\n    \"WindSpeeds\",\n    \"StatesOfCharge\",\n    \"CurrentsMagnitude\",\n    \"CurrentsAngle\",\n    \"CurrentsReal\",\n    \"CurrentsImaginary\",\n    \"ImpedanceMagnitude\",\n    \"ImpedanceAngle\",\n    \"ImpedanceReal\",\n    \"ImpedanceImaginary\",",
-            "type": "object",
             "properties": {
                 "values": {
-                    "title": "Values",
-                    "type": "array",
                     "items": {
                         "type": "number"
-                    }
+                    },
+                    "title": "Values",
+                    "type": "array"
                 },
                 "ids": {
-                    "title": "Ids",
-                    "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "title": "Ids",
+                    "type": "array"
                 },
                 "units": {
-                    "title": "Units",
                     "default": "Ohm",
+                    "title": "Units",
                     "type": "string"
                 },
                 "accuracy": {
-                    "title": "Accuracy",
-                    "type": "array",
-                    "items": {
-                        "type": "number"
-                    }
+                    "anyOf": [
+                        {
+                            "items": {
+                                "type": "number"
+                            },
+                            "type": "array"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Accuracy"
                 },
                 "bad_data_threshold": {
-                    "title": "Bad Data Threshold",
-                    "type": "array",
-                    "items": {
-                        "type": "number"
-                    }
+                    "anyOf": [
+                        {
+                            "items": {
+                                "type": "number"
+                            },
+                            "type": "array"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Bad Data Threshold"
                 },
                 "time": {
-                    "title": "Time",
-                    "type": "string",
-                    "format": "date-time"
+                    "anyOf": [
+                        {
+                            "format": "date-time",
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Time"
                 }
             },
             "required": [
                 "values",
                 "ids"
-            ]
+            ],
+            "title": "ImpedanceImaginary",
+            "type": "object"
         },
-        "Injection": {
-            "title": "Injection",
-            "type": "object",
+        "ImpedanceReal": {
             "properties": {
-                "current_real": {
-                    "title": "Current Real",
-                    "default": {
-                        "values": [],
-                        "ids": [],
-                        "node_ids": []
-                    },
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/CurrentsReal"
-                        }
-                    ]
-                },
-                "current_imaginary": {
-                    "title": "Current Imaginary",
-                    "default": {
-                        "values": [],
-                        "ids": [],
-                        "node_ids": []
-                    },
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/CurrentsImaginary"
-                        }
-                    ]
-                },
-                "power_real": {
-                    "title": "Power Real",
-                    "default": {
-                        "values": [],
-                        "ids": [],
-                        "node_ids": []
-                    },
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/PowersReal"
-                        }
-                    ]
-                },
-                "power_imaginary": {
-                    "title": "Power Imaginary",
-                    "default": {
-                        "values": [],
-                        "ids": [],
-                        "node_ids": []
-                    },
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/PowersImaginary"
-                        }
-                    ]
-                },
-                "impedance_real": {
-                    "title": "Impedance Real",
-                    "default": {
-                        "values": [],
-                        "ids": [],
-                        "node_ids": []
-                    },
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/ImpedanceReal"
-                        }
-                    ]
-                },
-                "impedance_imaginary": {
-                    "title": "Impedance Imaginary",
-                    "default": {
-                        "values": [],
-                        "ids": [],
-                        "node_ids": []
-                    },
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/ImpedanceImaginary"
-                        }
-                    ]
-                }
-            }
-        },
-        "IncidenceList": {
-            "title": "IncidenceList",
-            "type": "object",
-            "properties": {
-                "from_equipment": {
-                    "title": "From Equipment",
-                    "type": "array",
+                "values": {
                     "items": {
-                        "type": "string"
-                    }
-                },
-                "to_equipment": {
-                    "title": "To Equipment",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "equipment_type": {
-                    "title": "Equipment Type",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                        "type": "number"
+                    },
+                    "title": "Values",
+                    "type": "array"
                 },
                 "ids": {
-                    "title": "Ids",
-                    "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "title": "Ids",
+                    "type": "array"
+                },
+                "units": {
+                    "default": "Ohm",
+                    "title": "Units",
+                    "type": "string"
+                },
+                "accuracy": {
+                    "anyOf": [
+                        {
+                            "items": {
+                                "type": "number"
+                            },
+                            "type": "array"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Accuracy"
+                },
+                "bad_data_threshold": {
+                    "anyOf": [
+                        {
+                            "items": {
+                                "type": "number"
+                            },
+                            "type": "array"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Bad Data Threshold"
+                },
+                "time": {
+                    "anyOf": [
+                        {
+                            "format": "date-time",
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Time"
+                }
+            },
+            "required": [
+                "values",
+                "ids"
+            ],
+            "title": "ImpedanceReal",
+            "type": "object"
+        },
+        "IncidenceList": {
+            "properties": {
+                "from_equipment": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "From Equipment",
+                    "type": "array"
+                },
+                "to_equipment": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "To Equipment",
+                    "type": "array"
+                },
+                "equipment_type": {
+                    "anyOf": [
+                        {
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Equipment Type"
+                },
+                "ids": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Ids",
+                    "type": "array"
                 }
             },
             "required": [
                 "from_equipment",
                 "to_equipment",
                 "ids"
-            ]
+            ],
+            "title": "IncidenceList",
+            "type": "object"
+        },
+        "Injection": {
+            "properties": {
+                "current_real": {
+                    "$ref": "#/$defs/CurrentsReal",
+                    "default": {
+                        "values": [],
+                        "ids": [],
+                        "node_ids": []
+                    }
+                },
+                "current_imaginary": {
+                    "$ref": "#/$defs/CurrentsImaginary",
+                    "default": {
+                        "values": [],
+                        "ids": [],
+                        "node_ids": []
+                    }
+                },
+                "power_real": {
+                    "$ref": "#/$defs/PowersReal",
+                    "default": {
+                        "values": [],
+                        "ids": [],
+                        "node_ids": []
+                    }
+                },
+                "power_imaginary": {
+                    "$ref": "#/$defs/PowersImaginary",
+                    "default": {
+                        "values": [],
+                        "ids": [],
+                        "node_ids": []
+                    }
+                },
+                "impedance_real": {
+                    "$ref": "#/$defs/ImpedanceReal",
+                    "default": {
+                        "values": [],
+                        "ids": [],
+                        "node_ids": []
+                    }
+                },
+                "impedance_imaginary": {
+                    "$ref": "#/$defs/ImpedanceImaginary",
+                    "default": {
+                        "values": [],
+                        "ids": [],
+                        "node_ids": []
+                    }
+                }
+            },
+            "title": "Injection",
+            "type": "object"
+        },
+        "PowersImaginary": {
+            "properties": {
+                "values": {
+                    "items": {
+                        "type": "number"
+                    },
+                    "title": "Values",
+                    "type": "array"
+                },
+                "ids": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Ids",
+                    "type": "array"
+                },
+                "units": {
+                    "default": "kVAR",
+                    "title": "Units",
+                    "type": "string"
+                },
+                "accuracy": {
+                    "anyOf": [
+                        {
+                            "items": {
+                                "type": "number"
+                            },
+                            "type": "array"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Accuracy"
+                },
+                "bad_data_threshold": {
+                    "anyOf": [
+                        {
+                            "items": {
+                                "type": "number"
+                            },
+                            "type": "array"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Bad Data Threshold"
+                },
+                "time": {
+                    "anyOf": [
+                        {
+                            "format": "date-time",
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Time"
+                },
+                "equipment_ids": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Equipment Ids",
+                    "type": "array"
+                }
+            },
+            "required": [
+                "values",
+                "ids",
+                "equipment_ids"
+            ],
+            "title": "PowersImaginary",
+            "type": "object"
+        },
+        "PowersReal": {
+            "properties": {
+                "values": {
+                    "items": {
+                        "type": "number"
+                    },
+                    "title": "Values",
+                    "type": "array"
+                },
+                "ids": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Ids",
+                    "type": "array"
+                },
+                "units": {
+                    "default": "kW",
+                    "title": "Units",
+                    "type": "string"
+                },
+                "accuracy": {
+                    "anyOf": [
+                        {
+                            "items": {
+                                "type": "number"
+                            },
+                            "type": "array"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Accuracy"
+                },
+                "bad_data_threshold": {
+                    "anyOf": [
+                        {
+                            "items": {
+                                "type": "number"
+                            },
+                            "type": "array"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Bad Data Threshold"
+                },
+                "time": {
+                    "anyOf": [
+                        {
+                            "format": "date-time",
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Time"
+                },
+                "equipment_ids": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Equipment Ids",
+                    "type": "array"
+                }
+            },
+            "required": [
+                "values",
+                "ids",
+                "equipment_ids"
+            ],
+            "title": "PowersReal",
+            "type": "object"
         },
         "VoltagesAngle": {
-            "title": "VoltagesAngle",
-            "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\"",
-            "type": "object",
             "properties": {
                 "values": {
-                    "title": "Values",
-                    "type": "array",
                     "items": {
                         "type": "number"
-                    }
+                    },
+                    "title": "Values",
+                    "type": "array"
                 },
                 "ids": {
-                    "title": "Ids",
-                    "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "title": "Ids",
+                    "type": "array"
                 },
                 "units": {
-                    "title": "Units",
                     "default": "radians",
+                    "title": "Units",
                     "type": "string"
                 },
                 "accuracy": {
-                    "title": "Accuracy",
-                    "type": "array",
-                    "items": {
-                        "type": "number"
-                    }
+                    "anyOf": [
+                        {
+                            "items": {
+                                "type": "number"
+                            },
+                            "type": "array"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Accuracy"
                 },
                 "bad_data_threshold": {
-                    "title": "Bad Data Threshold",
-                    "type": "array",
-                    "items": {
-                        "type": "number"
-                    }
+                    "anyOf": [
+                        {
+                            "items": {
+                                "type": "number"
+                            },
+                            "type": "array"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Bad Data Threshold"
                 },
                 "time": {
-                    "title": "Time",
-                    "type": "string",
-                    "format": "date-time"
+                    "anyOf": [
+                        {
+                            "format": "date-time",
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Time"
                 }
             },
             "required": [
                 "values",
                 "ids"
-            ]
+            ],
+            "title": "VoltagesAngle",
+            "type": "object"
         },
         "VoltagesMagnitude": {
-            "title": "VoltagesMagnitude",
-            "description": "Extended by classes:\n    \"VoltagesMagnitude\",\n    \"VoltagesAngle\",\n    \"VoltagesReal\",\n    \"VoltagesImaginary\"",
-            "type": "object",
             "properties": {
                 "values": {
-                    "title": "Values",
-                    "type": "array",
                     "items": {
                         "type": "number"
-                    }
+                    },
+                    "title": "Values",
+                    "type": "array"
                 },
                 "ids": {
-                    "title": "Ids",
-                    "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "title": "Ids",
+                    "type": "array"
                 },
                 "units": {
-                    "title": "Units",
                     "default": "V",
+                    "title": "Units",
                     "type": "string"
                 },
                 "accuracy": {
-                    "title": "Accuracy",
-                    "type": "array",
-                    "items": {
-                        "type": "number"
-                    }
+                    "anyOf": [
+                        {
+                            "items": {
+                                "type": "number"
+                            },
+                            "type": "array"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Accuracy"
                 },
                 "bad_data_threshold": {
-                    "title": "Bad Data Threshold",
-                    "type": "array",
-                    "items": {
-                        "type": "number"
-                    }
+                    "anyOf": [
+                        {
+                            "items": {
+                                "type": "number"
+                            },
+                            "type": "array"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Bad Data Threshold"
                 },
                 "time": {
-                    "title": "Time",
-                    "type": "string",
-                    "format": "date-time"
+                    "anyOf": [
+                        {
+                            "format": "date-time",
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Time"
                 }
             },
             "required": [
                 "values",
                 "ids"
-            ]
+            ],
+            "title": "VoltagesMagnitude",
+            "type": "object"
         }
-    }
+    },
+    "properties": {
+        "admittance": {
+            "anyOf": [
+                {
+                    "$ref": "#/$defs/AdmittanceSparse"
+                },
+                {
+                    "$ref": "#/$defs/AdmittanceMatrix"
+                }
+            ],
+            "title": "Admittance"
+        },
+        "injections": {
+            "$ref": "#/$defs/Injection"
+        },
+        "incidences": {
+            "anyOf": [
+                {
+                    "$ref": "#/$defs/IncidenceList"
+                },
+                {
+                    "type": "null"
+                }
+            ],
+            "default": null
+        },
+        "base_voltage_angles": {
+            "anyOf": [
+                {
+                    "$ref": "#/$defs/VoltagesAngle"
+                },
+                {
+                    "type": "null"
+                }
+            ],
+            "default": null
+        },
+        "base_voltage_magnitudes": {
+            "anyOf": [
+                {
+                    "$ref": "#/$defs/VoltagesMagnitude"
+                },
+                {
+                    "type": "null"
+                }
+            ],
+            "default": null
+        },
+        "slack_bus": {
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "title": "Slack Bus",
+            "type": "array"
+        }
+    },
+    "required": [
+        "admittance",
+        "injections"
+    ],
+    "title": "Topology",
+    "type": "object"
 }

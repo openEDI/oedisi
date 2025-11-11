@@ -1,7 +1,5 @@
 {
-    "title": "Command",
     "description": "JSON Configuration for external object commands.\n\nobj_name -- name of the object.\nobj_prop -- name of the property.\nobj_val -- val of the property.",
-    "type": "object",
     "properties": {
         "obj_name": {
             "title": "Obj Name",
@@ -20,5 +18,7 @@
         "obj_name",
         "obj_property",
         "val"
-    ]
+    ],
+    "title": "Command",
+    "type": "object"
 }
