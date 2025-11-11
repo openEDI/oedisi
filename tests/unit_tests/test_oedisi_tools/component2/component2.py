@@ -25,12 +25,9 @@ def destroy_federate(fed):
 
 
 class TestFederate:
-    def __init__(self, broker_config: BrokerConfig = None):
-        static_inputs_path = BASE_PATH.parent / "test_data"
-        assert static_inputs_path.exists(), (
-            f"Static inputs path {static_inputs_path} does not exist."
-        )
-        print(broker_config)
+    def __init__(self, broker_config: BrokerConfig = BrokerConfig()):
+
+
         logger.info(f"Current Working Directory: {os.path.abspath(os.curdir)}")
         with open(BASE_PATH / DefaultFileNames.STATIC_INPUTS) as f:
             self.parameters = json.load(f)

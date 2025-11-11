@@ -16,7 +16,7 @@ class DefaultFileNames(str, Enum):
 
 class BrokerConfig(BaseModel):
     broker_port: int = 23404
-    broker_ip: str = "10.5.0.2"
+    broker_ip: str = "127.0.0.1"
     api_port: int = 12345
     feeder_host: str | None = None
     feeder_port: int | None = None
