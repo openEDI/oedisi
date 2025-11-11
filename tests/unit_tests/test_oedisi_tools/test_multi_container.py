@@ -47,7 +47,7 @@ def test_mc_build(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     assert result.exit_code == 0
 
 
-@pytest.mark.skip()
+# @pytest.mark.skip()
 @pytest.mark.usefixtures("test_mc_build")
 def test_api_heath_endpoint(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     build_path = base_path / "build"
@@ -66,7 +66,7 @@ def test_api_heath_endpoint(base_path: Path, monkeypatch: pytest.MonkeyPatch):
             HeathCheck.model_validate(response.json())
 
 
-@pytest.mark.skip()
+# @pytest.mark.skip()
 # IN_GITHUB_ACTIONS, reason="test runs locally but fails on github actions"
 # )
 @pytest.mark.usefixtures("test_mc_build")
@@ -93,7 +93,7 @@ def test_api_run(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     assert response.status_code == 200, response.text
 
 
-@pytest.mark.skip()
+# @pytest.mark.skip()
 @pytest.mark.usefixtures("test_mc_build")
 def test_docker_compose(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     build_path = base_path / "build"
@@ -101,7 +101,7 @@ def test_docker_compose(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     monkeypatch.chdir(build_path)
 
     with subprocess.Popen(
-        ["docker", "compose", "up", "-d"],
+        ["docker", "compose", "up", "-d", "--build", "--force-recreate"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     ) as proc:
