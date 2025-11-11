@@ -23,8 +23,16 @@ app = FastAPI()
 @app.get("/")
 def read_root():
     hostname = socket.gethostname()
-    host_ip = socket.gethostbyname(hostname)
-    response = HeathCheck(hostname=hostname, host_ip=host_ip).dict()
+    print(f"Hostname: {hostname}")
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(("8.8.8.8", 80))  # connect to Google DNS (no actual data sent)
+        host_ip = s.getsockname()[0]
+    finally:
+        s.close()
+
+    response = HeathCheck(hostname=hostname, host_ip=host_ip).model_dump()
     return JSONResponse(response, 200)
 
 
@@ -56,7 +64,7 @@ async def configure(component_struct:ComponentStruct):
     json.dump(params , open(DefaultFileNames.STATIC_INPUTS.value, "w"))
     response = ServerReply(
             detail = f"Sucessfully updated configuration files."
-        ).dict() 
+        ).model_dump() 
     return JSONResponse(response, 200)
 
 

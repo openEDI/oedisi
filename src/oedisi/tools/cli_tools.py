@@ -149,7 +149,7 @@ def build(
         create_kubernetes_deployment(
             wiring_diagram, simulation_dir, broker_port, simulation_id
         )
-        create_kubernetes_deployment(wiring_diagram, target_directory, broker_port)
+        # create_kubernetes_deployment(wiring_diagram, target_directory, broker_port)
 
     else:
         runner_config = generate_runner_config(

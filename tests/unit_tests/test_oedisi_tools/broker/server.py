@@ -36,7 +36,12 @@ WIRING_DIAGRAM: WiringDiagram | None = None
 
 def read_settings():
     broker_host = socket.gethostname()
-    broker_ip = socket.gethostbyname(broker_host)
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(("8.8.8.8", 80))  # connect to Google DNS (no actual data sent)
+        broker_ip = s.getsockname()[0]
+    finally:
+        s.close()
     api_port = 8766  # int(os.environ['PORT'])
 
     component_map = {broker_host: api_port}
@@ -76,6 +81,7 @@ def _get_feeder_info(component_map: dict):
 
 
 async def run_simulation():
+    
     component_map, broker_ip, api_port = read_settings()
     # feeder_host, feeder_port = _get_feeder_info(component_map)
     logger.info(f"{broker_ip}, {api_port}")
@@ -165,6 +171,7 @@ def read_root():
 
 @app.post("/run/")
 async def run_feeder(background_tasks: BackgroundTasks):
+    print("Run Called on Broker service")
     try:
         background_tasks.add_task(run_simulation)
     except Exception as e:
@@ -174,10 +181,11 @@ async def run_feeder(background_tasks: BackgroundTasks):
 
 @app.post("/configure/")
 async def configure(wiring_diagram: WiringDiagram):
+    print("Configure Called on Broker service")
     global WIRING_DIAGRAM
     WIRING_DIAGRAM = wiring_diagram
     logger.info(f"Writing wiring diagram: {WIRING_DIAGRAM_FILENAME}")
-    json.dump(wiring_diagram.dict(), open(WIRING_DIAGRAM_FILENAME, "w"))
+    json.dump(wiring_diagram.model_dump(), open(WIRING_DIAGRAM_FILENAME, "w"))
     for component in wiring_diagram.components:
         component_model = ComponentStruct(component=component, links=[])
         for link in wiring_diagram.links:
@@ -187,14 +195,14 @@ async def configure(wiring_diagram: WiringDiagram):
         url = build_url(component.host, component.container_port, ["configure"])
         logger.info(f"making a request to url - {url}")
 
-        r = requests.post(url, json=component_model.dict())
+        r = requests.post(url, json=component_model.model_dump())
         assert (
             r.status_code == 200
         ), f"POST request to update configuration failed for url - {url}"
     return JSONResponse(
         ServerReply(
             detail="Sucessfully updated config files for all containers"
-        ).dict(),
+        ).model_dump(),
         200,
     )
 

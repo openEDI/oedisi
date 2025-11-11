@@ -22,7 +22,12 @@ logger.setLevel(logging.DEBUG)
 @app.get("/")
 def read_root():
     hostname = socket.gethostname()
-    host_ip = socket.gethostbyname(hostname)
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(("8.8.8.8", 80))  # connect to Google DNS (no actual data sent)
+        host_ip = s.getsockname()[0]
+    finally:
+        s.close()
     response = HeathCheck(hostname=hostname, host_ip=host_ip).dict()
     return JSONResponse(response, 200)
 

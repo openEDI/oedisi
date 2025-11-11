@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 """
 """
-from oedisi.types.common import BrokerConfig
+
+from pathlib import Path
+
+from oedisi.types.common import BrokerConfig, DefaultFileNames
 import helics as h
 import logging
 import json
 import os
 
+BASE_PATH = Path(__file__).parent
 
 logger = logging.getLogger("uvicorn.error")
 logger.addHandler(logging.StreamHandler())
@@ -22,10 +26,13 @@ def destroy_federate(fed):
 
 class TestFederate:
     def __init__(self, broker_config: BrokerConfig = None):
-        
+        static_inputs_path = BASE_PATH.parent / "test_data"
+        assert static_inputs_path.exists(), (
+            f"Static inputs path {static_inputs_path} does not exist."
+        )
         print(broker_config)
         logger.info(f"Current Working Directory: {os.path.abspath(os.curdir)}")
-        with open("static_inputs.json") as f:
+        with open(BASE_PATH / DefaultFileNames.STATIC_INPUTS) as f:
             self.parameters = json.load(f)
 
         fedinfo = h.helicsCreateFederateInfo()
