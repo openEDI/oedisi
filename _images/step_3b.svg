@@ -1,0 +1,21 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 445.35389806417595 177.8178686135925" width="445.35389806417595" height="177.8178686135925">
+  <!-- svg-source:excalidraw -->
+  
+  <defs>
+    <style class="style-fonts">
+      @font-face {
+        font-family: "Virgil";
+        src: url("https://excalidraw.com/Virgil.woff2");
+      }
+      @font-face {
+        font-family: "Cascadia";
+        src: url("https://excalidraw.com/Cascadia.woff2");
+      }
+      @font-face {
+        font-family: "Assistant";
+        src: url("https://excalidraw.com/Assistant-Regular.woff2");
+      }
+    </style>
+    
+  </defs>
+  <g transform="translate(10 10) rotate(0 61.81378936767578 11.384500696257078)"><text x="0" y="15.956516175873944" font-family="Virgil, Segoe UI Emoji" font-size="18.21520111401135px" fill="#2f9e44" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">build_path = </text></g><g transform="translate(45.07869057983703 46.40873717306158) rotate(0 131.68548583984375 11.384500696257078)"><text x="0" y="15.956516175873944" font-family="Virgil, Segoe UI Emoji" font-size="18.21520111401135px" fill="#2f9e44" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">kubectl apply -f {build_path}</text></g><g transform="translate(15.934327106132287 48.45796814403138) rotate(0 4.415924072265625 11.384500696257078)"><text x="0" y="15.956516175873944" font-family="Virgil, Segoe UI Emoji" font-size="18.21520111401135px" fill="#e03131" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">&gt;</text></g><g transform="translate(162.9060831227697 87.81786861359251) rotate(0 136.22390747070312 40)"><text x="0" y="14.016" font-family="Virgil, Segoe UI Emoji" font-size="16px" fill="#9c36b5" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Applies all deployment and service </text><text x="0" y="34.016" font-family="Virgil, Segoe UI Emoji" font-size="16px" fill="#9c36b5" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">files in the given folder.</text><text x="0" y="54.016" font-family="Virgil, Segoe UI Emoji" font-size="16px" fill="#9c36b5" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Starts all the pods.  </text><text x="0" y="74.016" font-family="Virgil, Segoe UI Emoji" font-size="16px" fill="#9c36b5" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">(each running a single federate)</text></g><g stroke-linecap="round"><g transform="translate(148.59388829855106 115.24262128021087) rotate(0 -14.76965283945259 -19.51237175567246)"><path d="M0.48 0.37 C-2.9 -3.3, -15.59 -16.34, -20.51 -23.1 C-25.43 -29.85, -27.65 -37.41, -29.05 -40.15 M-0.73 -0.48 C-4.21 -3.93, -16.5 -15.53, -21.3 -22.02 C-26.11 -28.51, -28.38 -36.65, -29.55 -39.43" stroke="#9c36b5" stroke-width="2" fill="none"></path></g><g transform="translate(148.59388829855106 115.24262128021087) rotate(0 -14.76965283945259 -19.51237175567246)"><path d="M-23.43 -32.21 C-24.78 -33.97, -27.47 -35.83, -29.55 -39.43 M-23.43 -32.21 C-24.75 -33.57, -26.39 -35.61, -29.55 -39.43" stroke="#9c36b5" stroke-width="2" fill="none"></path></g><g transform="translate(148.59388829855106 115.24262128021087) rotate(0 -14.76965283945259 -19.51237175567246)"><path d="M-29.5 -29.96 C-29.14 -32.37, -30.14 -34.86, -29.55 -39.43 M-29.5 -29.96 C-29.58 -31.76, -29.98 -34.27, -29.55 -39.43" stroke="#9c36b5" stroke-width="2" fill="none"></path></g></g><mask></mask><g transform="translate(132.65554186931445 10.573253902354054) rotate(0 110.1999282836914 10)"><text x="0" y="14.016" font-family="Virgil, Segoe UI Emoji" font-size="16px" fill="#f08c00" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">&lt;build folder&gt; / kubernetes </text></g></svg>
