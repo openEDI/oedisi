@@ -1,5 +1,53 @@
 {
     "$defs": {
+        "InverterControl": {
+            "description": "InverterControl with volt-var control and/or volt-watt control.",
+            "properties": {
+                "pvsystem_list": {
+                    "anyOf": [
+                        {
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Pvsystem List"
+                },
+                "vvcontrol": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/VVControl"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null
+                },
+                "vwcontrol": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/VWControl"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null
+                },
+                "mode": {
+                    "$ref": "#/$defs/InverterControlMode",
+                    "default": "VOLTVAR"
+                }
+            },
+            "title": "InverterControl",
+            "type": "object"
+        },
         "InverterControlMode": {
             "description": "Inverter control mode.",
             "enum": [
@@ -95,50 +143,9 @@
             "type": "object"
         }
     },
-    "description": "InverterControl with volt-var control and/or volt-watt control.",
-    "properties": {
-        "pvsystem_list": {
-            "anyOf": [
-                {
-                    "items": {
-                        "type": "string"
-                    },
-                    "type": "array"
-                },
-                {
-                    "type": "null"
-                }
-            ],
-            "default": null,
-            "title": "Pvsystem List"
-        },
-        "vvcontrol": {
-            "anyOf": [
-                {
-                    "$ref": "#/$defs/VVControl"
-                },
-                {
-                    "type": "null"
-                }
-            ],
-            "default": null
-        },
-        "vwcontrol": {
-            "anyOf": [
-                {
-                    "$ref": "#/$defs/VWControl"
-                },
-                {
-                    "type": "null"
-                }
-            ],
-            "default": null
-        },
-        "mode": {
-            "$ref": "#/$defs/InverterControlMode",
-            "default": "VOLTVAR"
-        }
+    "items": {
+        "$ref": "#/$defs/InverterControl"
     },
-    "title": "InverterControl",
-    "type": "object"
+    "title": "RootModel[List[InverterControl]]",
+    "type": "array"
 }

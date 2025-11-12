@@ -1,38 +1,45 @@
 {
-    "title": "RealCostFunctions",
-    "description": "Extended by classes:\n    \"RealCostFunctions\",\n    \"ReactiveCostFunctions\",\n    \"RealWholesalePrices\",\n    \"ReactiveWholesalePrices\",\n    \"OperationalCosts\"",
-    "type": "object",
     "properties": {
         "values": {
-            "title": "Values",
-            "type": "array",
             "items": {
-                "type": "array",
                 "items": {
                     "type": "number"
-                }
-            }
+                },
+                "type": "array"
+            },
+            "title": "Values",
+            "type": "array"
         },
         "ids": {
-            "title": "Ids",
-            "type": "array",
             "items": {
                 "type": "string"
-            }
+            },
+            "title": "Ids",
+            "type": "array"
         },
         "units": {
-            "title": "Units",
             "default": "$",
+            "title": "Units",
             "type": "string"
         },
         "time": {
-            "title": "Time",
-            "type": "string",
-            "format": "date-time"
+            "anyOf": [
+                {
+                    "format": "date-time",
+                    "type": "string"
+                },
+                {
+                    "type": "null"
+                }
+            ],
+            "default": null,
+            "title": "Time"
         }
     },
     "required": [
         "values",
         "ids"
-    ]
+    ],
+    "title": "RealCostFunctions",
+    "type": "object"
 }

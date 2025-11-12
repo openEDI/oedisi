@@ -39,8 +39,9 @@ def types_to_dict(types: List[AnnotatedType]):
     return {t.port_name: t for t in types}
 
 
-def component_from_json(f, type_checker):
-    comp_desc = ComponentDescription.parse_file(f)
+def component_from_json(filepath, type_checker):
+    with open(filepath) as f:
+        comp_desc = ComponentDescription.model_validate(json.load(f))
     return basic_component(comp_desc, type_checker)
 
 

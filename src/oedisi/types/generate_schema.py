@@ -1,6 +1,7 @@
 from .data_types import *
 import os
 import logging
+import json
 
 all_classes = [
     StateArray,
@@ -48,6 +49,5 @@ if not os.path.exists("schemas"):
 
 for klass in all_classes:
     logging.info(klass)
-    json_data = klass.schema_json(indent=4)
     with open(os.path.join("schemas", klass.__name__ + ".json"), "w") as fp:
-        fp.write(json_data)
+        json.dump(klass.model_json_schema(), fp, indent=4)

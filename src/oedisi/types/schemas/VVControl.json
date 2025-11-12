@@ -1,59 +1,56 @@
 {
-    "title": "VVControl",
+    "$defs": {
+        "ReactivePowerSetting": {
+            "description": "Reactive power setting, almost always VARAVAL_WATTS.",
+            "enum": [
+                "VARAVAL_WATTS",
+                "VARMAX_VARS",
+                "VARMAX_WATTS"
+            ],
+            "title": "ReactivePowerSetting",
+            "type": "string"
+        }
+    },
     "description": "OpenDSS setting for volt-var control.",
-    "type": "object",
     "properties": {
         "deltaq_factor": {
-            "title": "Deltaq Factor",
             "default": -1.0,
+            "title": "Deltaq Factor",
             "type": "number"
         },
         "varchangetolerance": {
-            "title": "Varchangetolerance",
             "default": 0.025,
+            "title": "Varchangetolerance",
             "type": "number"
         },
         "voltagechangetolerance": {
-            "title": "Voltagechangetolerance",
             "default": 0.0001,
+            "title": "Voltagechangetolerance",
             "type": "number"
         },
         "vv_refreactivepower": {
-            "default": "VARAVAL_WATTS",
-            "allOf": [
-                {
-                    "$ref": "#/definitions/ReactivePowerSetting"
-                }
-            ]
+            "$ref": "#/$defs/ReactivePowerSetting",
+            "default": "VARAVAL_WATTS"
         },
         "voltage": {
-            "title": "Voltage",
-            "type": "array",
             "items": {
                 "type": "number"
-            }
+            },
+            "title": "Voltage",
+            "type": "array"
         },
         "reactive_response": {
-            "title": "Reactive Response",
-            "type": "array",
             "items": {
                 "type": "number"
-            }
+            },
+            "title": "Reactive Response",
+            "type": "array"
         }
     },
     "required": [
         "voltage",
         "reactive_response"
     ],
-    "definitions": {
-        "ReactivePowerSetting": {
-            "title": "ReactivePowerSetting",
-            "description": "Reactive power setting, almost always VARAVAL_WATTS.",
-            "enum": [
-                "VARAVAL_WATTS",
-                "VARMAX_VARS",
-                "VARMAX_WATTS"
-            ]
-        }
-    }
+    "title": "VVControl",
+    "type": "object"
 }
