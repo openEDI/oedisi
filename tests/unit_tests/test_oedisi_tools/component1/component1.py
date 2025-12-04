@@ -21,7 +21,7 @@ def destroy_federate(fed):
 
 class TestFederate:
     def __init__(self, broker_config: BrokerConfig = BrokerConfig()):
-        print(broker_config)
+        logger.info(broker_config)
         logger.info(f"Current Working Directory: {os.path.abspath(os.curdir)}")
         with open("static_inputs.json") as f:
             self.parameters = json.load(f)

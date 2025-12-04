@@ -118,7 +118,7 @@ Stopping containers using Docker-compose::
 Alternately, Kubernetes setup files can be used to orchestrate the launch of all the required containers.
 Kubernetes deploment files are generated within the ``kubernetes`` folder inside the build folder.
 All files can be deployed using a file command (Both deployment and service files).
-ter. It is to be noted that these files can be modified to serve a unique usecases.
+It is to be noted that these files can be modified to serve a unique usecases.
 
 Running containers using Kubernetes::
 

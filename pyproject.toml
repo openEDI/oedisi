@@ -44,7 +44,6 @@ test = [
   "httpx",
   "fastapi~=0.104",
   "uvicorn",
-  "httpx",
   "numpy",
   "pandas",
   "pyarrow",

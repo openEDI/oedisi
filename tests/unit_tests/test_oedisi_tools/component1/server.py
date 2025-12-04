@@ -1,4 +1,3 @@
-import traceback
 import uvicorn
 import logging
 import socket
@@ -43,7 +42,7 @@ async def run_model(broker_config: BrokerConfig, background_tasks: BackgroundTas
         logger.info("Federate 1 started")
         return {"reply": "success", "error": False}
     except Exception as e:
-        return {"reply": str(e), "error": True}
+        raise HTTPException(404, str(e))
 
 
 @app.post("/configure/")
@@ -54,8 +53,10 @@ async def configure(component_struct:ComponentStruct):
     links = {}
     for link in component_struct.links:
         links[link.target_port] = f"{link.source}/{link.source_port}"
-    json.dump(links , open(DefaultFileNames.INPUT_MAPPING.value, "w"))
-    json.dump(params , open(DefaultFileNames.STATIC_INPUTS.value, "w"))
+    with open(DefaultFileNames.INPUT_MAPPING.value, "w") as f: 
+        json.dump(links, f)
+    with open(DefaultFileNames.STATIC_INPUTS.value, "w") as f:
+        json.dump(params, f)
     response = ServerReply(
             detail = f"Sucessfully updated configuration files."
         ).model_dump() 

@@ -1,5 +1,5 @@
 helics
-helics-apps
+# helics-apps
 oedisi>=2.0.2,<3
 pyyaml
 fastapi

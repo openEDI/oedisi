@@ -12,7 +12,6 @@ import requests
 import uvicorn
 import logging
 import asyncio
-import logging
 import socket
 import time
 import json
@@ -49,9 +48,7 @@ def read_settings():
         for component in WIRING_DIAGRAM.components:
             component_map[component.host] = component.container_port
     else:
-        logger.info(
-            "Use the '/configure' setpoint to setup up the WiringDiagram before making requests other enpoints"
-        )
+        raise HTTPException(status_code=404, detail="Use the '/configure' setpoint to setup up the WiringDiagram before making requests other enpoints")
 
     return component_map, broker_ip, api_port
 
@@ -108,12 +105,10 @@ async def run_simulation():
                     "broker_port": 23404,
                     "broker_ip": broker_ip,
                     "api_port": api_port,
-                    # "feeder_host": feeder_host,
-                    # "feeder_port": feeder_port,
                 }
                 logger.info(f"{myobj}")
                 # create tasks so we can monitor them periodically
-                task = asyncio.create_task(client.post(url[:-1], json=myobj))
+                task = asyncio.create_task(client.post(url.removesuffix("/"), json=myobj))
                 tasks.append(task)
 
         if tasks:
@@ -171,7 +166,7 @@ def read_root():
 
 @app.post("/run/")
 async def run_feeder(background_tasks: BackgroundTasks):
-    print("Run Called on Broker service")
+    logger.info("Run Called on Broker service")
     try:
         background_tasks.add_task(run_simulation)
     except Exception as e:
@@ -181,7 +176,7 @@ async def run_feeder(background_tasks: BackgroundTasks):
 
 @app.post("/configure/")
 async def configure(wiring_diagram: WiringDiagram):
-    print("Configure Called on Broker service")
+    logger.info("Configure Called on Broker service")
     global WIRING_DIAGRAM
     WIRING_DIAGRAM = wiring_diagram
     logger.info(f"Writing wiring diagram: {WIRING_DIAGRAM_FILENAME}")

@@ -137,7 +137,7 @@ def build(
     if multi_container:        
         if simulation_id is None:
             simulation_id = str(uuid4())
-        
+        click.echo(f"Simulation ID: {simulation_id}")
         simulation_dir = os.path.join(target_directory, simulation_id)
 
         if not Path(simulation_dir).exists():
@@ -149,7 +149,6 @@ def build(
         create_kubernetes_deployment(
             wiring_diagram, simulation_dir, broker_port, simulation_id
         )
-        # create_kubernetes_deployment(wiring_diagram, target_directory, broker_port)
 
     else:
         runner_config = generate_runner_config(
@@ -260,7 +259,7 @@ def create_single_kubernestes_deyployment(component:Component, kube_folder:Path|
         ),
         spec=client.V1PodSpec(
             containers=[my_container],
-            hostname=component.name.replace("_", "-"),
+            hostname=fixed_container_name,
             subdomain=kube_network_svc,
             ),
         )
@@ -281,7 +280,7 @@ def edit_docker_file(file_path, component: Component):
         f.write(f"FROM {BASE_DOCKER_IMAGE}\n")
         f.write(f"RUN apt-get update\n")
         f.write(f"RUN apt-get install -y git ssh\n")
-        f.write(f"RUN apt install build-essential cmake git python3-dev -y\n")
+        # f.write(f"RUN apt install build-essential cmake git python3-dev -y\n")
         f.write(f"RUN mkdir {component.type}\n")
         f.write(f"COPY  . ./{component.type}\n")
         f.write(f"WORKDIR ./{component.type}\n")
