@@ -7,7 +7,7 @@ name = "oedisi"
 version = "2.0.2"
 description = "Orchestration interface for HELICS power simulations"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 keywords = ["oedisi", "gadal", "helics"]
 authors = [{ name = "Joseph McKinsey", email = "joseph.mckinsey@nrel.gov" }]
 classifiers = [

@@ -271,7 +271,7 @@ class RunnerConfig(BaseModel):
     Save to JSON
 
     >>> with open(filename, "w") as f:
-    ...    f.write(config.model_dump_json())
+    ...    json.dump(config.model_dump(mode="json"), f)
 
     Run Simulation
 
