@@ -54,7 +54,6 @@ def get_basic_component(filename):
     comp_desc.directory = os.path.dirname(filename)
     return basic_component(comp_desc, bad_type_checker)
 
-
 @cli.command()
 @click.option(
     "--target-directory",
@@ -122,6 +121,7 @@ def build(
 
     click.echo(f"Loading the components defined in {component_dict}")
     with open(component_dict, "r") as f:
+
         component_dict_of_files = json.load(f)
         component_types = {
             name: get_basic_component(component_file)
@@ -228,12 +228,12 @@ def create_kubernetes_deployment(
     broker_component = Component(
         name=BROKER_SERVICE, container_port=broker_port, type=BROKER_SERVICE, parameters={}
     )
-    create_single_kubernestes_deyployment(broker_component, kube_folder, simulation_id)
+    create_single_kubernetes_deyployment(broker_component, kube_folder, simulation_id)
     for component in wiring_diagram.components:
-        create_single_kubernestes_deyployment(component, kube_folder, simulation_id)
+        create_single_kubernetes_deyployment(component, kube_folder, simulation_id)
 
 
-def create_single_kubernestes_deyployment(component:Component, kube_folder:Path|str, simulation_id:str):
+def create_single_kubernetes_deyployment(component:Component, kube_folder:Path|str, simulation_id:str):
 
     kube_network_svc = f"{KUBERNETES_SERVICE_PREFIX}-{simulation_id}".lower()
     fixed_container_name =  component.name.replace("_", "-")
@@ -280,7 +280,11 @@ def edit_docker_file(file_path, component: Component):
         f.write(f"FROM {BASE_DOCKER_IMAGE}\n")
         f.write(f"RUN apt-get update\n")
         f.write(f"RUN apt-get install -y git ssh\n")
-        # f.write(f"RUN apt install build-essential cmake git python3-dev -y\n")
+
+        #TODO: This works for now. Should be removed when a tagged release is available
+        f.write(f"RUN git clone https://github.com/openEDI/oedisi.git /oedisi\n")
+        f.write(f"RUN pip install /oedisi \n")
+
         f.write(f"RUN mkdir {component.type}\n")
         f.write(f"COPY  . ./{component.type}\n")
         f.write(f"WORKDIR ./{component.type}\n")
