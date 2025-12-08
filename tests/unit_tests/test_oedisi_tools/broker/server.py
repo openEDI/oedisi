@@ -70,17 +70,9 @@ def build_url(host: str, port: int, enpoint: list):
     url = url + "/".join(enpoint) + "/"
     return url
 
-
-def _get_feeder_info(component_map: dict):
-    for host in component_map:
-        if host == "feeder":
-            return host, component_map[host]
-
-
 async def run_simulation():
     
     component_map, broker_ip, api_port = read_settings()
-    # feeder_host, feeder_port = _get_feeder_info(component_map)
     logger.info(f"{broker_ip}, {api_port}")
     initstring = f"-f {len(component_map)-1} --name=mainbroker --loglevel=trace --local_interface={broker_ip} --localport=23404"
     logger.info(f"Broker initaialization string: {initstring}")
