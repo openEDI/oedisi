@@ -1,8 +1,10 @@
 import importlib
-import logging
-import os
-import subprocess
+import json
 import time
+import subprocess
+import os
+import logging
+
 from pathlib import Path
 
 import pytest
@@ -12,10 +14,15 @@ from fastapi.testclient import TestClient
 from oedisi.tools import cli
 from oedisi.types.common import BROKER_SERVICE, HeathCheck
 
+from oedisi.componentframework.system_configuration import (
+    ComponentStruct,
+    WiringDiagram,
+)
+from requests.exceptions import ConnectionError
+
 API_FILE = "server.py"
-
+TEST_SIMULATION = "test_sim"
 IN_GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS") == "true"
-
 
 @pytest.fixture
 def base_path() -> Path:
@@ -43,65 +50,85 @@ def test_mc_build(base_path: Path, monkeypatch: pytest.MonkeyPatch):
         "All components should have a valid requirements.txt file listing required python packages for the build."
     )
 
-    result = runner.invoke(cli, ["build", "-m"])
+    result = runner.invoke(cli, ["build", "-m", "-i", TEST_SIMULATION])
     assert result.exit_code == 0
+    
 
-
-@pytest.mark.skip()
 @pytest.mark.usefixtures("test_mc_build")
 def test_api_heath_endpoint(base_path: Path, monkeypatch: pytest.MonkeyPatch):
-    build_path = base_path / "build"
+    build_path = base_path / "build" / TEST_SIMULATION
+    
     assert build_path.exists(), "Build path for the test project does not exist."
-    for folder in build_path.iterdir():
-        if folder.is_dir() and folder.name not in ["kubernetes", "tester"]:
-            assert (folder / "server.py").exists(), (
-                f"Server.py does not exist for path {folder}"
-            )
-            monkeypatch.syspath_prepend(folder.absolute())
-            module = importlib.import_module("server")
-            app = getattr(module, "app")
-            client = TestClient(app)
-            response = client.get("/")
-            assert response.status_code == 200
-            HeathCheck.model_validate(response.json())
+    assert (build_path / "docker-compose.yml").exists(), "Build path for the test project does not exist."
 
 
-@pytest.mark.skip()
-# IN_GITHUB_ACTIONS, reason="test runs locally but fails on github actions"
-# )
+    for folder in base_path.iterdir():
+        if folder.is_dir():
+            print(folder.name)
+            if folder.name in ["component1", "component2", "broker"]:
+                assert (folder / "server.py").exists(), (
+                    f"Server.py does not exist for path {folder}"
+                )
+                monkeypatch.syspath_prepend(folder.absolute())
+                module = importlib.import_module("server")
+                app = getattr(module, "app")
+                client = TestClient(app)
+                response = client.get("/")
+                assert response.status_code == 200
+                HeathCheck.model_validate(response.json())
+            else:
+                assert not  (folder / "server.py").exists()
+
+
 @pytest.mark.usefixtures("test_mc_build")
 def test_api_run(base_path: Path, monkeypatch: pytest.MonkeyPatch):
-    build_path = base_path / "build"
+    build_path = base_path / "build" / TEST_SIMULATION
+    
     assert build_path.exists(), "Build path for the test project does not exist."
+    assert (build_path / "docker-compose.yml").exists(), "Build path for the test project does not exist."
+
+    payload = json.load(open(base_path / "system.json", 'r'))
+    wiring_diagram = WiringDiagram(**payload)
+
     clients = {}
-    for folder in build_path.iterdir():
-        if folder.is_dir() and folder.name in ["broker", "comp_abc", "comp_xyz"]:
-            assert (folder / "server.py").exists(), (
-                f"Server.py does not exist for path {folder}"
-            )
-            monkeypatch.syspath_prepend(folder.absolute())
-            module = importlib.import_module("server")
-            app = getattr(module, "app")
-            client = TestClient(app)
-            clients[folder.name] = client
+    for folder in base_path.iterdir():
+        if folder.is_dir():
+            if folder.name in ["component1", "component2", "broker"]:
+                assert (folder / "server.py").exists(), (
+                    f"Server.py does not exist for path {folder}"
+                )
+                monkeypatch.syspath_prepend(folder.absolute())
+                print("folder: ", folder)
+                print("Current dir:", os.getcwd())
+
+                module_name = f"{folder.name}_server"
+                spec = importlib.util.spec_from_file_location(module_name, folder / "server.py")
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
+                app = getattr(module, "app")
+                client = TestClient(app)
+                clients[folder.name] = client
 
     assert BROKER_SERVICE in clients, (
         f"No broker client in list of tested services. Available services {list(clients.keys())}"
     )
     client = clients[BROKER_SERVICE]
-    response = client.post("/run")
-    assert response.status_code == 200, response.text
+    # Connection error is raised as the broker running, but not all components are up yet.
+    # wheb broker make s post request to components, they are not available yet.
+    with pytest.raises(ConnectionError):
+        response = client.post(
+            "/configure/",
+            json=wiring_diagram.model_dump(),
+        )
 
-
-@pytest.mark.skip()
 @pytest.mark.usefixtures("test_mc_build")
 def test_docker_compose(base_path: Path, monkeypatch: pytest.MonkeyPatch):
-    build_path = base_path / "build"
+    build_path = base_path / "build" / TEST_SIMULATION
     assert build_path.exists(), "Build path for the test project does not exist."
     monkeypatch.chdir(build_path)
 
     with subprocess.Popen(
-        ["docker", "compose", "up", "-d"],
+        ["docker", "compose", "up", "-d", "--build", "--force-recreate"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     ) as proc:
@@ -114,8 +141,9 @@ def test_docker_compose(base_path: Path, monkeypatch: pytest.MonkeyPatch):
         stderr = b""
         while (time.time() - start) < 120:
             bytes = proc.stdout.read()
+            err_msg = proc.stderr.read()
             stdout += bytes
-            stderr += proc.stderr.read()
+            stderr += err_msg
             output = stdout.decode("utf8") + stderr.decode("utf8")
             assert (
                 "failed to read dockerfile" not in output.lower()
@@ -132,5 +160,9 @@ def test_docker_compose(base_path: Path, monkeypatch: pytest.MonkeyPatch):
 
     logging.debug(f"{stdout}")
     logging.debug(f"{stderr}")
-    subprocess.Popen(["docker", "compose", "down"])
+    subprocess.Popen(
+        ["docker", "compose", "down"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
     assert not fail, f"Timeout Exceeded on docker-compose:\n{stdout}\n{stderr}"

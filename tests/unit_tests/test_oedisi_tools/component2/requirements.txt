@@ -1,6 +1,6 @@
-helics==3.4.0
-helics-apps==3.4.0
+helics
+oedisi>=2.0.2,<3
 pydantic
 fastapi
 uvicorn
-git+https://github.com/openEDI/oedisi
+

@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 """
 """
-from oedisi.types.common import BrokerConfig
+
+from pathlib import Path
+
+from oedisi.types.common import BrokerConfig, DefaultFileNames
 import helics as h
 import logging
 import json
 import os
 
+BASE_PATH = Path(__file__).parent
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("uvicorn.error")
 logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.DEBUG)
 
@@ -21,12 +25,18 @@ def destroy_federate(fed):
 
 
 class TestFederate:
-    def __init__(self, broker_config: BrokerConfig = None):
+    def __init__(self, broker_config: BrokerConfig = BrokerConfig()):
+
+
         logger.info(f"Current Working Directory: {os.path.abspath(os.curdir)}")
-        with open("static_inputs.json") as f:
+        with open(BASE_PATH / DefaultFileNames.STATIC_INPUTS) as f:
             self.parameters = json.load(f)
 
         fedinfo = h.helicsCreateFederateInfo()
+        h.helicsFederateInfoSetBroker(fedinfo, broker_config.broker_ip)
+        h.helicsFederateInfoSetBrokerPort(fedinfo, broker_config.broker_port)
+        logger.info(f"Federate connected to {broker_config.broker_ip}@{broker_config.broker_port}")
+
         fedinfo.core_name = self.parameters["name"]
         fedinfo.core_type = h.HELICS_CORE_TYPE_ZMQ
         fedinfo.core_init = "--federates=1"
