@@ -102,6 +102,61 @@ Building files for multi-container implementation::
 
     oedisi build -m
 
+Multi-Container Build Options
+-----------------------------
+
+The `oedisi build` command supports several options useful when creating
+multi-container (Docker Compose or Kubernetes) artifacts. Use the `-m` or
+`--multi-container` flag to generate the additional files needed for
+orchestration.
+
+- `--target-directory`: Directory to write the build artifacts. Default: `build`.
+    Example: `oedisi build --target-directory my_build -m` will create
+    `my_build/<simulation_id>/...`.
+- `--system`: Path to the wiring-diagram JSON file describing the system.
+    Default: `system.json`.
+    Example: `oedisi build --system scenario.json -m`.
+- `--component-dict`: Path to the components JSON dictionary (maps component
+    types to component definition files). Default: `components.json`.
+    Example: `oedisi build --component-dict components.json -m`.
+- `-m, --multi-container`: Boolean flag that instructs `oedisi` to produce
+    multi-container artifacts (Dockerfiles, `docker-compose.yml`, and a
+    `kubernetes/` folder). Without this flag, `oedisi` builds a single-container
+    `system_runner.json` used by the HELICS runner.
+- `-p, --broker-port`: Port exposed by the broker service inside the
+    orchestration configuration. Default: `8766`. When using Docker Compose this
+    is mapped as `host:container` in `docker-compose.yml`.
+- `-i, --simulation-id`: Optional identifier for the build. If omitted a
+    UUID is generated and the multi-container artifacts are written to
+    `<target-directory>/<simulation_id>/`. Providing a `--simulation-id` is
+    useful for reproducible or repeatable builds.
+
+Notes and requirements when using `-m`:
+
+- Each component in the wiring diagram must include a `host` and
+    `container_port` attribute; these are validated during the multi-container
+    build and are required to generate networking and port mappings.
+- The build will copy and slightly edit component `Dockerfile` files found in
+    each component's source directory and will verify a `server.py` file exists
+    for REST-enabled components.
+- Output layout for a multi-container build (example):
+
+    - `<target-directory>/<simulation_id>/docker-compose.yml`
+    - `<target-directory>/<simulation_id>/kubernetes/` (service + pod/deployment files)
+    - Component Dockerfiles remain in the component folders but are validated
+        and used as the `build` contexts in `docker-compose.yml`.
+
+Examples
+--------
+
+Create a multi-container build with a fixed simulation id and custom port::
+
+        oedisi build -m --simulation-id mysim01 --broker-port 9000
+
+Create multi-container artifacts in a custom folder using a specific system file::
+
+        oedisi build -m --target-directory my_build --system my_system.json
+
 Once the build process is complete, the containers can be launched by either Docker-compose 
 (all images will run on the local machine) or using Kubernetes (enables orchestration across multiple 
 machines). Navigate to the build folder and execute following command to lauch all images in the 
