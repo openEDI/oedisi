@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "oedisi"
-version = "2.0.2"
+version = "3.0.0"
 description = "Orchestration interface for HELICS power simulations"
 readme = "README.md"
 requires-python = ">=3.10"
