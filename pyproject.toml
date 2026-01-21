@@ -71,7 +71,7 @@ readme = { file = ["README.md"], content-type = "text/markdown" }
 # Linter + formatter configuration
 [tool.ruff]
 line-length = 92
-select = [
+lint.select = [
   "E",   # pycodestyle
   "TD",  # flake-8 todos
   "PD",  # pandas vet
@@ -88,10 +88,10 @@ select = [
 target-version = "py310"
 
 # 4. Ignore `E402` (import violations) in all `__init__.py` files, and in `path/to/file.py`.
-[tool.ruff.per-file-ignores]
-#"__init__.py" = ["E402", "F401", "D104"]
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402", "F401", "D104"]
 
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "numpy"
 
 # Mypy configuration
