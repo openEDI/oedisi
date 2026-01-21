@@ -117,7 +117,7 @@ def test_api_run(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     # Connection error is raised as the broker running, but not all components are up yet.
     # wheb broker make s post request to components, they are not available yet.
     with pytest.raises(ConnectionError):
-        response = client.post(
+        client.post(
             "/configure/",
             json=wiring_diagram.model_dump(),
         )
