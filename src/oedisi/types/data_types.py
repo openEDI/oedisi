@@ -15,7 +15,7 @@ class StateArray(BaseModel):
     Extended by classes:
         "SwitchStates",
         "CapacitorStates",
-        "RegulatorStates"
+        "RegulatorStates".
 
     """
 
@@ -43,7 +43,7 @@ class CostArray(BaseModel):
         "ReactiveCostFunctions",
         "RealWholesalePrices",
         "ReactiveWholesalePrices",
-        "OperationalCosts"
+        "OperationalCosts".
 
     """
 
@@ -78,7 +78,7 @@ class MeasurementArray(BaseModel):
     Extended by classes:
         "BusArray",
         "EquipmentArray",
-        "EquipmentNodeArray"
+        "EquipmentNodeArray".
     """
 
     values: list[float]
@@ -95,7 +95,7 @@ class BusArray(MeasurementArray):
         "VoltagesMagnitude",
         "VoltagesAngle",
         "VoltagesReal",
-        "VoltagesImaginary"
+        "VoltagesImaginary".
     """
 
     pass
@@ -115,7 +115,7 @@ class EquipmentArray(MeasurementArray):
         "ImpedanceMagnitude",
         "ImpedanceAngle",
         "ImpedanceReal",
-        "ImpedanceImaginary",
+        "ImpedanceImaginary",.
     """
 
     pass

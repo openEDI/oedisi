@@ -147,7 +147,7 @@ class ComponentStruct(BaseModel):
 
 
 class WiringDiagram(BaseModel):
-    """Cosimulation configuration. This may end up wrapped in another interface"""
+    """Cosimulation configuration. This may end up wrapped in another interface."""
 
     name: str
     components: list[Component]
@@ -178,7 +178,7 @@ class WiringDiagram(BaseModel):
     @field_validator("components")
     @classmethod
     def check_component_names(cls, components):
-        """Check that the components all have unique names"""
+        """Check that the components all have unique names."""
         names = set(map(lambda c: c.name, components))
         assert len(names) == len(components)
         return components
@@ -205,7 +205,7 @@ class WiringDiagram(BaseModel):
 
 
 class Federate(BaseModel):
-    """Federate configuration for HELICS CLI"""
+    """Federate configuration for HELICS CLI."""
 
     directory: str
     hostname: str = "localhost"
@@ -226,7 +226,7 @@ def initialize_federates(
     compatability_checker,
     target_directory=".",
 ) -> list[Federate]:
-    """Initialize all the federates"""
+    """Initialize all the federates."""
     components = {}
     link_map = get_link_map(wiring_diagram)
     for component in wiring_diagram.components:
@@ -247,9 +247,9 @@ def initialize_federates(
     for link in wiring_diagram.links:
         source_types = components[link.source].dynamic_outputs
         target_types = components[link.target].dynamic_inputs
-        assert link.source_port in source_types, (
-            f"{link.source} does not have {link.source_port}"
-        )
+        assert (
+            link.source_port in source_types
+        ), f"{link.source} does not have {link.source_port}"
         assert (
             link.target_port in target_types
         ), f"{link.target} does not have dynamic input {link.target_port}"
@@ -281,7 +281,7 @@ def get_link_map(wiring_diagram: WiringDiagram):
 
 
 class RunnerConfig(BaseModel):
-    """HELICS running config for the full simulation
+    """HELICS running config for the full simulation.
 
     Examples
     --------

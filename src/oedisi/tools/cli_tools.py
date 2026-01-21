@@ -42,7 +42,7 @@ def cli():
 
 
 def bad_type_checker(type, x):
-    """Does not check types"""
+    """Does not check types."""
     return True
 
 
@@ -94,7 +94,7 @@ def get_basic_component(filename):
 def build(
     target_directory, system, component_dict, multi_container, broker_port, simulation_id
 ):
-    """Build to the simulation folder
+    r"""Build to the simulation folder.
 
     Examples::
 
@@ -369,7 +369,7 @@ def create_docker_compose_file(
     help="Location of helics run json. Usually build/system_runner.json",
 )
 def run(runner):
-    """Calls out to helics run command
+    """Calls out to helics run command.
 
     Examples::
 
@@ -473,7 +473,7 @@ def run_mc(runner, kubernetes, docker_compose):
     help="Path to parameters JSON (default is parameters={})",
 )
 def test_description(target_directory, component_desc, parameters):
-    """Test component intialization from component description
+    r"""Test component intialization from component description.
 
     Examples::
 
@@ -578,7 +578,7 @@ def test_description(target_directory, component_desc, parameters):
 
 
 def remove_from_runner_config(runner_config, element):
-    """Remove federate from configuration"""
+    """Remove federate from configuration."""
     within_feds = [fed for fed in runner_config.federates if fed.name != element]
     without_feds = [fed for fed in runner_config.federates if fed.name == element]
     new_config = RunnerConfig(name=runner_config.name, federates=within_feds)
@@ -586,7 +586,7 @@ def remove_from_runner_config(runner_config, element):
 
 
 def remove_from_json(system_json, element):
-    """Remove federate from configuration and resave with revised.json"""
+    """Remove federate from configuration and resave with revised.json."""
     with open(system_json) as f:
         runner_config = RunnerConfig.model_validate(json.load(f))
         new_config, without_feds = remove_from_runner_config(runner_config, element)
@@ -607,8 +607,8 @@ def remove_from_json(system_json, element):
 )
 @click.option("--foreground", type=str, help="Name of component to run in background")
 def debug_component(runner, foreground):
-    """
-    Run system runner json with one component in the JSON
+    r"""
+    Run system runner json with one component in the JSON.
 
     We remove one component from system_runner.json
     and then call helics run in the background with our new json.

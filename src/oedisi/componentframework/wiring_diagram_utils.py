@@ -1,4 +1,4 @@
-"""Wiring Diagram utilities
+"""Wiring Diagram utilities.
 
 Wiring diagrams can be hard to manage in their final list based form.
 Some utilities plot, and future additions include nested wiring
@@ -9,7 +9,7 @@ from .system_configuration import WiringDiagram
 
 
 def get_graph(wiring_diagram: WiringDiagram):
-    """Get networkx graph representation of wiring_diagram"""
+    """Get networkx graph representation of wiring_diagram."""
     import networkx as nx
 
     g = nx.MultiDiGraph()
@@ -17,9 +17,10 @@ def get_graph(wiring_diagram: WiringDiagram):
         g.add_node(c.name, type=c.type, parameters=c.parameters)
     for link in wiring_diagram.links:
         g.add_edge(
-            link.source, link.target,
+            link.source,
+            link.target,
             source_port=link.source_port,
-            target_port=link.target_port
+            target_port=link.target_port,
         )
     return g
 

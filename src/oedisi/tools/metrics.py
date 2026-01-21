@@ -40,7 +40,7 @@ else:
     help="Unit of estimated voltages",
 )
 def evaluate_estimate(path, metric, angle_unit):
-    """Evaluate the estimate of the algorithm against the measurements.
+    r"""Evaluate the estimate of the algorithm against the measurements.
 
     The measurements are assumed to be in the form of .feather files.
 

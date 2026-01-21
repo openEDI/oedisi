@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class TimeData(BaseModel):
-    """Time data for a federate"""
+    """Time data for a federate."""
 
     name: str
     granted_time: float
@@ -10,7 +10,7 @@ class TimeData(BaseModel):
 
 
 def pprint_time_data(time_data):
-    """A table would be better somehow, but which should be the columns"""
+    """A table would be better somehow, but which should be the columns."""
     print(
         f"""
     Name         : {time_data.name}
