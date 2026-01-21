@@ -196,8 +196,8 @@ class WiringDiagram(BaseModel):
     def add_component(self, c: Component):
         self.components.append(c)
 
-    def add_link(self, l: Link):
-        self.links.append(l)
+    def add_link(self, link: Link):
+        self.links.append(link)
 
     @classmethod
     def empty(cls, name="unnamed"):
@@ -244,15 +244,17 @@ def initialize_federates(
         )
         components[component.name] = initialized_component
 
-    for l in wiring_diagram.links:
-        source_types = components[l.source].dynamic_outputs
-        target_types = components[l.target].dynamic_inputs
-        assert l.source_port in source_types, f"{l.source} does not have {l.source_port}"
+    for link in wiring_diagram.links:
+        source_types = components[link.source].dynamic_outputs
+        target_types = components[link.target].dynamic_inputs
+        assert link.source_port in source_types, (
+            f"{link.source} does not have {link.source_port}"
+        )
         assert (
-            l.target_port in target_types
-        ), f"{l.target} does not have dynamic input {l.target_port}"
-        source_type = source_types[l.source_port]
-        target_type = target_types[l.target_port]
+            link.target_port in target_types
+        ), f"{link.target} does not have dynamic input {link.target_port}"
+        source_type = source_types[link.source_port]
+        target_type = target_types[link.target_port]
         assert compatability_checker(
             source_type, target_type
         ), f"{source_type} is not compatible with {target_type}"
@@ -261,7 +263,7 @@ def initialize_federates(
     for name, component in components.items():
         links = link_map[name]
         component.generate_input_mapping(
-            {l.target_port: f"{l.source}/{l.source_port}" for l in links}
+            {link.target_port: f"{link.source}/{link.source_port}" for link in links}
         )
 
         federates.append(
@@ -335,4 +337,4 @@ def generate_runner_config(
         name="broker",
         exec=f"helics_broker -f {len(federates)} --loglevel=warning",
     )
-    return RunnerConfig(name=wiring_diagram.name, federates=(federates + [broker_federate]))
+    return RunnerConfig(name=wiring_diagram.name, federates=([*federates, broker_federate]))

@@ -80,7 +80,8 @@ def get_basic_component(filename):
     is_flag=True,
     default=False,
     show_default=True,
-    help="Use the flag to create docker-compose config files for a multi-container implementation.",
+    help="Use the flag to create docker-compose config files for a "
+    "multi-container implementation.",
 )
 @click.option(
     "-p", "--broker-port", default=8766, show_default=True, help="Pass the broker port."
@@ -159,12 +160,14 @@ def build(
 
 def validate_optional_inputs(wiring_diagram: WiringDiagram, component_dict_of_files: dict):
     for component in wiring_diagram.components:
-        assert hasattr(
-            component, "host"
-        ), f"host parameter required for component {component.name} for multi-continer model build"
-        assert hasattr(
-            component, "container_port"
-        ), f"post parameter required for component {component.name} for multi-continer model build"
+        assert hasattr(component, "host"), (
+            f"host parameter required for component {component.name} "
+            "for multi-continer model build"
+        )
+        assert hasattr(component, "container_port"), (
+            f"post parameter required for component {component.name} "
+            "for multi-continer model build"
+        )
 
 
 def drop_null_values(model: Any) -> dict:
@@ -274,9 +277,10 @@ def create_single_kubernetes_deyployment(
 def edit_docker_file(file_path, component: Component):
     dir_path = os.path.abspath(os.path.join(file_path, os.pardir))
     server_file = os.path.join(dir_path, "server.py")
-    assert os.path.exists(
-        server_file
-    ), f"Server.py file missing for {component.name}.REST API implementation expected in a server.py file"
+    assert os.path.exists(server_file), (
+        f"Server.py file missing for {component.name}."
+        "REST API implementation expected in a server.py file"
+    )
 
     with open(file_path, "w") as f:
         f.write(f"FROM {BASE_DOCKER_IMAGE}\n")
@@ -473,7 +477,8 @@ def test_description(target_directory, component_desc, parameters):
 
     Examples::
 
-        oedisi test-description --component-desc component/component_definition.json --parameters inputs.json
+        oedisi test-description --component-desc component/component_definition.json \\
+            --parameters inputs.json
 
         Initialized broker
         Waiting for initialization

@@ -15,8 +15,12 @@ def get_graph(wiring_diagram: WiringDiagram):
     g = nx.MultiDiGraph()
     for c in wiring_diagram.components:
         g.add_node(c.name, type=c.type, parameters=c.parameters)
-    for l in wiring_diagram.links:
-        g.add_edge(l.source, l.target, source_port=l.source_port, target_port=l.target_port)
+    for link in wiring_diagram.links:
+        g.add_edge(
+            link.source, link.target,
+            source_port=link.source_port,
+            target_port=link.target_port
+        )
     return g
 
 
@@ -38,8 +42,8 @@ def plot_graph_matplotlib(wiring_diagram: WiringDiagram):
     )
 
     edge_map = {
-        (l.source, l.target): f"{l.source_port} -> {l.target_port}"
-        for l in wiring_diagram.links
+        (link.source, link.target): f"{link.source_port} -> {link.target_port}"
+        for link in wiring_diagram.links
     }
 
     nx.draw_networkx_edge_labels(g, pos, edge_map, font_color="red")
@@ -47,7 +51,7 @@ def plot_graph_matplotlib(wiring_diagram: WiringDiagram):
     plt.show()
 
 
-def get_graph_renderer(G):
+def get_graph_renderer(G):  # noqa: N803
     import networkx as nx
     from bokeh.plotting import from_networkx
     from bokeh.models import Circle, EdgesOnly, MultiLine
@@ -87,7 +91,7 @@ def plot_graph_bokeh(wiring_diagram: WiringDiagram):
     from bokeh.layouts import layout
     from bokeh.io import show
 
-    G = get_graph(wiring_diagram)
+    G = get_graph(wiring_diagram)  # noqa: N806
     graph_renderer = get_graph_renderer(G)
     source = graph_renderer.node_renderer.data_source
 
