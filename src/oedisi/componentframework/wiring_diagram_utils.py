@@ -16,9 +16,7 @@ def get_graph(wiring_diagram: WiringDiagram):
     for c in wiring_diagram.components:
         g.add_node(c.name, type=c.type, parameters=c.parameters)
     for l in wiring_diagram.links:
-        g.add_edge(
-            l.source, l.target, source_port=l.source_port, target_port=l.target_port
-        )
+        g.add_edge(l.source, l.target, source_port=l.source_port, target_port=l.target_port)
     return g
 
 
@@ -58,9 +56,7 @@ def get_graph_renderer(G):
     graph_renderer = from_networkx(G, nx.spectral_layout, scale=1, center=(0, 0))
 
     graph_renderer.node_renderer.glyph = Circle(size=15, fill_color=Spectral4[0])
-    graph_renderer.node_renderer.selection_glyph = Circle(
-        size=15, fill_color=Spectral4[2]
-    )
+    graph_renderer.node_renderer.selection_glyph = Circle(size=15, fill_color=Spectral4[2])
     graph_renderer.node_renderer.hover_glyph = Circle(size=15, fill_color=Spectral4[1])
 
     graph_renderer.edge_renderer.glyph = MultiLine(

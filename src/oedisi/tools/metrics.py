@@ -84,15 +84,9 @@ def evaluate_estimate(path, metric, angle_unit):
     estimated_time = estimated_magnitude["time"]
     common_time = set(time).intersection(estimated_time)
 
-    true_voltages_real = true_voltages_real[
-        true_voltages_real["time"].isin(common_time)
-    ]
-    true_voltages_imag = true_voltages_imag[
-        true_voltages_imag["time"].isin(common_time)
-    ]
-    estimated_magnitude = estimated_magnitude[
-        estimated_magnitude["time"].isin(common_time)
-    ]
+    true_voltages_real = true_voltages_real[true_voltages_real["time"].isin(common_time)]
+    true_voltages_imag = true_voltages_imag[true_voltages_imag["time"].isin(common_time)]
+    estimated_magnitude = estimated_magnitude[estimated_magnitude["time"].isin(common_time)]
     estimated_angle = estimated_angle[estimated_angle["time"].isin(common_time)]
 
     estimated_magnitude = estimated_magnitude.groupby("time").last().reset_index()
@@ -101,19 +95,13 @@ def evaluate_estimate(path, metric, angle_unit):
     assert list(true_voltages_real["time"]) == list(
         estimated_magnitude["time"]
     ), f"""Time does not match between true voltages and estimated magnitudes:
-    
+
     {list(true_voltages_real["time"])} vs {list(estimated_magnitude["time"])}"""
 
     # Strip time column from voltages
-    true_voltages_real = true_voltages_real.drop(columns=["time"]).reset_index(
-        drop=True
-    )
-    true_voltages_imag = true_voltages_imag.drop(columns=["time"]).reset_index(
-        drop=True
-    )
-    estimated_magnitude = estimated_magnitude.drop(columns=["time"]).reset_index(
-        drop=True
-    )
+    true_voltages_real = true_voltages_real.drop(columns=["time"]).reset_index(drop=True)
+    true_voltages_imag = true_voltages_imag.drop(columns=["time"]).reset_index(drop=True)
+    estimated_magnitude = estimated_magnitude.drop(columns=["time"]).reset_index(drop=True)
     estimated_angle = estimated_angle.drop(columns=["time"]).reset_index(drop=True)
     if angle_unit == "degrees":  # convert to radians
         estimated_angle = estimated_angle * np.pi / 180

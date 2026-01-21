@@ -5,7 +5,7 @@ BASE_DOCKER_IMAGE = "python:3.10.6-slim-bullseye"
 BROKER_SERVICE = "broker"
 APP_NAME = "oedisi"
 DOCKER_HUB_USER = "aadillatif"
-KUBERNETES_SERVICE_PREFIX= "svc"
+KUBERNETES_SERVICE_PREFIX = "svc"
 
 
 class DefaultFileNames(str, Enum):

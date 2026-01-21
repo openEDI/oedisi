@@ -89,11 +89,11 @@ Multi-Container REST API endpoint requirements
 Multi-Container Model Setup
 ---------------------------
 
-The ``oedisi`` frameworks enables users to set up models as single-container (all models running 
-in a single Docker container) or multi-container implementation (all componenets running in 
-seperate docker containers.). The framework currently supports both Docker-compose and kubernetes 
-configurations. By default, the  ``oedisi`` frameworks sets up the single-container simulation.  
-``-m`` flag can be used to build additional files needed for either Docker-compose or Kubernetes 
+The ``oedisi`` frameworks enables users to set up models as single-container (all models running
+in a single Docker container) or multi-container implementation (all componenets running in
+seperate docker containers.). The framework currently supports both Docker-compose and kubernetes
+configurations. By default, the  ``oedisi`` frameworks sets up the single-container simulation.
+``-m`` flag can be used to build additional files needed for either Docker-compose or Kubernetes
 orchestration.
 
 Uploading user defined models requires setting the 'user_uploads_model' to true. If the flag is set to false, the model will be downloaded automatically from AWS.
@@ -157,10 +157,10 @@ Create multi-container artifacts in a custom folder using a specific system file
 
         oedisi build -m --target-directory my_build --system my_system.json
 
-Once the build process is complete, the containers can be launched by either Docker-compose 
-(all images will run on the local machine) or using Kubernetes (enables orchestration across multiple 
-machines). Navigate to the build folder and execute following command to lauch all images in the 
-build folder.  
+Once the build process is complete, the containers can be launched by either Docker-compose
+(all images will run on the local machine) or using Kubernetes (enables orchestration across multiple
+machines). Navigate to the build folder and execute following command to lauch all images in the
+build folder.
 
 Running containers using Docker-compose::
 
@@ -187,32 +187,32 @@ to port 8080 on the local machine.
 
 The REST API endpoint can then be accessed at ``http://localhost:8080``
 
-By default, the deployment file is configured to download required images from Docker Hub. 
-Users have to option to modify the deployment file and use a local registery (https://docs.docker.com/registry/) 
+By default, the deployment file is configured to download required images from Docker Hub.
+Users have to option to modify the deployment file and use a local registery (https://docs.docker.com/registry/)
 to use local images instead.
 
 Multi-Container Model Run
 ---------------------------
 
 Once all required docker images are running (see last section), simulation run can be orchestration using the REST API interface.
-The interface aloows users to 
+The interface aloows users to
 
 #. Upload private data (distribution models and associated profiles)
 #. Launch the simulation
 #. Retrieve simulation results
 
 IPs for containers and corresponding exposed ports are available to users within the ``docker-compose.yml`` file in the main build folder.
-To check healh of the API server the runnig container, user can open a web browser and browse to ``http://{ip}:{port}``, where ``ip`` 
+To check healh of the API server the runnig container, user can open a web browser and browse to ``http://{ip}:{port}``, where ``ip``
 and ``port`` are container specific (see ``docker-compose.yml``).
 
 
-Identify the ``ip``  and ``port`` information for ``oedisi_broker`` container from the  ``docker-compose.yml`` file. 
+Identify the ``ip``  and ``port`` information for ``oedisi_broker`` container from the  ``docker-compose.yml`` file.
 
 Upload private data
 ++++++++++++++++++++
 
-#. Distribution models, compressed in ``zip`` format can be uploaded by making a POST request to the following endpoint ``http://{ip}:{port}/model``  
-#. Similarly, load profile, compressed in ``zip`` format can be uploaded by making a POST request to the following endpoint ``http://{ip}:{port}/profiles``  
+#. Distribution models, compressed in ``zip`` format can be uploaded by making a POST request to the following endpoint ``http://{ip}:{port}/model``
+#. Similarly, load profile, compressed in ``zip`` format can be uploaded by making a POST request to the following endpoint ``http://{ip}:{port}/profiles``
 
 These files are automatically unzipped server side after a sucessful upload.
 
@@ -227,7 +227,7 @@ Retrieve simulation results
 +++++++++++++++++++++++++++
 
 #. Identify the ``ips``  and ``ports`` information for ``oedisi_broker`` containers from the  ``docker-compose.yml`` file.
-#. Data can be downloaded by making a POST request to the following endpoint ``http://{ip}:{port}/download``. This endpoint will communicate with all participating recorder federates ans retrieve the simulation results in a single zip file, 
+#. Data can be downloaded by making a POST request to the following endpoint ``http://{ip}:{port}/download``. This endpoint will communicate with all participating recorder federates ans retrieve the simulation results in a single zip file,
 
 This will later be simplified so users are able to download all results using a single endpoint fromthe broker container.
 

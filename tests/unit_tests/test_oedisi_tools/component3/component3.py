@@ -1,5 +1,4 @@
-"""
-"""
+""" """
 
 import helics as h
 import logging
@@ -60,9 +59,7 @@ class TestFederate:
 
             for name, sub in self.subscriptions.items():
                 if sub.is_updated():
-                    logger.info(
-                        f"From subscription {name}: {sub.bytes} of type {sub.type}"
-                    )
+                    logger.info(f"From subscription {name}: {sub.bytes} of type {sub.type}")
 
         destroy_federate(self.fed)
 

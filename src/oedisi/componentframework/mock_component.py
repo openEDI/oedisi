@@ -56,9 +56,7 @@ class MockComponent(system_configuration.ComponentType):
             "period": 1,
             "log_level": "warning",
             "terminate_on_error": True,
-            "publications": [
-                {"key": key, "type": value} for key, value in outputs.items()
-            ],
+            "publications": [{"key": key, "type": value} for key, value in outputs.items()],
         }
 
         with open(os.path.join(self._directory, "helics_config.json"), "w") as f:
@@ -126,9 +124,7 @@ class MockFederate:
 
             for name, sub in self.subscriptions.items():
                 if sub.is_updated():
-                    logger.info(
-                        f"From subscription {name}: {sub.bytes} of type {sub.type}"
-                    )
+                    logger.info(f"From subscription {name}: {sub.bytes} of type {sub.type}")
 
         destroy_federate(self.fed)
 

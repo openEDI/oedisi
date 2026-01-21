@@ -23,6 +23,7 @@ API_FILE = "server.py"
 TEST_SIMULATION = "test_sim"
 IN_GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS") == "true"
 
+
 @pytest.fixture
 def base_path() -> Path:
     """Get the current folder of the test"""
@@ -35,39 +36,36 @@ def test_mc_build(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     runner = CliRunner()
 
     broker_path = base_path / BROKER_SERVICE
-    assert broker_path.exists(), (
-        "Broker federate should be implemented before building a multicontainer problem."
-    )
+    assert (
+        broker_path.exists()
+    ), "Broker federate should be implemented before building a multicontainer problem."
 
     api_implementation = broker_path / API_FILE
-    assert api_implementation.exists(), (
-        f"A valid REST API implementatiion should exist in {api_implementation} before building a multicontainer problem."
-    )
+    assert api_implementation.exists(), f"A valid REST API implementatiion should exist in {api_implementation} before building a multicontainer problem."
 
     requirements_file = broker_path / "requirements.txt"
-    assert requirements_file.exists(), (
-        "All components should have a valid requirements.txt file listing required python packages for the build."
-    )
+    assert requirements_file.exists(), "All components should have a valid requirements.txt file listing required python packages for the build."
 
     result = runner.invoke(cli, ["build", "-m", "-i", TEST_SIMULATION])
     assert result.exit_code == 0
-    
+
 
 @pytest.mark.usefixtures("test_mc_build")
 def test_api_heath_endpoint(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     build_path = base_path / "build" / TEST_SIMULATION
-    
-    assert build_path.exists(), "Build path for the test project does not exist."
-    assert (build_path / "docker-compose.yml").exists(), "Build path for the test project does not exist."
 
+    assert build_path.exists(), "Build path for the test project does not exist."
+    assert (
+        build_path / "docker-compose.yml"
+    ).exists(), "Build path for the test project does not exist."
 
     for folder in base_path.iterdir():
         if folder.is_dir():
             print(folder.name)
             if folder.name in ["component1", "component2", "broker"]:
-                assert (folder / "server.py").exists(), (
-                    f"Server.py does not exist for path {folder}"
-                )
+                assert (
+                    folder / "server.py"
+                ).exists(), f"Server.py does not exist for path {folder}"
                 monkeypatch.syspath_prepend(folder.absolute())
                 module = importlib.import_module("server")
                 app = getattr(module, "app")
@@ -76,15 +74,17 @@ def test_api_heath_endpoint(base_path: Path, monkeypatch: pytest.MonkeyPatch):
                 assert response.status_code == 200
                 HeathCheck.model_validate(response.json())
             else:
-                assert not  (folder / "server.py").exists()
+                assert not (folder / "server.py").exists()
 
 
 @pytest.mark.usefixtures("test_mc_build")
 def test_api_run(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     build_path = base_path / "build" / TEST_SIMULATION
-    
+
     assert build_path.exists(), "Build path for the test project does not exist."
-    assert (build_path / "docker-compose.yml").exists(), "Build path for the test project does not exist."
+    assert (
+        build_path / "docker-compose.yml"
+    ).exists(), "Build path for the test project does not exist."
 
     payload = json.load(open(base_path / "system.json"))
     wiring_diagram = WiringDiagram(**payload)
@@ -93,24 +93,26 @@ def test_api_run(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     for folder in base_path.iterdir():
         if folder.is_dir():
             if folder.name in ["component1", "component2", "broker"]:
-                assert (folder / "server.py").exists(), (
-                    f"Server.py does not exist for path {folder}"
-                )
+                assert (
+                    folder / "server.py"
+                ).exists(), f"Server.py does not exist for path {folder}"
                 monkeypatch.syspath_prepend(folder.absolute())
                 print("folder: ", folder)
                 print("Current dir:", os.getcwd())
 
                 module_name = f"{folder.name}_server"
-                spec = importlib.util.spec_from_file_location(module_name, folder / "server.py")
+                spec = importlib.util.spec_from_file_location(
+                    module_name, folder / "server.py"
+                )
                 module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(module)
                 app = getattr(module, "app")
                 client = TestClient(app)
                 clients[folder.name] = client
 
-    assert BROKER_SERVICE in clients, (
-        f"No broker client in list of tested services. Available services {list(clients.keys())}"
-    )
+    assert (
+        BROKER_SERVICE in clients
+    ), f"No broker client in list of tested services. Available services {list(clients.keys())}"
     client = clients[BROKER_SERVICE]
     # Connection error is raised as the broker running, but not all components are up yet.
     # wheb broker make s post request to components, they are not available yet.
@@ -119,6 +121,7 @@ def test_api_run(base_path: Path, monkeypatch: pytest.MonkeyPatch):
             "/configure/",
             json=wiring_diagram.model_dump(),
         )
+
 
 @pytest.mark.usefixtures("test_mc_build")
 def test_docker_compose(base_path: Path, monkeypatch: pytest.MonkeyPatch):
@@ -131,9 +134,9 @@ def test_docker_compose(base_path: Path, monkeypatch: pytest.MonkeyPatch):
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     ) as proc:
-        assert proc.returncode != 0, (
-            f"docker-compose failed with {proc.returncode}: {proc.stderr.read()}"
-        )
+        assert (
+            proc.returncode != 0
+        ), f"docker-compose failed with {proc.returncode}: {proc.stderr.read()}"
         stdout = b""
         start = time.time()
         fail = True

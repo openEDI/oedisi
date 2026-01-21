@@ -233,14 +233,14 @@ def initialize_federates(
         source_types = components[l.source].dynamic_outputs
         target_types = components[l.target].dynamic_inputs
         assert l.source_port in source_types, f"{l.source} does not have {l.source_port}"
-        assert l.target_port in target_types, (
-            f"{l.target} does not have dynamic input {l.target_port}"
-        )
+        assert (
+            l.target_port in target_types
+        ), f"{l.target} does not have dynamic input {l.target_port}"
         source_type = source_types[l.source_port]
         target_type = target_types[l.target_port]
-        assert compatability_checker(source_type, target_type), (
-            f"{source_type} is not compatible with {target_type}"
-        )
+        assert compatability_checker(
+            source_type, target_type
+        ), f"{source_type} is not compatible with {target_type}"
 
     federates = []
     for name, component in components.items():

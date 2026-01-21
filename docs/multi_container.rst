@@ -1,7 +1,7 @@
 Multi-Container Setup
 *********************
 
-In this user guide, we provide step by step instructions for orchestration of multi-container co-simulation for an existing OEDISI project. 
+In this user guide, we provide step by step instructions for orchestration of multi-container co-simulation for an existing OEDISI project.
 
 Multi-container co-simulations requires containers to communicate with other containers participating in the co-simulation federation.  This is achieved via a REST API interface. This interface allows users to start / stop co-simulation runs, upload profiles and models and download co-simulation results once the simulation is complete.
 
@@ -15,15 +15,15 @@ Step 0 - Requirements for a multi-container setup
 
 User has two main responsibilities when integrating a new container (see https://github.com/openEDI/oedisi-example/tree/main/wls_federate).
 
-1. Implementation of a REST API interface for the algorithm. Three required endpoints are:  
-   
+1. Implementation of a REST API interface for the algorithm. Three required endpoints are:
+
    - GET ("/") : This root endpoint is used for container health Check
    - POST ("/configure"): This endpoint takes Component Structure as JSON payload and is used to configure the federate
    - POST ("/run") : This endpoint takes broker config JSON as payload and starts the federate (connects to the broker and takes federate to HELICS execution mode)
 
 A minimal example is provided below
 
-.. code-block:: python 
+.. code-block:: python
 
     from fastapi import FastAPI, BackgroundTasks, HTTPException
     from state_estimator_federate import run_simulator
@@ -68,7 +68,7 @@ A minimal example is provided below
 
 
     @app.post("/configure")
-    async def configure(component_struct:ComponentStruct): 
+    async def configure(component_struct:ComponentStruct):
         component = component_struct.component
         params = component.parameters
         params["name"] = component.name
@@ -79,7 +79,7 @@ A minimal example is provided below
         json.dump(params , open(DefaultFileNames.STATIC_INPUTS.value, "w"))
         response = ServerReply(
                 detail = f"Sucessfully updated configuration files."
-            ).dict() 
+            ).dict()
         return JSONResponse(response, 200)
 
     if __name__ == "__main__":
@@ -116,8 +116,8 @@ Deployment files for Docker-Compose and Kubernetes are built using the following
 Step 2a - Running containers using Docker-Compose
 -------------------------------------------------
 
-OEDISI supports multi-container orchestration via Docker-Compose and Kubernetes.  
-Docker-Compose is well suited for single machine multi-container co-simulation run. 
+OEDISI supports multi-container orchestration via Docker-Compose and Kubernetes.
+Docker-Compose is well suited for single machine multi-container co-simulation run.
 
 The image below provides details on the auto-generate Docker-Compose file.
 
@@ -147,7 +147,7 @@ Containers can be orchestrated using Kubernetes using the following CLI command
 
 Step 3 - Running containers using Kubernetes
 --------------------------------------------
-In this multi-container implementation, the 'Broker' container is the sole container the user is expected to interface with. 
+In this multi-container implementation, the 'Broker' container is the sole container the user is expected to interface with.
 The API endpoints (listed above) enables the broker federate to users to setup and run co-simulations
 
 .. image:: images/step_4.png
