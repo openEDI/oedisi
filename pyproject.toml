@@ -34,7 +34,6 @@ text = "BSD 3-Clause"
 
 [project.optional-dependencies]
 test = [
-  "black",
   "bump-my-version",
   "mypy~=1.0",
   "pre-commit",
@@ -47,6 +46,7 @@ test = [
   "numpy",
   "pandas",
   "pyarrow",
+  "ty>=0.0.13",
 ]
 metrics = ["pandas", "numpy", "pyarrow"]
 
@@ -69,9 +69,6 @@ readme = { file = ["README.md"], content-type = "text/markdown" }
 "*" = ["*.json", "*.csv", "*.sh"]
 
 # Linter + formatter configuration
-[tool.black]
-line-length = 90
-
 [tool.ruff]
 line-length = 92
 select = [
@@ -96,3 +93,16 @@ target-version = "py310"
 
 [tool.ruff.pydocstyle]
 convention = "numpy"
+
+# Mypy configuration
+[tool.mypy]
+exclude = [
+    "^tests/unit_tests/test_oedisi_tools/broker/.*",
+    "^tests/unit_tests/test_oedisi_tools/component1/.*",
+    "^tests/unit_tests/test_oedisi_tools/component2/.*",
+    "^tests/unit_tests/test_oedisi_tools/build/.*",
+]
+
+# ty configuration (Astral's fast type checker)
+[tool.ty.rules]
+unresolved-import = "ignore"
