@@ -90,6 +90,8 @@ target-version = "py310"
 # 4. Ignore `E402` (import violations) in all `__init__.py` files, and in `path/to/file.py`.
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["E402", "F401", "D104"]
+"src/oedisi/tools/__init__.py" = ["F403", "F405"]
+"src/oedisi/types/generate_schema.py" = ["F403", "F405"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
