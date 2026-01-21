@@ -51,7 +51,8 @@ def read_settings():
     else:
         raise HTTPException(
             status_code=404,
-            detail="Use the '/configure' setpoint to setup up the WiringDiagram before making requests other enpoints",
+            detail="Use the '/configure' setpoint to setup up the WiringDiagram before "
+            "making requests other enpoints",
         )
 
     return component_map, broker_ip, api_port
@@ -79,7 +80,10 @@ def build_url(host: str, port: int, enpoint: list):
 async def run_simulation():
     component_map, broker_ip, api_port = read_settings()
     logger.info(f"{broker_ip}, {api_port}")
-    initstring = f"-f {len(component_map)-1} --name=mainbroker --loglevel=trace --local_interface={broker_ip} --localport=23404"
+    initstring = (
+        f"-f {len(component_map) - 1} --name=mainbroker --loglevel=trace"
+        "--local_interface={broker_ip} --localport=23404"
+    )
     logger.info(f"Broker initaialization string: {initstring}")
     broker = h.helicsCreateBroker("zmq", "", initstring)
 
@@ -131,21 +135,22 @@ async def run_simulation():
                 if pending:
                     await asyncio.sleep(5)
                 else:
-                    # ensure exceptions are observed to avoid warnings
-                    for idx, t in enumerate(tasks):
-                        try:
-                            res = t.result()
-                            logger.info(
-                                f"Task {idx} succeeded: {getattr(res, 'status_code', 'N/A')}"
-                            )
-                        except Exception as exc:
-                            logger.error(f"Task {idx} failed: {exc}")
+                    break
+            # ensure exceptions are observed to avoid warnings
+            for idx, t in enumerate(tasks):
+                try:
+                    res = t.result()
+                    logger.info(
+                        f"Task {idx} succeeded: {getattr(res, 'status_code', 'N/A')}"
+                    )
+                except Exception as exc:
+                    logger.error(f"Task {idx} failed: {exc}")
 
     while h.helicsBrokerIsConnected(broker):
         time.sleep(1)
         query_result = broker.query("broker", "current_state")
-        logger.info(f"Federates expected: {len(component_map)-1}")
-        logger.info(f"Federates connected: {len(broker.query("broker", "federates"))}")
+        logger.info(f"Federates expected: {len(component_map) - 1}")
+        logger.info(f"Federates connected: {len(broker.query('broker', 'federates'))}")
         logger.info(f"Simulation state: {query_result['state']}")
         logger.info(f"Global time: {query_result['attributes']['parent']}")
     h.helicsCloseLibrary()

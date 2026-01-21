@@ -41,10 +41,16 @@ def test_mc_build(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     ), "Broker federate should be implemented before building a multicontainer problem."
 
     api_implementation = broker_path / API_FILE
-    assert api_implementation.exists(), f"A valid REST API implementatiion should exist in {api_implementation} before building a multicontainer problem."
+    assert api_implementation.exists(), (
+        f"A valid REST API implementatiion should exist in {api_implementation} "
+        "before building a multicontainer problem."
+    )
 
     requirements_file = broker_path / "requirements.txt"
-    assert requirements_file.exists(), "All components should have a valid requirements.txt file listing required python packages for the build."
+    assert requirements_file.exists(), (
+        "All components should have a valid requirements.txt file listing required "
+        "python packages for the build."
+    )
 
     result = runner.invoke(cli, ["build", "-m", "-i", TEST_SIMULATION])
     assert result.exit_code == 0
@@ -110,9 +116,10 @@ def test_api_run(base_path: Path, monkeypatch: pytest.MonkeyPatch):
                 client = TestClient(app)
                 clients[folder.name] = client
 
-    assert (
-        BROKER_SERVICE in clients
-    ), f"No broker client in list of tested services. Available services {list(clients.keys())}"
+    assert BROKER_SERVICE in clients, (
+        "No broker client in list of tested services. "
+        f"Available services {list(clients.keys())}"
+    )
     client = clients[BROKER_SERVICE]
     # Connection error is raised as the broker running, but not all components are up yet.
     # wheb broker make s post request to components, they are not available yet.
