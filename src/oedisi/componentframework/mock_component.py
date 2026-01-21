@@ -28,9 +28,9 @@ class MockComponent(system_configuration.ComponentType):
         name,
         parameters: dict[str, dict[str, str]],
         directory: str,
-        host: str = None,
-        port: int = None,
-        comp_type: str = None,
+        host: str | None = None,
+        port: int | None = None,
+        comp_type: str | None = None,
     ):
         self._name = name
         self._directory = directory

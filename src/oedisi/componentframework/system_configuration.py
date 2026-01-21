@@ -19,7 +19,7 @@ import os
 import logging
 import shutil
 import psutil
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 
 from pydantic import field_validator, BaseModel, ValidationInfo
 from oedisi.types.common import DOCKER_HUB_USER, APP_NAME
@@ -68,18 +68,33 @@ class ComponentType(ABC):
     """
 
     @abstractmethod
+    def __init__(
+        self,
+        name: str,
+        parameters: dict[str, dict[str, str]],
+        directory: str,
+        host: str | None = None,
+        port: int | None = None,
+        comp_type: str | None = None,
+    ):
+        pass
+
+    @abstractmethod
     def generate_input_mapping(self, links: dict[str, str]):
         pass
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def execute_function(self):
         pass
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def dynamic_inputs(self):
         pass
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def dynamic_outputs(self):
         pass
 
@@ -224,7 +239,7 @@ def initialize_federates(
             component.parameters,
             directory,
             component.host,
-            component.port,
+            component.container_port,
             component.type,
         )
         components[component.name] = initialized_component

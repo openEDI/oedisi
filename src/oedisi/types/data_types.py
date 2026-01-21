@@ -1,7 +1,7 @@
 from __future__ import annotations
 import datetime
 from enum import Enum
-from pydantic import model_validator, BaseModel, RootModel
+from pydantic import model_validator, BaseModel, RootModel, Field
 
 ### Supporting Functions ###
 # TODO: Connect with CIM values
@@ -251,12 +251,26 @@ class AdmittanceMatrix(BaseModel):
 
 class Injection(BaseModel):
     # Shouldn't these be equipment arrays?
-    current_real: CurrentsReal = {"values": [], "ids": [], "node_ids": []}
-    current_imaginary: CurrentsImaginary = {"values": [], "ids": [], "node_ids": []}
-    power_real: PowersReal = {"values": [], "ids": [], "node_ids": []}
-    power_imaginary: PowersImaginary = {"values": [], "ids": [], "node_ids": []}
-    impedance_real: ImpedanceReal = {"values": [], "ids": [], "node_ids": []}
-    impedance_imaginary: ImpedanceImaginary = {"values": [], "ids": [], "node_ids": []}
+    current_real: CurrentsReal = Field(
+        default_factory=lambda: CurrentsReal(values=[], ids=[], units="A")
+    )
+    current_imaginary: CurrentsImaginary = Field(
+        default_factory=lambda: CurrentsImaginary(values=[], ids=[], units="A")
+    )
+    power_real: PowersReal = Field(
+        default_factory=lambda: PowersReal(values=[], ids=[], equipment_ids=[], units="kW")
+    )
+    power_imaginary: PowersImaginary = Field(
+        default_factory=lambda: PowersImaginary(
+            values=[], ids=[], equipment_ids=[], units="kVAR"
+        )
+    )
+    impedance_real: ImpedanceReal = Field(
+        default_factory=lambda: ImpedanceReal(values=[], ids=[], units="Ohm")
+    )
+    impedance_imaginary: ImpedanceImaginary = Field(
+        default_factory=lambda: ImpedanceImaginary(values=[], ids=[], units="Ohm")
+    )
 
 
 class Command(BaseModel):
