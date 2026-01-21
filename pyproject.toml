@@ -88,8 +88,7 @@ select = [
 #dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 #exclude = ["tests"]
 
-# Assume Python 3.10.
-target-version = "py38"
+target-version = "py310"
 
 # 4. Ignore `E402` (import violations) in all `__init__.py` files, and in `path/to/file.py`.
 [tool.ruff.per-file-ignores]
