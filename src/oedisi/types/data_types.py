@@ -2,13 +2,12 @@ from __future__ import annotations
 import datetime
 from enum import Enum
 from pydantic import model_validator, BaseModel, RootModel
-from typing import List, Optional, Union, Tuple
 
 ### Supporting Functions ###
 # TODO: Connect with CIM values
 
 
-Complex = Tuple[float, float]
+Complex = tuple[float, float]
 
 
 class StateArray(BaseModel):
@@ -20,9 +19,9 @@ class StateArray(BaseModel):
 
     """
 
-    values: List[int]
-    ids: List[str]
-    time: Optional[datetime.datetime] = None
+    values: list[int]
+    ids: list[str]
+    time: datetime.datetime | None = None
 
 
 class SwitchStates(StateArray):
@@ -48,10 +47,10 @@ class CostArray(BaseModel):
 
     """
 
-    values: List[List[float]]
-    ids: List[str]
+    values: list[list[float]]
+    ids: list[str]
     units: str = "$"
-    time: Optional[datetime.datetime] = None
+    time: datetime.datetime | None = None
 
 
 class RealCostFunctions(CostArray):
@@ -82,12 +81,12 @@ class MeasurementArray(BaseModel):
         "EquipmentNodeArray"
     """
 
-    values: List[float]
-    ids: List[str]
+    values: list[float]
+    ids: list[str]
     units: str
-    accuracy: Optional[List[float]] = None
-    bad_data_threshold: Optional[List[float]] = None
-    time: Optional[datetime.datetime] = None
+    accuracy: list[float] | None = None
+    bad_data_threshold: list[float] | None = None
+    time: datetime.datetime | None = None
 
 
 class BusArray(MeasurementArray):
@@ -137,7 +136,7 @@ class EquipmentNodeArray(MeasurementArray):
 
     """
 
-    equipment_ids: List[str]
+    equipment_ids: list[str]
 
 
 class VoltagesMagnitude(BusArray):
@@ -221,32 +220,32 @@ class StatesOfCharge(EquipmentArray):
 
 
 class Topology(BaseModel):
-    admittance: Union[AdmittanceSparse, AdmittanceMatrix]
+    admittance: AdmittanceSparse | AdmittanceMatrix
     injections: Injection
-    incidences: Optional[IncidenceList] = None
-    base_voltage_angles: Optional[VoltagesAngle] = None
-    base_voltage_magnitudes: Optional[VoltagesMagnitude] = None
-    slack_bus: List[str] = []
+    incidences: IncidenceList | None = None
+    base_voltage_angles: VoltagesAngle | None = None
+    base_voltage_magnitudes: VoltagesMagnitude | None = None
+    slack_bus: list[str] = []
 
 
 class Incidence(BaseModel):
-    from_equipment: List[str]
-    to_equipment: List[str]
-    equipment_type: Optional[List[str]] = None
+    from_equipment: list[str]
+    to_equipment: list[str]
+    equipment_type: list[str] | None = None
 
 
 class IncidenceList(Incidence):
-    ids: List[str]
+    ids: list[str]
 
 
 class AdmittanceSparse(Incidence):
-    admittance_list: List[Complex]
+    admittance_list: list[Complex]
     units: str = "S"
 
 
 class AdmittanceMatrix(BaseModel):
-    admittance_matrix: List[List[Complex]]
-    ids: List[str]
+    admittance_matrix: list[list[Complex]]
+    ids: list[str]
     units: str = "S"
 
 
@@ -273,7 +272,7 @@ class Command(BaseModel):
     val: str
 
 
-CommandList = RootModel[List[Command]]
+CommandList = RootModel[list[Command]]
 
 
 class ReactivePowerSetting(Enum):
@@ -299,24 +298,24 @@ class VVControl(BaseModel):
     varchangetolerance: float = 0.025
     voltagechangetolerance: float = 0.0001
     vv_refreactivepower: ReactivePowerSetting = ReactivePowerSetting.VARAVAL_WATTS
-    voltage: List[float]  # p.u. in V
-    reactive_response: List[float]  # p.u. in VArs
+    voltage: list[float]  # p.u. in V
+    reactive_response: list[float]  # p.u. in VArs
 
 
 class VWControl(BaseModel):
     """OpenDSS setting for volt-watt control."""
 
     deltap_factor: float = -1.0  # -1.0 tells OpenDSS to figure it out
-    voltage: List[float]  # p.u. in V
-    power_response: List[float]  # p.u. in VArs
+    voltage: list[float]  # p.u. in V
+    power_response: list[float]  # p.u. in VArs
 
 
 class InverterControl(BaseModel):
     """InverterControl with volt-var control and/or volt-watt control."""
 
-    pvsystem_list: Optional[List[str]] = None
-    vvcontrol: Optional[VVControl] = None
-    vwcontrol: Optional[VWControl] = None
+    pvsystem_list: list[str] | None = None
+    vvcontrol: VVControl | None = None
+    vwcontrol: VWControl | None = None
     mode: InverterControlMode = InverterControlMode.voltvar
 
     @model_validator(mode="before")
@@ -336,4 +335,4 @@ class InverterControl(BaseModel):
         return values
 
 
-InverterControlList = RootModel[List[InverterControl]]
+InverterControlList = RootModel[list[InverterControl]]

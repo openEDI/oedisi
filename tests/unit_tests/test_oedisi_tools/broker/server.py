@@ -1,4 +1,4 @@
-from fastapi import FastAPI, BackgroundTasks, UploadFile
+from fastapi import FastAPI, BackgroundTasks
 from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
 
@@ -161,7 +161,7 @@ async def run_feeder(background_tasks: BackgroundTasks):
     logger.info("Run Called on Broker service")
     try:
         background_tasks.add_task(run_simulation)
-    except Exception as e:
+    except Exception:
         err = traceback.format_exc()
         raise HTTPException(status_code=404, detail=str(err))
 

@@ -8,7 +8,7 @@ from shutil import copytree
 from . import system_configuration
 from .system_configuration import AnnotatedType
 from pydantic import BaseModel
-from typing import List, Any, Dict
+from typing import Any
 
 
 class ComponentDescription(BaseModel):
@@ -30,12 +30,12 @@ class ComponentDescription(BaseModel):
 
     directory: str
     execute_function: str
-    static_inputs: List[AnnotatedType]
-    dynamic_inputs: List[AnnotatedType]
-    dynamic_outputs: List[AnnotatedType]
+    static_inputs: list[AnnotatedType]
+    dynamic_inputs: list[AnnotatedType]
+    dynamic_outputs: list[AnnotatedType]
 
 
-def types_to_dict(types: List[AnnotatedType]):
+def types_to_dict(types: list[AnnotatedType]):
     return {t.port_name: t for t in types}
 
 
@@ -70,7 +70,7 @@ def basic_component(comp_desc: ComponentDescription, type_checker):
         def __init__(
             self,
             name,
-            parameters: Dict[str, Any],
+            parameters: dict[str, Any],
             directory: str,
             host: str,
             port: int,

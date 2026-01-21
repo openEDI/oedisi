@@ -15,7 +15,6 @@ from oedisi.tools import cli
 from oedisi.types.common import BROKER_SERVICE, HeathCheck
 
 from oedisi.componentframework.system_configuration import (
-    ComponentStruct,
     WiringDiagram,
 )
 from requests.exceptions import ConnectionError
@@ -87,7 +86,7 @@ def test_api_run(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     assert build_path.exists(), "Build path for the test project does not exist."
     assert (build_path / "docker-compose.yml").exists(), "Build path for the test project does not exist."
 
-    payload = json.load(open(base_path / "system.json", 'r'))
+    payload = json.load(open(base_path / "system.json"))
     wiring_diagram = WiringDiagram(**payload)
 
     clients = {}

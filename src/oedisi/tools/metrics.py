@@ -5,7 +5,8 @@ For voltages:
 - Mean squared relative error.
 
 For angles:
-- Mean absolute angle error."""
+- Mean absolute angle error.
+"""
 
 import click
 from pathlib import Path
@@ -60,9 +61,9 @@ def evaluate_estimate(path, metric, angle_unit):
     - MAAE: Mean absolute angle error.
 
     \f
+
     Parameters
     ----------
-
     path : Path
         Path to the folder containing the measurement files.
 

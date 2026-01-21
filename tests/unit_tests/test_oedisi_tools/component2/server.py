@@ -47,7 +47,7 @@ async def run_model(broker_config: BrokerConfig, background_tasks: BackgroundTas
         background_tasks.add_task(federate.run)
         logger.info("Federate 2 started")
         return {"reply": "success", "error": False}
-    except Exception as e:
+    except Exception:
         err = traceback.format_exc()
         raise HTTPException(500,str(err))
 
@@ -65,7 +65,7 @@ async def configure(component_struct:ComponentStruct):
     with open(DefaultFileNames.STATIC_INPUTS.value, "w") as f:
         json.dump(params, f)
     response = ServerReply(
-            detail = f"Sucessfully updated configuration files."
+            detail = "Sucessfully updated configuration files."
         ).model_dump() 
     return JSONResponse(response, 200)
 

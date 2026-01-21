@@ -14,7 +14,7 @@ and the links between them.
 """
 
 from collections import defaultdict
-from typing import List, Dict, Type, Any, Optional
+from typing import Any
 import os
 import logging
 import shutil
@@ -29,9 +29,9 @@ class AnnotatedType(BaseModel):
     """Represent the types of components and their interfaces."""
 
     type: str
-    description: Optional[str] = None
-    unit: Optional[str] = None
-    port_id: Optional[str] = None
+    description: str | None = None
+    unit: str | None = None
+    port_id: str | None = None
 
     @property
     def port_name(self):
@@ -68,7 +68,7 @@ class ComponentType(ABC):
     """
 
     @abstractmethod
-    def generate_input_mapping(self, links: Dict[str, str]):
+    def generate_input_mapping(self, links: dict[str, str]):
         pass
 
     @abstractproperty
@@ -109,10 +109,10 @@ class Component(BaseModel):
 
     name: str
     type: str
-    host: Optional[str] = None
-    container_port: Optional[int] = None
+    host: str | None = None
+    container_port: int | None = None
     image: str = ""
-    parameters: Dict[str, Any]
+    parameters: dict[str, Any]
 
     def port(self, port_name: str):
         return Port(name=self.name, port_name=port_name)
@@ -128,15 +128,15 @@ class Component(BaseModel):
 
 class ComponentStruct(BaseModel):
     component: Component
-    links: List[Link]
+    links: list[Link]
 
 
 class WiringDiagram(BaseModel):
-    "Cosimulation configuration. This may end up wrapped in another interface"
+    """Cosimulation configuration. This may end up wrapped in another interface"""
 
     name: str
-    components: List[Component]
-    links: List[Link]
+    components: list[Component]
+    links: list[Link]
 
     def clean_model(self, target_directory="."):
         for component in self.components:
@@ -163,7 +163,7 @@ class WiringDiagram(BaseModel):
     @field_validator("components")
     @classmethod
     def check_component_names(cls, components):
-        "Check that the components all have unique names"
+        """Check that the components all have unique names"""
         names = set(map(lambda c: c.name, components))
         assert len(names) == len(components)
         return components
@@ -190,7 +190,7 @@ class WiringDiagram(BaseModel):
 
 
 class Federate(BaseModel):
-    "Federate configuration for HELICS CLI"
+    """Federate configuration for HELICS CLI"""
 
     directory: str
     hostname: str = "localhost"
@@ -207,11 +207,11 @@ def get_federates_conn_info(wiring_diagram: WiringDiagram):
 
 def initialize_federates(
     wiring_diagram: WiringDiagram,
-    component_types: Dict[str, Type[ComponentType]],
+    component_types: dict[str, type[ComponentType]],
     compatability_checker,
     target_directory=".",
-) -> List[Federate]:
-    "Initialize all the federates"
+) -> list[Federate]:
+    """Initialize all the federates"""
     components = {}
     link_map = get_link_map(wiring_diagram)
     for component in wiring_diagram.components:
@@ -279,17 +279,17 @@ class RunnerConfig(BaseModel):
     """
 
     name: str
-    federates: List[Federate]
+    federates: list[Federate]
 
 
 def bad_compatability_checker(type1, type2):
-    "Basic compatability checker that says all types are compatible."
+    """Basic compatability checker that says all types are compatible."""
     return True
 
 
 def generate_runner_config(
     wiring_diagram: WiringDiagram,
-    component_types: Dict[str, Type[ComponentType]],
+    component_types: dict[str, type[ComponentType]],
     compatibility_checker=bad_compatability_checker,
     target_directory=".",
 ):

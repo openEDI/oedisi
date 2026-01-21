@@ -1,4 +1,3 @@
-from typing import Dict, Optional
 from pydantic import BaseModel
 from enum import Enum
 
@@ -29,4 +28,4 @@ class HeathCheck(BaseModel):
 
 class ServerReply(BaseModel):
     detail: str
-    action: Optional[str] = None
+    action: str | None = None

@@ -5,12 +5,11 @@ Some utilities plot, and future additions include nested wiring
 diagram composition and a programmatic interface.
 """
 
-from . import system_configuration
 from .system_configuration import WiringDiagram
 
 
 def get_graph(wiring_diagram: WiringDiagram):
-    "Get networkx graph representation of wiring_diagram"
+    """Get networkx graph representation of wiring_diagram"""
     import networkx as nx
 
     g = nx.MultiDiGraph()
@@ -90,7 +89,7 @@ def plot_graph_bokeh(wiring_diagram: WiringDiagram):
         CustomJS,
     )
     from bokeh.layouts import layout
-    from bokeh.io import output_file, show
+    from bokeh.io import show
 
     G = get_graph(wiring_diagram)
     graph_renderer = get_graph_renderer(G)

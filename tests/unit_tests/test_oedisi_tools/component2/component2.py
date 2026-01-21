@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 """
 
@@ -44,7 +43,7 @@ class TestFederate:
         self.fed = h.helicsCreateValueFederate(self.parameters["name"], fedinfo)
         logger.info(f"Created federate {self.fed.name}")
 
-        with open("input_mapping.json", "r") as f:
+        with open("input_mapping.json") as f:
             port_mapping = json.load(f)
             self.subscriptions = {}
             if "test1" in port_mapping:

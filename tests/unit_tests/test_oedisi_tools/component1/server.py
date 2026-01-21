@@ -58,7 +58,7 @@ async def configure(component_struct:ComponentStruct):
     with open(DefaultFileNames.STATIC_INPUTS.value, "w") as f:
         json.dump(params, f)
     response = ServerReply(
-            detail = f"Sucessfully updated configuration files."
+            detail = "Sucessfully updated configuration files."
         ).model_dump() 
     return JSONResponse(response, 200)
 

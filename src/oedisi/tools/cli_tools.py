@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 from pathlib import Path
 from uuid import uuid4
 import subprocess
@@ -42,7 +42,7 @@ def cli():
 
 
 def bad_type_checker(type, x):
-    "Does not check types"
+    """Does not check types"""
     return True
 
 
@@ -104,9 +104,9 @@ def build(
         oedisi build --component-dict components.json --system scenario.json
 
     \f
+
     Parameters
     ----------
-
     target_directory : str (default="build")
         build path
     system : str (default="system.json")
@@ -118,9 +118,8 @@ def build(
     broker_port: float
         The port of the broker. If using kubernetes, is internal to k8s
     """
-
     click.echo(f"Loading the components defined in {component_dict}")
-    with open(component_dict, "r") as f:
+    with open(component_dict) as f:
 
         component_dict_of_files = json.load(f)
         component_types = {
@@ -222,7 +221,7 @@ def create_kubernetes_deployment(
     )
 
     service_dict = drop_null_values(service.to_dict())
-    with open(os.path.join(kube_folder, f"service.yml"), "w") as f:
+    with open(os.path.join(kube_folder, "service.yml"), "w") as f:
         yaml.dump(service_dict, f)
 
     broker_component = Component(
@@ -278,17 +277,17 @@ def edit_docker_file(file_path, component: Component):
 
     with open(file_path, "w") as f:
         f.write(f"FROM {BASE_DOCKER_IMAGE}\n")
-        f.write(f"RUN apt-get update\n")
-        f.write(f"RUN apt-get install -y git ssh\n")
+        f.write("RUN apt-get update\n")
+        f.write("RUN apt-get install -y git ssh\n")
 
         #TODO: This works for now. Should be removed when a tagged release is available
-        f.write(f"RUN git clone https://github.com/openEDI/oedisi.git /oedisi\n")
-        f.write(f"RUN pip install /oedisi \n")
+        f.write("RUN git clone https://github.com/openEDI/oedisi.git /oedisi\n")
+        f.write("RUN pip install /oedisi \n")
 
         f.write(f"RUN mkdir {component.type}\n")
         f.write(f"COPY  . ./{component.type}\n")
         f.write(f"WORKDIR ./{component.type}\n")
-        f.write(f"RUN pip install -r requirements.txt\n")
+        f.write("RUN pip install -r requirements.txt\n")
         f.write(f"EXPOSE {component.container_port}/tcp\n")
         cmd = f"CMD {['python', 'server.py']}\n"
         cmd = cmd.replace("'", '"')
@@ -296,7 +295,7 @@ def edit_docker_file(file_path, component: Component):
     pass
 
 
-def edit_docker_files(wiring_diagram: WiringDiagram, component_types: Dict):
+def edit_docker_files(wiring_diagram: WiringDiagram, component_types: dict):
     parsed_components = []
     for component in wiring_diagram.components:
         if component.type not in parsed_components:
@@ -307,7 +306,7 @@ def edit_docker_files(wiring_diagram: WiringDiagram, component_types: Dict):
 
 
 def create_docker_compose_file(
-    wiring_diagram: WiringDiagram, target_directory: str, broker_port: int, component_types: Dict, simulation_id: str
+    wiring_diagram: WiringDiagram, target_directory: str, broker_port: int, component_types: dict, simulation_id: str
 ):
     config = {"services": {}, "networks": {}}
 
@@ -478,9 +477,9 @@ def test_description(target_directory, component_desc, parameters):
 
 
     \f
+
     Parameters
     ----------
-
     target_directory : str
         build location
 
@@ -499,7 +498,6 @@ def test_description(target_directory, component_desc, parameters):
         inputs and outputs (basically recorder federate?)
     Create and run system with wiring diagram
     """
-
     with open(component_desc) as f:
         comp_desc = ComponentDescription.model_validate(json.load(f))
     comp_desc.directory = os.path.dirname(component_desc)
@@ -568,7 +566,7 @@ def test_description(target_directory, component_desc, parameters):
 
 
 def remove_from_runner_config(runner_config, element):
-    "Remove federate from configuration"
+    """Remove federate from configuration"""
     within_feds = [fed for fed in runner_config.federates if fed.name != element]
     without_feds = [fed for fed in runner_config.federates if fed.name == element]
     new_config = RunnerConfig(name=runner_config.name, federates=within_feds)
@@ -576,8 +574,8 @@ def remove_from_runner_config(runner_config, element):
 
 
 def remove_from_json(system_json, element):
-    "Remove federate from configuration and resave with revised.json"
-    with open(system_json, "r") as f:
+    """Remove federate from configuration and resave with revised.json"""
+    with open(system_json) as f:
         runner_config = RunnerConfig.model_validate(json.load(f))
         new_config, without_feds = remove_from_runner_config(runner_config, element)
 
@@ -605,9 +603,9 @@ def debug_component(runner, foreground):
     and then run our debugging component in standard in / standard out.
 
     \f
+
     Parameters
     ----------
-
     runner : str
         filepath to system runner json
 
