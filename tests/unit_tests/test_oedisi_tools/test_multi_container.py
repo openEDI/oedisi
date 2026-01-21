@@ -12,7 +12,7 @@ from click.testing import CliRunner
 from fastapi.testclient import TestClient
 
 from oedisi.tools import cli
-from oedisi.types.common import BROKER_SERVICE, HeathCheck
+from oedisi.types.common import BROKER_SERVICE, HealthCheck
 
 from oedisi.componentframework.system_configuration import (
     ComponentStruct,
@@ -75,7 +75,7 @@ def test_api_heath_endpoint(base_path: Path, monkeypatch: pytest.MonkeyPatch):
                 client = TestClient(app)
                 response = client.get("/")
                 assert response.status_code == 200
-                HeathCheck.model_validate(response.json())
+                HealthCheck.model_validate(response.json())
             else:
                 assert not  (folder / "server.py").exists()
 

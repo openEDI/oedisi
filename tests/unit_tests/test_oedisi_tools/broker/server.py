@@ -21,7 +21,7 @@ from oedisi.componentframework.system_configuration import (
     ComponentStruct,
     WiringDiagram,
 )
-from oedisi.types.common import ServerReply, HeathCheck
+from oedisi.types.common import ServerReply, HealthCheck
 
 logger = logging.getLogger("uvicorn.error")
 logger.setLevel(logging.DEBUG)
@@ -152,7 +152,7 @@ async def run_simulation():
 def read_root():
     hostname = socket.gethostname()
     host_ip = socket.gethostbyname(hostname)
-    response = HeathCheck(hostname=hostname, host_ip=host_ip).model_dump()
+    response = HealthCheck(hostname=hostname, host_ip=host_ip).model_dump()
     return JSONResponse(response, 200)
 
 
