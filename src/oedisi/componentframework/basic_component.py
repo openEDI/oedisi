@@ -8,24 +8,8 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 from . import system_configuration
-from .system_configuration import AnnotatedType
+from .system_configuration import AnnotatedType, ComponentCapabilities
 from oedisi.types.helics_config import HELICSFederateConfig
-
-
-class ComponentCapabilities(BaseModel):
-    """Component capability declarations for build-time validation.
-
-    Parameters
-    ----------
-    version :
-        Capabilities schema version.
-    broker_config :
-        Whether this component supports receiving federate_config in static_inputs.json.
-        If True, the component can be used with WiringDiagram.federate_config.
-    """
-
-    version: str = "1.0"
-    broker_config: bool = False
 
 
 class ComponentDescription(BaseModel):
