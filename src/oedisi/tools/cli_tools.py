@@ -36,6 +36,50 @@ from oedisi.types.common import (
 )
 
 
+def validate_broker_config_support(
+    wiring_diagram: WiringDiagram,
+    component_dict_of_files: dict[str, str],
+) -> None:
+    """Validate that all components support broker config if wiring diagram uses it.
+
+    Parameters
+    ----------
+    wiring_diagram :
+        The wiring diagram being built.
+    component_dict_of_files :
+        Dictionary mapping component type names to their definition file paths.
+
+    Raises
+    ------
+    click.ClickException
+        If federate_config is specified but some components don't support it.
+    """
+    if wiring_diagram.federate_config is None:
+        return
+
+    unsupported_components = []
+    for component in wiring_diagram.components:
+        filepath = component_dict_of_files.get(component.type)
+        if filepath is None:
+            continue
+
+        with open(filepath) as f:
+            comp_desc = ComponentDescription.model_validate(json.load(f))
+
+        if not comp_desc.capabilities.broker_config:
+            unsupported_components.append(f"  - {component.name} (type: {component.type})")
+
+    if unsupported_components:
+        msg = (
+            "WiringDiagram specifies federate_config but the following components "
+            "do not support broker configuration:\n"
+            + "\n".join(unsupported_components)
+            + '\n\nTo fix this, add \'"capabilities": {"broker_config": true}\' to each '
+            "component's component_definition.json file."
+        )
+        raise click.ClickException(msg)
+
+
 @click.group()
 def cli():
     pass
@@ -128,6 +172,9 @@ def build(
     click.echo(f"Loading system json {system}")
     with open(system) as f:
         wiring_diagram = WiringDiagram.model_validate(json.load(f))
+
+    # Validate broker config support if federate_config is specified
+    validate_broker_config_support(wiring_diagram, component_dict_of_files)
 
     click.echo(f"Building system in {target_directory}")
 

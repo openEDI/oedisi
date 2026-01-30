@@ -3,10 +3,29 @@
 import json
 import os
 from shutil import copytree
+from typing import Any
+
+from pydantic import BaseModel, Field
+
 from . import system_configuration
 from .system_configuration import AnnotatedType
-from pydantic import BaseModel
-from typing import Any
+from oedisi.types.helics_config import HELICSFederateConfig
+
+
+class ComponentCapabilities(BaseModel):
+    """Component capability declarations for build-time validation.
+
+    Parameters
+    ----------
+    version :
+        Capabilities schema version.
+    broker_config :
+        Whether this component supports receiving federate_config in static_inputs.json.
+        If True, the component can be used with WiringDiagram.federate_config.
+    """
+
+    version: str = "1.0"
+    broker_config: bool = False
 
 
 class ComponentDescription(BaseModel):
@@ -24,6 +43,8 @@ class ComponentDescription(BaseModel):
         List of input types. Typically subscriptions.
     dynamic_outputs :
         List of output types. Typically publications.
+    capabilities :
+        Component capability declarations for build-time validation.
     """
 
     directory: str
@@ -31,6 +52,7 @@ class ComponentDescription(BaseModel):
     static_inputs: list[AnnotatedType]
     dynamic_inputs: list[AnnotatedType]
     dynamic_outputs: list[AnnotatedType]
+    capabilities: ComponentCapabilities = Field(default_factory=ComponentCapabilities)
 
 
 def types_to_dict(types: list[AnnotatedType]):
@@ -64,6 +86,7 @@ def basic_component(comp_desc: ComponentDescription, type_checker):
         _dynamic_inputs = types_to_dict(comp_desc.dynamic_inputs)
         _dynamic_outputs = types_to_dict(comp_desc.dynamic_outputs)
         _static_inputs = types_to_dict(comp_desc.static_inputs)
+        _capabilities = comp_desc.capabilities
 
         def __init__(
             self,
@@ -73,10 +96,12 @@ def basic_component(comp_desc: ComponentDescription, type_checker):
             host: str,
             port: int,
             comp_type: str,
+            federate_config: HELICSFederateConfig | None = None,
         ):
             self._name = name
             self._directory = directory
             self._parameters = parameters
+            self._federate_config = federate_config
             self.check_parameters(parameters)
             self.copy_code_into_directory()
             self.generate_parameter_config()
@@ -96,6 +121,8 @@ def basic_component(comp_desc: ComponentDescription, type_checker):
 
         def generate_parameter_config(self):
             self._parameters["name"] = self._name
+            if self._federate_config is not None:
+                self._parameters["federate_config"] = self._federate_config.to_dict()
             with open(os.path.join(self._directory, "static_inputs.json"), "w") as f:
                 json.dump(self._parameters, f)
 
@@ -114,5 +141,9 @@ def basic_component(comp_desc: ComponentDescription, type_checker):
         @property
         def execute_function(self):
             return self._execute_function
+
+        @property
+        def broker_config_support(self):
+            return self._capabilities.broker_config
 
     return BasicComponent

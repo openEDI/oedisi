@@ -13,8 +13,10 @@ import helics as h
 import logging
 import json
 import os
+
 from . import system_configuration
 from .system_configuration import AnnotatedType
+from oedisi.types.helics_config import HELICSFederateConfig
 
 
 logger = logging.getLogger(__name__)
@@ -31,9 +33,11 @@ class MockComponent(system_configuration.ComponentType):
         host: str | None = None,
         port: int | None = None,
         comp_type: str | None = None,
+        federate_config: HELICSFederateConfig | None = None,
     ):
         self._name = name
         self._directory = directory
+        self._federate_config = federate_config
         self._execute_function = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "mock_component.sh"
         )
