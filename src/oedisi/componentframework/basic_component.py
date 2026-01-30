@@ -90,18 +90,16 @@ def basic_component(comp_desc: ComponentDescription, type_checker):
 
         def __init__(
             self,
-            name,
+            base_config: HELICSFederateConfig,
             parameters: dict[str, Any],
             directory: str,
             host: str,
             port: int,
             comp_type: str,
-            federate_config: HELICSFederateConfig | None = None,
         ):
-            self._name = name
+            self._base_config = base_config
             self._directory = directory
             self._parameters = parameters
-            self._federate_config = federate_config
             self.check_parameters(parameters)
             self.copy_code_into_directory()
             self.generate_parameter_config()
@@ -120,11 +118,13 @@ def basic_component(comp_desc: ComponentDescription, type_checker):
             copytree(self._origin_directory, self._directory, dirs_exist_ok=True)
 
         def generate_parameter_config(self):
-            self._parameters["name"] = self._name
-            if self._federate_config is not None:
-                self._parameters["federate_config"] = self._federate_config.to_dict()
+            if self.broker_config_support:
+                config = self._base_config.to_dict().update(self._parameters)
+            else:  # Backwards compatible behavior where we ignore extra information.
+                config = self._parameters
+                config["name"] = self._base_config.name
             with open(os.path.join(self._directory, "static_inputs.json"), "w") as f:
-                json.dump(self._parameters, f)
+                json.dump(config, f)
 
         def generate_input_mapping(self, links):
             with open(os.path.join(self._directory, "input_mapping.json"), "w") as f:

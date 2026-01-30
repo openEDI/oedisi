@@ -21,7 +21,7 @@ import shutil
 import psutil
 from abc import ABC, abstractmethod
 
-from pydantic import field_validator, BaseModel, ConfigDict, ValidationInfo, Field
+from pydantic import field_validator, BaseModel, ValidationInfo
 from oedisi.types.common import DOCKER_HUB_USER, APP_NAME
 from oedisi.types.helics_config import HELICSFederateConfig, SharedFederateConfig
 
@@ -71,13 +71,12 @@ class ComponentType(ABC):
     @abstractmethod
     def __init__(
         self,
-        name: str,
+        base_config: HELICSFederateConfig,
         parameters: dict[str, dict[str, str]],
         directory: str,
         host: str | None = None,
         port: int | None = None,
         comp_type: str | None = None,
-        federate_config: HELICSFederateConfig | None = None,
     ):
         pass
 
@@ -124,17 +123,13 @@ class Port(BaseModel):
 class Component(BaseModel):
     """A component type in WiringDiagram, includes name, type, and initial parameters."""
 
-    model_config = ConfigDict(populate_by_name=True)
-
     name: str
     type: str
     host: str | None = None
     container_port: int | None = None
     image: str = ""
     parameters: dict[str, Any]
-    federate_config_override: SharedFederateConfig | None = Field(
-        default=None, alias="federateConfigOverride"
-    )
+    helics_config_override: SharedFederateConfig | None = None
 
     def port(self, port_name: str):
         return Port(name=self.name, port_name=port_name)
@@ -164,19 +159,15 @@ class WiringDiagram(BaseModel):
         List of components in the simulation.
     links :
         List of links connecting component ports.
-    federate_config :
+    shared_helics_config :
         Optional shared federate configuration applied to all components.
         Per-component values (name, core_name) are derived automatically.
     """
 
-    model_config = ConfigDict(populate_by_name=True)
-
     name: str
     components: list[Component]
     links: list[Link]
-    federate_config: SharedFederateConfig | None = Field(
-        default=None, alias="federateConfig"
-    )
+    shared_helics_config: SharedFederateConfig | None = None
 
     def clean_model(self, target_directory="."):
         for component in self.components:
@@ -226,7 +217,7 @@ class WiringDiagram(BaseModel):
 
     @classmethod
     def empty(cls, name="unnamed"):
-        return cls(name=name, components=[], links=[], federate_config=None)
+        return cls(name=name, components=[], links=[], shared_helics_config=None)
 
 
 class Federate(BaseModel):
@@ -262,44 +253,43 @@ def initialize_federates(
 
         # Generate per-component federate config
         federate_config = None
-        if component.federate_config_override is not None:
+        if component.helics_config_override is not None:
             logging.warning(
                 f"Component '{component.name}' uses federate_config_override. "
                 "Per-component overrides can cause subtle timing issues."
             )
-            federate_config = component.federate_config_override.to_federate_config(
+            federate_config = component.helics_config_override.to_federate_config(
                 name=component.name
             )
-        elif wiring_diagram.federate_config is not None:
-            federate_config = wiring_diagram.federate_config.to_federate_config(
+        elif wiring_diagram.shared_helics_config is not None:
+            federate_config = wiring_diagram.shared_helics_config.to_federate_config(
                 name=component.name
             )
 
         initialized_component = component_type(
-            component.name,
+            federate_config,
             component.parameters,
             directory,
             component.host,
             component.container_port,
             component.type,
-            federate_config,
         )
         components[component.name] = initialized_component
 
     for link in wiring_diagram.links:
         source_types = components[link.source].dynamic_outputs
         target_types = components[link.target].dynamic_inputs
-        assert (
-            link.source_port in source_types
-        ), f"{link.source} does not have {link.source_port}"
-        assert (
-            link.target_port in target_types
-        ), f"{link.target} does not have dynamic input {link.target_port}"
+        assert link.source_port in source_types, (
+            f"{link.source} does not have {link.source_port}"
+        )
+        assert link.target_port in target_types, (
+            f"{link.target} does not have dynamic input {link.target_port}"
+        )
         source_type = source_types[link.source_port]
         target_type = target_types[link.target_port]
-        assert compatability_checker(
-            source_type, target_type
-        ), f"{source_type} is not compatible with {target_type}"
+        assert compatability_checker(source_type, target_type), (
+            f"{source_type} is not compatible with {target_type}"
+        )
 
     federates = []
     for name, component in components.items():

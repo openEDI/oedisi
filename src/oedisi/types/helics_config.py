@@ -2,12 +2,8 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from pydantic import BaseModel, ConfigDict, Field
-
-if TYPE_CHECKING:
-    from oedisi.types.common import BrokerConfig
+from oedisi.types.common import BrokerConfig
 
 
 class HELICSBrokerConfig(BaseModel):
