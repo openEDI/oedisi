@@ -34,20 +34,19 @@ class MockComponent(system_configuration.ComponentType):
 
     def __init__(
         self,
-        name,
+        base_config: HELICSFederateConfig,
         parameters: dict[str, dict[str, str]],
         directory: str,
         host: str | None = None,
         port: int | None = None,
         comp_type: str | None = None,
-        federate_config: HELICSFederateConfig | None = None,
     ):
-        """Construct mock componenet type.
+        """Construct mock component type.
 
         Parameters
         ----------
-        name : str
-            Name of the mock component.
+        base_config : HELICSFederateConfig
+            HELICS federate configuration containing name and broker settings.
         parameters : dict[str, dict[str, str]]
             Configuration parameters containing "inputs" and "outputs" keys.
         directory : str
@@ -59,9 +58,8 @@ class MockComponent(system_configuration.ComponentType):
         comp_type : str, optional
             Component type identifier (not used in mock implementation).
         """
-        self._name = name
+        self._base_config = base_config
         self._directory = directory
-        self._federate_config = federate_config
         self._execute_function = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "mock_component.sh"
         )
@@ -93,7 +91,7 @@ class MockComponent(system_configuration.ComponentType):
             Mapping of output port names to HELICS data types.
         """
         helics_config = {
-            "name": self._name,
+            "name": self._base_config.name,
             "core_type": "zmq",
             "period": 1,
             "log_level": "warning",
