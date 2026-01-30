@@ -26,6 +26,22 @@ from oedisi.types.common import DOCKER_HUB_USER, APP_NAME
 from oedisi.types.helics_config import HELICSFederateConfig, SharedFederateConfig
 
 
+class ComponentCapabilities(BaseModel):
+    """Component capability declarations for build-time validation.
+
+    Parameters
+    ----------
+    version :
+        Capabilities schema version.
+    broker_config :
+        Whether this component supports receiving federate_config in static_inputs.json.
+        If True, the component can be used with WiringDiagram.shared_helics_config.
+    """
+
+    version: str = "1.0"
+    broker_config: bool = False
+
+
 class AnnotatedType(BaseModel):
     """Represent the types of components and their interfaces."""
 
@@ -67,6 +83,8 @@ class ComponentType(ABC):
     Finally, the execute_function property defines the command
     to run the component.
     """
+
+    _capabilities: ComponentCapabilities = ComponentCapabilities()
 
     @abstractmethod
     def __init__(
@@ -265,6 +283,16 @@ def initialize_federates(
             federate_config = wiring_diagram.shared_helics_config.to_federate_config(
                 name=component.name
             )
+
+        # Validate broker config support
+        if federate_config is not None and not component_type._capabilities.broker_config:
+            raise ValueError(
+                f"Component '{component.name}' (type: {component.type}) does not support "
+                'HELICS configuration. Add \'"capabilities": {"broker_config": true}\' '
+                "to the component's component_definition.json file."
+            )
+        elif federate_config is None:
+            federate_config = HELICSFederateConfig(name=component.name)
 
         initialized_component = component_type(
             federate_config,
