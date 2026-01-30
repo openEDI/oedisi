@@ -27,17 +27,15 @@ logger.setLevel(logging.DEBUG)
 class MockComponent(system_configuration.ComponentType):
     def __init__(
         self,
-        name,
+        base_config: HELICSFederateConfig,
         parameters: dict[str, dict[str, str]],
         directory: str,
         host: str | None = None,
         port: int | None = None,
         comp_type: str | None = None,
-        federate_config: HELICSFederateConfig | None = None,
     ):
-        self._name = name
+        self._base_config = base_config
         self._directory = directory
-        self._federate_config = federate_config
         self._execute_function = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "mock_component.sh"
         )
@@ -55,7 +53,7 @@ class MockComponent(system_configuration.ComponentType):
 
     def generate_helics_config(self, outputs):
         helics_config = {
-            "name": self._name,
+            "name": self._base_config.name,
             "core_type": "zmq",
             "period": 1,
             "log_level": "warning",
