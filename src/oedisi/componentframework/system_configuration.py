@@ -21,8 +21,9 @@ import shutil
 import psutil
 from abc import ABC, abstractmethod
 
-from pydantic import field_validator, BaseModel, ValidationInfo
+from pydantic import field_validator, BaseModel, ConfigDict, ValidationInfo, Field
 from oedisi.types.common import DOCKER_HUB_USER, APP_NAME
+from oedisi.types.helics_config import HELICSFederateConfig, SharedFederateConfig
 
 
 class AnnotatedType(BaseModel):
@@ -81,6 +82,7 @@ class ComponentType(ABC):
         host: str | None = None,
         port: int | None = None,
         comp_type: str | None = None,
+        federate_config: HELICSFederateConfig | None = None,
     ):
         pass
 
@@ -154,6 +156,8 @@ class Port(BaseModel):
 class Component(BaseModel):
     """A component configuration in WiringDiagram."""
 
+    model_config = ConfigDict(populate_by_name=True)
+
     name: str
     "Name or identifier of this component instance"
     type: str
@@ -166,6 +170,9 @@ class Component(BaseModel):
     "Image used in Docker Compose and Kubernetes"
     parameters: dict[str, Any]
     "Configuration passed onto each component."
+    federate_config_override: SharedFederateConfig | None = Field(
+        default=None, alias="federateConfigOverride"
+    )
 
     def port(self, port_name: str) -> Port:
         """Create Port object for connecting this component at a port name."""
@@ -189,7 +196,22 @@ class ComponentStruct(BaseModel):
 
 
 class WiringDiagram(BaseModel):
-    """Cosimulation configuration. This may end up wrapped in another interface."""
+    """Cosimulation configuration. This may end up wrapped in another interface.
+
+    Parameters
+    ----------
+    name :
+        Name of the simulation.
+    components :
+        List of components in the simulation.
+    links :
+        List of links connecting component ports.
+    federate_config :
+        Optional shared federate configuration applied to all components.
+        Per-component values (name, core_name) are derived automatically.
+    """
+
+    model_config = ConfigDict(populate_by_name=True)
 
     name: str
     "Name of the simulation"
@@ -197,6 +219,9 @@ class WiringDiagram(BaseModel):
     "Component configuration and types"
     links: list[Link]
     "List of links {source, source_port, target, target_port} between components"
+    federate_config: SharedFederateConfig | None = Field(
+        default=None, alias="federateConfig"
+    )
 
     def clean_model(self, target_directory=".") -> None:
         """Remove component directories, log files, and stray broker processes.
@@ -263,7 +288,7 @@ class WiringDiagram(BaseModel):
     @classmethod
     def empty(cls, name="unnamed"):
         """Create empty wiring diagram with no components or links."""
-        return cls(name=name, components=[], links=[])
+        return cls(name=name, components=[], links=[], federate_config=None)
 
 
 class Federate(BaseModel):
@@ -314,6 +339,22 @@ def initialize_federates(
         if not os.path.exists(directory):
             os.makedirs(directory)
         component_type = component_types[component.type]
+
+        # Generate per-component federate config
+        federate_config = None
+        if component.federate_config_override is not None:
+            logging.warning(
+                f"Component '{component.name}' uses federate_config_override. "
+                "Per-component overrides can cause subtle timing issues."
+            )
+            federate_config = component.federate_config_override.to_federate_config(
+                name=component.name
+            )
+        elif wiring_diagram.federate_config is not None:
+            federate_config = wiring_diagram.federate_config.to_federate_config(
+                name=component.name
+            )
+
         initialized_component = component_type(
             component.name,
             component.parameters,
@@ -321,6 +362,7 @@ def initialize_federates(
             component.host,
             component.container_port,
             component.type,
+            federate_config,
         )
         components[component.name] = initialized_component
 
