@@ -1,5 +1,5 @@
 helics
-oedisi>=2.0.2,<3
+oedisi>=3,<4
 pydantic
 fastapi
 uvicorn
