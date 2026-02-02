@@ -1,0 +1,1005 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html">
+
+    <!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
+        <title>oedisi.componentframework package - oedisi documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">oedisi  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <span class="sidebar-brand-text">oedisi  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html#improvements">Improvements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../oedisi_cli.html"><code class="docutils literal notranslate"><span class="pre">oedisi</span></code> CLI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../multi_container.html">Multi-Container Setup</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/source/oedisi.componentframework.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="oedisi-componentframework-package">
+<h1>oedisi.componentframework package<a class="headerlink" href="#oedisi-componentframework-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-oedisi.componentframework.basic_component">
+<span id="oedisi-componentframework-basic-component-module"></span><h2>oedisi.componentframework.basic_component module<a class="headerlink" href="#module-oedisi.componentframework.basic_component" title="Link to this heading">¶</a></h2>
+<p>Generate basic component from description JSON.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="oedisi.componentframework.basic_component.ComponentDescription">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.basic_component.</span></span><span class="sig-name descname"><span class="pre">ComponentDescription</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">execute_function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">static_inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#oedisi.componentframework.system_configuration.AnnotatedType" title="oedisi.componentframework.system_configuration.AnnotatedType"><span class="pre">AnnotatedType</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic_inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#oedisi.componentframework.system_configuration.AnnotatedType" title="oedisi.componentframework.system_configuration.AnnotatedType"><span class="pre">AnnotatedType</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic_outputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#oedisi.componentframework.system_configuration.AnnotatedType" title="oedisi.componentframework.system_configuration.AnnotatedType"><span class="pre">AnnotatedType</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.basic_component.ComponentDescription" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Component description for simple ComponentType.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>directory</strong> (<em>str</em>) – where code is stored relative to where this is run</p></li>
+<li><p><strong>execute_function</strong> (<em>str</em>) – command to execute component</p></li>
+<li><p><strong>static_inputs</strong> (<em>list</em><em>[</em><a class="reference internal" href="#oedisi.componentframework.system_configuration.AnnotatedType" title="oedisi.componentframework.system_configuration.AnnotatedType"><em>oedisi.componentframework.system_configuration.AnnotatedType</em></a><em>]</em>) – List of types for the parameter</p></li>
+<li><p><strong>dynamic_inputs</strong> (<em>list</em><em>[</em><a class="reference internal" href="#oedisi.componentframework.system_configuration.AnnotatedType" title="oedisi.componentframework.system_configuration.AnnotatedType"><em>oedisi.componentframework.system_configuration.AnnotatedType</em></a><em>]</em>) – List of input types. Typically subscriptions.</p></li>
+<li><p><strong>dynamic_outputs</strong> (<em>list</em><em>[</em><a class="reference internal" href="#oedisi.componentframework.system_configuration.AnnotatedType" title="oedisi.componentframework.system_configuration.AnnotatedType"><em>oedisi.componentframework.system_configuration.AnnotatedType</em></a><em>]</em>) – List of output types. Typically publications.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.basic_component.ComponentDescription.directory">
+<span class="sig-name descname"><span class="pre">directory</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#oedisi.componentframework.basic_component.ComponentDescription.directory" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.basic_component.ComponentDescription.dynamic_inputs">
+<span class="sig-name descname"><span class="pre">dynamic_inputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#oedisi.componentframework.system_configuration.AnnotatedType" title="oedisi.componentframework.system_configuration.AnnotatedType"><span class="pre">AnnotatedType</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#oedisi.componentframework.basic_component.ComponentDescription.dynamic_inputs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.basic_component.ComponentDescription.dynamic_outputs">
+<span class="sig-name descname"><span class="pre">dynamic_outputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#oedisi.componentframework.system_configuration.AnnotatedType" title="oedisi.componentframework.system_configuration.AnnotatedType"><span class="pre">AnnotatedType</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#oedisi.componentframework.basic_component.ComponentDescription.dynamic_outputs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.basic_component.ComponentDescription.execute_function">
+<span class="sig-name descname"><span class="pre">execute_function</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#oedisi.componentframework.basic_component.ComponentDescription.execute_function" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.basic_component.ComponentDescription.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#oedisi.componentframework.basic_component.ComponentDescription.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.basic_component.ComponentDescription.static_inputs">
+<span class="sig-name descname"><span class="pre">static_inputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#oedisi.componentframework.system_configuration.AnnotatedType" title="oedisi.componentframework.system_configuration.AnnotatedType"><span class="pre">AnnotatedType</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#oedisi.componentframework.basic_component.ComponentDescription.static_inputs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="oedisi.componentframework.basic_component.basic_component">
+<span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.basic_component.</span></span><span class="sig-name descname"><span class="pre">basic_component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comp_desc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#oedisi.componentframework.basic_component.ComponentDescription" title="oedisi.componentframework.basic_component.ComponentDescription"><span class="pre">ComponentDescription</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_checker</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.basic_component.basic_component" title="Link to this definition">¶</a></dt>
+<dd><p>Uses data in component_definition to create a new component type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>comp_desc</strong> (<a class="reference internal" href="#oedisi.componentframework.basic_component.ComponentDescription" title="oedisi.componentframework.basic_component.ComponentDescription"><em>ComponentDescription</em></a>) – Simplified component representation usually from a JSON file</p></li>
+<li><p><strong>type_checker</strong> (<em>function taking the type and value and returning a boolean</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>ComponentType from the description</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>BasicComponent(<a class="reference internal" href="#oedisi.componentframework.system_configuration.ComponentType" title="oedisi.componentframework.system_configuration.ComponentType">system_configuration.ComponentType</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="oedisi.componentframework.basic_component.component_from_json">
+<span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.basic_component.</span></span><span class="sig-name descname"><span class="pre">component_from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_checker</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.basic_component.component_from_json" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="oedisi.componentframework.basic_component.types_to_dict">
+<span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.basic_component.</span></span><span class="sig-name descname"><span class="pre">types_to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#oedisi.componentframework.system_configuration.AnnotatedType" title="oedisi.componentframework.system_configuration.AnnotatedType"><span class="pre">AnnotatedType</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.basic_component.types_to_dict" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-oedisi.componentframework.mock_component">
+<span id="oedisi-componentframework-mock-component-module"></span><h2>oedisi.componentframework.mock_component module<a class="headerlink" href="#module-oedisi.componentframework.mock_component" title="Link to this heading">¶</a></h2>
+<p>MockComponent and MockFederate allow you to instantiate a mock component
+with a specified set of inputs and outputs. The parameters dictionary
+should contain a list under “inputs” and “outputs”. During implementation,
+the value pi is passed around every second until t=100.</p>
+<p>MockComponent defines the ComponentType for a simple testing component.</p>
+<p>MockFederate defines the corresponding implementation.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="oedisi.componentframework.mock_component.MockComponent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.mock_component.</span></span><span class="sig-name descname"><span class="pre">MockComponent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.mock_component.MockComponent" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oedisi.componentframework.system_configuration.ComponentType" title="oedisi.componentframework.system_configuration.ComponentType"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComponentType</span></code></a></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="oedisi.componentframework.mock_component.MockComponent.dynamic_inputs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dynamic_inputs</span></span><a class="headerlink" href="#oedisi.componentframework.mock_component.MockComponent.dynamic_inputs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="oedisi.componentframework.mock_component.MockComponent.dynamic_outputs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dynamic_outputs</span></span><a class="headerlink" href="#oedisi.componentframework.mock_component.MockComponent.dynamic_outputs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="oedisi.componentframework.mock_component.MockComponent.execute_function">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">execute_function</span></span><a class="headerlink" href="#oedisi.componentframework.mock_component.MockComponent.execute_function" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oedisi.componentframework.mock_component.MockComponent.generate_helics_config">
+<span class="sig-name descname"><span class="pre">generate_helics_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.mock_component.MockComponent.generate_helics_config" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oedisi.componentframework.mock_component.MockComponent.generate_input_mapping">
+<span class="sig-name descname"><span class="pre">generate_input_mapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">links</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.mock_component.MockComponent.generate_input_mapping" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oedisi.componentframework.mock_component.MockComponent.process_parameters">
+<span class="sig-name descname"><span class="pre">process_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.mock_component.MockComponent.process_parameters" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="oedisi.componentframework.mock_component.MockFederate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.mock_component.</span></span><span class="sig-name descname"><span class="pre">MockFederate</span></span><a class="headerlink" href="#oedisi.componentframework.mock_component.MockFederate" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="oedisi.componentframework.mock_component.MockFederate.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.mock_component.MockFederate.run" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="oedisi.componentframework.mock_component.destroy_federate">
+<span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.mock_component.</span></span><span class="sig-name descname"><span class="pre">destroy_federate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fed</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.mock_component.destroy_federate" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="oedisi.componentframework.mock_component.get_default_value">
+<span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.mock_component.</span></span><span class="sig-name descname"><span class="pre">get_default_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HelicsDataType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.mock_component.get_default_value" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-oedisi.componentframework.system_configuration">
+<span id="oedisi-componentframework-system-configuration-module"></span><h2>oedisi.componentframework.system_configuration module<a class="headerlink" href="#module-oedisi.componentframework.system_configuration" title="Link to this heading">¶</a></h2>
+<p>Define common types and methods for configuration.</p>
+<p>The final method <cite>generate_runner_config</cite> brings together
+a <cite>WiringDiagram</cite> and a dictionary of <cite>ComponentTypes</cite> with
+optional comparison using a compatability checking function.</p>
+<p>The <cite>ComponentType</cite> defines the common interface that component
+configuration must implement. By default, this can be instantiated
+using <cite>basic_component.py</cite>.</p>
+<p>The <cite>WiringDiagram</cite> configuration contains a list of components
+and the links between them.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.AnnotatedType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.system_configuration.</span></span><span class="sig-name descname"><span class="pre">AnnotatedType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.system_configuration.AnnotatedType" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Represent the types of components and their interfaces.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.AnnotatedType.description">
+<span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.AnnotatedType.description" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.AnnotatedType.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.AnnotatedType.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.AnnotatedType.port_id">
+<span class="sig-name descname"><span class="pre">port_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.AnnotatedType.port_id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.AnnotatedType.port_name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">port_name</span></span><a class="headerlink" href="#oedisi.componentframework.system_configuration.AnnotatedType.port_name" title="Link to this definition">¶</a></dt>
+<dd><p>Get name of port (which is prepended with name in HELICS).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.AnnotatedType.type">
+<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.AnnotatedType.type" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.AnnotatedType.unit">
+<span class="sig-name descname"><span class="pre">unit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.AnnotatedType.unit" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Component">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.system_configuration.</span></span><span class="sig-name descname"><span class="pre">Component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">container_port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.system_configuration.Component" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>A component type in WiringDiagram, includes name, type, and initial parameters.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Component.container_port">
+<span class="sig-name descname"><span class="pre">container_port</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.Component.container_port" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Component.host">
+<span class="sig-name descname"><span class="pre">host</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.Component.host" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Component.image">
+<span class="sig-name descname"><span class="pre">image</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.Component.image" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Component.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.Component.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Component.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.Component.name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Component.parameters">
+<span class="sig-name descname"><span class="pre">parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.Component.parameters" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Component.port">
+<span class="sig-name descname"><span class="pre">port</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.system_configuration.Component.port" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Component.type">
+<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.Component.type" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Component.validate_image">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ValidationInfo</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.system_configuration.Component.validate_image" title="Link to this definition">¶</a></dt>
+<dd><p>Add latest tag to name if not specified.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.ComponentStruct">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.system_configuration.</span></span><span class="sig-name descname"><span class="pre">ComponentStruct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#oedisi.componentframework.system_configuration.Component" title="oedisi.componentframework.system_configuration.Component"><span class="pre">Component</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">links</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#oedisi.componentframework.system_configuration.Link" title="oedisi.componentframework.system_configuration.Link"><span class="pre">Link</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.system_configuration.ComponentStruct" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.ComponentStruct.component">
+<span class="sig-name descname"><span class="pre">component</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#oedisi.componentframework.system_configuration.Component" title="oedisi.componentframework.system_configuration.Component"><span class="pre">Component</span></a></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.ComponentStruct.component" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.ComponentStruct.links">
+<span class="sig-name descname"><span class="pre">links</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#oedisi.componentframework.system_configuration.Link" title="oedisi.componentframework.system_configuration.Link"><span class="pre">Link</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.ComponentStruct.links" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.ComponentStruct.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.ComponentStruct.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.ComponentType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.system_configuration.</span></span><span class="sig-name descname"><span class="pre">ComponentType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.system_configuration.ComponentType" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Abstract type for component configuration.</p>
+<p>The components define the main restrictions on how components
+can be configured. In the simplest case, the <cite>basic_copmonent</cite> function
+constructs a type from a <cite>ComponentDescription</cite> which just write files.
+There are no restrictions, so for example, one possibility is for the component type
+to interact with a web service.</p>
+<p>First, the class is initialized for each component using the
+name, parameters, and target directory. The federate name
+in HELICS should be the name initialized here.</p>
+<p>Then the <cite>dynamic_inputs</cite> and <cite>dynamic_outputs</cite> are used to check types and verify
+the links used between components. These can depend on the initialziation parameters.
+The <cite>dynamic_outputs</cite> should be initialized under the prefix <cite>name/</cite>.</p>
+<p>Next, <cite>generate_input_mapping</cite> is then called with a mapping
+of the variable names to the HELICS subscription keys. The individual
+federate should then use these names to subscribe at the right location.
+This can also be used for endpoint targets less often.</p>
+<p>Finally, the execute_function property defines the command
+to run the component.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.ComponentType.dynamic_inputs">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dynamic_inputs</span></span><a class="headerlink" href="#oedisi.componentframework.system_configuration.ComponentType.dynamic_inputs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.ComponentType.dynamic_outputs">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dynamic_outputs</span></span><a class="headerlink" href="#oedisi.componentframework.system_configuration.ComponentType.dynamic_outputs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.ComponentType.execute_function">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">execute_function</span></span><a class="headerlink" href="#oedisi.componentframework.system_configuration.ComponentType.execute_function" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.ComponentType.generate_input_mapping">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generate_input_mapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">links</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.system_configuration.ComponentType.generate_input_mapping" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Federate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.system_configuration.</span></span><span class="sig-name descname"><span class="pre">Federate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hostname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'localhost'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.system_configuration.Federate" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Federate configuration for HELICS CLI.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Federate.directory">
+<span class="sig-name descname"><span class="pre">directory</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.Federate.directory" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Federate.exec">
+<span class="sig-name descname"><span class="pre">exec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.Federate.exec" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Federate.hostname">
+<span class="sig-name descname"><span class="pre">hostname</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.Federate.hostname" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Federate.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.Federate.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Federate.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.Federate.name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Link">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.system_configuration.</span></span><span class="sig-name descname"><span class="pre">Link</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.system_configuration.Link" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Link.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.Link.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Link.source">
+<span class="sig-name descname"><span class="pre">source</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.Link.source" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Link.source_port">
+<span class="sig-name descname"><span class="pre">source_port</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.Link.source_port" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Link.target">
+<span class="sig-name descname"><span class="pre">target</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.Link.target" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Link.target_port">
+<span class="sig-name descname"><span class="pre">target_port</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.Link.target_port" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Port">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.system_configuration.</span></span><span class="sig-name descname"><span class="pre">Port</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.system_configuration.Port" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Port.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#oedisi.componentframework.system_configuration.Port" title="oedisi.componentframework.system_configuration.Port"><span class="pre">Port</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.system_configuration.Port.connect" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Port.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.Port.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Port.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.Port.name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.Port.port_name">
+<span class="sig-name descname"><span class="pre">port_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.Port.port_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.RunnerConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.system_configuration.</span></span><span class="sig-name descname"><span class="pre">RunnerConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">federates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#oedisi.componentframework.system_configuration.Federate" title="oedisi.componentframework.system_configuration.Federate"><span class="pre">Federate</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.system_configuration.RunnerConfig" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>HELICS running config for the full simulation.</p>
+<p class="rubric">Examples</p>
+<p>Save to JSON</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">... </span>   <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">),</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Run Simulation</p>
+<p><cite>$ helics run –path=filename</cite></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.RunnerConfig.federates">
+<span class="sig-name descname"><span class="pre">federates</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#oedisi.componentframework.system_configuration.Federate" title="oedisi.componentframework.system_configuration.Federate"><span class="pre">Federate</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.RunnerConfig.federates" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.RunnerConfig.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.RunnerConfig.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.RunnerConfig.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.RunnerConfig.name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.WiringDiagram">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.system_configuration.</span></span><span class="sig-name descname"><span class="pre">WiringDiagram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">components</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#oedisi.componentframework.system_configuration.Component" title="oedisi.componentframework.system_configuration.Component"><span class="pre">Component</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">links</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#oedisi.componentframework.system_configuration.Link" title="oedisi.componentframework.system_configuration.Link"><span class="pre">Link</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.system_configuration.WiringDiagram" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Cosimulation configuration. This may end up wrapped in another interface.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.WiringDiagram.add_component">
+<span class="sig-name descname"><span class="pre">add_component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#oedisi.componentframework.system_configuration.Component" title="oedisi.componentframework.system_configuration.Component"><span class="pre">Component</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.system_configuration.WiringDiagram.add_component" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.WiringDiagram.add_link">
+<span class="sig-name descname"><span class="pre">add_link</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#oedisi.componentframework.system_configuration.Link" title="oedisi.componentframework.system_configuration.Link"><span class="pre">Link</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.system_configuration.WiringDiagram.add_link" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.WiringDiagram.check_component_names">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_component_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">components</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.system_configuration.WiringDiagram.check_component_names" title="Link to this definition">¶</a></dt>
+<dd><p>Check that the components all have unique names.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.WiringDiagram.check_link_names">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_link_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">links</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ValidationInfo</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.system_configuration.WiringDiagram.check_link_names" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.WiringDiagram.clean_model">
+<span class="sig-name descname"><span class="pre">clean_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.system_configuration.WiringDiagram.clean_model" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.WiringDiagram.components">
+<span class="sig-name descname"><span class="pre">components</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#oedisi.componentframework.system_configuration.Component" title="oedisi.componentframework.system_configuration.Component"><span class="pre">Component</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.WiringDiagram.components" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.WiringDiagram.empty">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'unnamed'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.system_configuration.WiringDiagram.empty" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.WiringDiagram.links">
+<span class="sig-name descname"><span class="pre">links</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#oedisi.componentframework.system_configuration.Link" title="oedisi.componentframework.system_configuration.Link"><span class="pre">Link</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.WiringDiagram.links" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.WiringDiagram.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.WiringDiagram.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.WiringDiagram.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#oedisi.componentframework.system_configuration.WiringDiagram.name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.bad_compatability_checker">
+<span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.system_configuration.</span></span><span class="sig-name descname"><span class="pre">bad_compatability_checker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.system_configuration.bad_compatability_checker" title="Link to this definition">¶</a></dt>
+<dd><p>Basic compatability checker that says all types are compatible.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.generate_runner_config">
+<span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.system_configuration.</span></span><span class="sig-name descname"><span class="pre">generate_runner_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">wiring_diagram:</span> <span class="pre">~oedisi.componentframework.system_configuration.WiringDiagram,</span> <span class="pre">component_types:</span> <span class="pre">dict[str,</span> <span class="pre">type[~oedisi.componentframework.system_configuration.ComponentType]],</span> <span class="pre">compatibility_checker=&lt;function</span> <span class="pre">bad_compatability_checker&gt;,</span> <span class="pre">target_directory='.'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.system_configuration.generate_runner_config" title="Link to this definition">¶</a></dt>
+<dd><p>Brings together a <cite>WiringDiagram</cite> and a dictionary of <cite>ComponentTypes</cite>
+to create a helics run configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wiring_diagram</strong> (<a class="reference internal" href="#oedisi.componentframework.system_configuration.WiringDiagram" title="oedisi.componentframework.system_configuration.WiringDiagram"><em>WiringDiagram</em></a>) – Configuration describing components, parameters, and links between them</p></li>
+<li><p><strong>component_types</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Type</em><em>[</em><a class="reference internal" href="#oedisi.componentframework.system_configuration.ComponentType" title="oedisi.componentframework.system_configuration.ComponentType"><em>ComponentType</em></a><em>]</em><em>]</em>) – Dictionary for the wiring diagram component types
+to Python component types</p></li>
+<li><p><strong>compatibility_checker</strong> (<em>function</em><em> of </em><em>two types to the booleans</em>) – Each link uses the compatability_checker to ensure the link
+is between compatible types.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Configuration which can be used to run the cosimulation</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#oedisi.componentframework.system_configuration.RunnerConfig" title="oedisi.componentframework.system_configuration.RunnerConfig">RunnerConfig</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.get_federates_conn_info">
+<span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.system_configuration.</span></span><span class="sig-name descname"><span class="pre">get_federates_conn_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wiring_diagram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#oedisi.componentframework.system_configuration.WiringDiagram" title="oedisi.componentframework.system_configuration.WiringDiagram"><span class="pre">WiringDiagram</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.system_configuration.get_federates_conn_info" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.get_link_map">
+<span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.system_configuration.</span></span><span class="sig-name descname"><span class="pre">get_link_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wiring_diagram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#oedisi.componentframework.system_configuration.WiringDiagram" title="oedisi.componentframework.system_configuration.WiringDiagram"><span class="pre">WiringDiagram</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.system_configuration.get_link_map" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="oedisi.componentframework.system_configuration.initialize_federates">
+<span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.system_configuration.</span></span><span class="sig-name descname"><span class="pre">initialize_federates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wiring_diagram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#oedisi.componentframework.system_configuration.WiringDiagram" title="oedisi.componentframework.system_configuration.WiringDiagram"><span class="pre">WiringDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">component_types</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#oedisi.componentframework.system_configuration.ComponentType" title="oedisi.componentframework.system_configuration.ComponentType"><span class="pre">ComponentType</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compatability_checker</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#oedisi.componentframework.system_configuration.Federate" title="oedisi.componentframework.system_configuration.Federate"><span class="pre">Federate</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#oedisi.componentframework.system_configuration.initialize_federates" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize all the federates.</p>
+</dd></dl>
+
+</section>
+<section id="module-oedisi.componentframework.wiring_diagram_utils">
+<span id="oedisi-componentframework-wiring-diagram-utils-module"></span><h2>oedisi.componentframework.wiring_diagram_utils module<a class="headerlink" href="#module-oedisi.componentframework.wiring_diagram_utils" title="Link to this heading">¶</a></h2>
+<p>Wiring Diagram utilities.</p>
+<p>Wiring diagrams can be hard to manage in their final list based form.
+Some utilities plot, and future additions include nested wiring
+diagram composition and a programmatic interface.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="oedisi.componentframework.wiring_diagram_utils.get_graph">
+<span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.wiring_diagram_utils.</span></span><span class="sig-name descname"><span class="pre">get_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wiring_diagram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#oedisi.componentframework.system_configuration.WiringDiagram" title="oedisi.componentframework.system_configuration.WiringDiagram"><span class="pre">WiringDiagram</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.wiring_diagram_utils.get_graph" title="Link to this definition">¶</a></dt>
+<dd><p>Get networkx graph representation of wiring_diagram.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="oedisi.componentframework.wiring_diagram_utils.get_graph_renderer">
+<span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.wiring_diagram_utils.</span></span><span class="sig-name descname"><span class="pre">get_graph_renderer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">G</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.wiring_diagram_utils.get_graph_renderer" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="oedisi.componentframework.wiring_diagram_utils.plot_graph_bokeh">
+<span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.wiring_diagram_utils.</span></span><span class="sig-name descname"><span class="pre">plot_graph_bokeh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wiring_diagram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#oedisi.componentframework.system_configuration.WiringDiagram" title="oedisi.componentframework.system_configuration.WiringDiagram"><span class="pre">WiringDiagram</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.wiring_diagram_utils.plot_graph_bokeh" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="oedisi.componentframework.wiring_diagram_utils.plot_graph_matplotlib">
+<span class="sig-prename descclassname"><span class="pre">oedisi.componentframework.wiring_diagram_utils.</span></span><span class="sig-name descname"><span class="pre">plot_graph_matplotlib</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wiring_diagram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#oedisi.componentframework.system_configuration.WiringDiagram" title="oedisi.componentframework.system_configuration.WiringDiagram"><span class="pre">WiringDiagram</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oedisi.componentframework.wiring_diagram_utils.plot_graph_matplotlib" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-oedisi.componentframework">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-oedisi.componentframework" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022, NREL
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">oedisi.componentframework package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-oedisi.componentframework.basic_component">oedisi.componentframework.basic_component module</a><ul>
+<li><a class="reference internal" href="#oedisi.componentframework.basic_component.ComponentDescription"><code class="docutils literal notranslate"><span class="pre">ComponentDescription</span></code></a><ul>
+<li><a class="reference internal" href="#oedisi.componentframework.basic_component.ComponentDescription.directory"><code class="docutils literal notranslate"><span class="pre">ComponentDescription.directory</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.basic_component.ComponentDescription.dynamic_inputs"><code class="docutils literal notranslate"><span class="pre">ComponentDescription.dynamic_inputs</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.basic_component.ComponentDescription.dynamic_outputs"><code class="docutils literal notranslate"><span class="pre">ComponentDescription.dynamic_outputs</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.basic_component.ComponentDescription.execute_function"><code class="docutils literal notranslate"><span class="pre">ComponentDescription.execute_function</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.basic_component.ComponentDescription.model_config"><code class="docutils literal notranslate"><span class="pre">ComponentDescription.model_config</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.basic_component.ComponentDescription.static_inputs"><code class="docutils literal notranslate"><span class="pre">ComponentDescription.static_inputs</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#oedisi.componentframework.basic_component.basic_component"><code class="docutils literal notranslate"><span class="pre">basic_component()</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.basic_component.component_from_json"><code class="docutils literal notranslate"><span class="pre">component_from_json()</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.basic_component.types_to_dict"><code class="docutils literal notranslate"><span class="pre">types_to_dict()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-oedisi.componentframework.mock_component">oedisi.componentframework.mock_component module</a><ul>
+<li><a class="reference internal" href="#oedisi.componentframework.mock_component.MockComponent"><code class="docutils literal notranslate"><span class="pre">MockComponent</span></code></a><ul>
+<li><a class="reference internal" href="#oedisi.componentframework.mock_component.MockComponent.dynamic_inputs"><code class="docutils literal notranslate"><span class="pre">MockComponent.dynamic_inputs</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.mock_component.MockComponent.dynamic_outputs"><code class="docutils literal notranslate"><span class="pre">MockComponent.dynamic_outputs</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.mock_component.MockComponent.execute_function"><code class="docutils literal notranslate"><span class="pre">MockComponent.execute_function</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.mock_component.MockComponent.generate_helics_config"><code class="docutils literal notranslate"><span class="pre">MockComponent.generate_helics_config()</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.mock_component.MockComponent.generate_input_mapping"><code class="docutils literal notranslate"><span class="pre">MockComponent.generate_input_mapping()</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.mock_component.MockComponent.process_parameters"><code class="docutils literal notranslate"><span class="pre">MockComponent.process_parameters()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#oedisi.componentframework.mock_component.MockFederate"><code class="docutils literal notranslate"><span class="pre">MockFederate</span></code></a><ul>
+<li><a class="reference internal" href="#oedisi.componentframework.mock_component.MockFederate.run"><code class="docutils literal notranslate"><span class="pre">MockFederate.run()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#oedisi.componentframework.mock_component.destroy_federate"><code class="docutils literal notranslate"><span class="pre">destroy_federate()</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.mock_component.get_default_value"><code class="docutils literal notranslate"><span class="pre">get_default_value()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-oedisi.componentframework.system_configuration">oedisi.componentframework.system_configuration module</a><ul>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.AnnotatedType"><code class="docutils literal notranslate"><span class="pre">AnnotatedType</span></code></a><ul>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.AnnotatedType.description"><code class="docutils literal notranslate"><span class="pre">AnnotatedType.description</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.AnnotatedType.model_config"><code class="docutils literal notranslate"><span class="pre">AnnotatedType.model_config</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.AnnotatedType.port_id"><code class="docutils literal notranslate"><span class="pre">AnnotatedType.port_id</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.AnnotatedType.port_name"><code class="docutils literal notranslate"><span class="pre">AnnotatedType.port_name</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.AnnotatedType.type"><code class="docutils literal notranslate"><span class="pre">AnnotatedType.type</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.AnnotatedType.unit"><code class="docutils literal notranslate"><span class="pre">AnnotatedType.unit</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Component"><code class="docutils literal notranslate"><span class="pre">Component</span></code></a><ul>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Component.container_port"><code class="docutils literal notranslate"><span class="pre">Component.container_port</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Component.host"><code class="docutils literal notranslate"><span class="pre">Component.host</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Component.image"><code class="docutils literal notranslate"><span class="pre">Component.image</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Component.model_config"><code class="docutils literal notranslate"><span class="pre">Component.model_config</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Component.name"><code class="docutils literal notranslate"><span class="pre">Component.name</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Component.parameters"><code class="docutils literal notranslate"><span class="pre">Component.parameters</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Component.port"><code class="docutils literal notranslate"><span class="pre">Component.port()</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Component.type"><code class="docutils literal notranslate"><span class="pre">Component.type</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Component.validate_image"><code class="docutils literal notranslate"><span class="pre">Component.validate_image()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.ComponentStruct"><code class="docutils literal notranslate"><span class="pre">ComponentStruct</span></code></a><ul>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.ComponentStruct.component"><code class="docutils literal notranslate"><span class="pre">ComponentStruct.component</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.ComponentStruct.links"><code class="docutils literal notranslate"><span class="pre">ComponentStruct.links</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.ComponentStruct.model_config"><code class="docutils literal notranslate"><span class="pre">ComponentStruct.model_config</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.ComponentType"><code class="docutils literal notranslate"><span class="pre">ComponentType</span></code></a><ul>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.ComponentType.dynamic_inputs"><code class="docutils literal notranslate"><span class="pre">ComponentType.dynamic_inputs</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.ComponentType.dynamic_outputs"><code class="docutils literal notranslate"><span class="pre">ComponentType.dynamic_outputs</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.ComponentType.execute_function"><code class="docutils literal notranslate"><span class="pre">ComponentType.execute_function</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.ComponentType.generate_input_mapping"><code class="docutils literal notranslate"><span class="pre">ComponentType.generate_input_mapping()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Federate"><code class="docutils literal notranslate"><span class="pre">Federate</span></code></a><ul>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Federate.directory"><code class="docutils literal notranslate"><span class="pre">Federate.directory</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Federate.exec"><code class="docutils literal notranslate"><span class="pre">Federate.exec</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Federate.hostname"><code class="docutils literal notranslate"><span class="pre">Federate.hostname</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Federate.model_config"><code class="docutils literal notranslate"><span class="pre">Federate.model_config</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Federate.name"><code class="docutils literal notranslate"><span class="pre">Federate.name</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Link"><code class="docutils literal notranslate"><span class="pre">Link</span></code></a><ul>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Link.model_config"><code class="docutils literal notranslate"><span class="pre">Link.model_config</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Link.source"><code class="docutils literal notranslate"><span class="pre">Link.source</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Link.source_port"><code class="docutils literal notranslate"><span class="pre">Link.source_port</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Link.target"><code class="docutils literal notranslate"><span class="pre">Link.target</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Link.target_port"><code class="docutils literal notranslate"><span class="pre">Link.target_port</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Port"><code class="docutils literal notranslate"><span class="pre">Port</span></code></a><ul>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Port.connect"><code class="docutils literal notranslate"><span class="pre">Port.connect()</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Port.model_config"><code class="docutils literal notranslate"><span class="pre">Port.model_config</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Port.name"><code class="docutils literal notranslate"><span class="pre">Port.name</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.Port.port_name"><code class="docutils literal notranslate"><span class="pre">Port.port_name</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.RunnerConfig"><code class="docutils literal notranslate"><span class="pre">RunnerConfig</span></code></a><ul>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.RunnerConfig.federates"><code class="docutils literal notranslate"><span class="pre">RunnerConfig.federates</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.RunnerConfig.model_config"><code class="docutils literal notranslate"><span class="pre">RunnerConfig.model_config</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.RunnerConfig.name"><code class="docutils literal notranslate"><span class="pre">RunnerConfig.name</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.WiringDiagram"><code class="docutils literal notranslate"><span class="pre">WiringDiagram</span></code></a><ul>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.WiringDiagram.add_component"><code class="docutils literal notranslate"><span class="pre">WiringDiagram.add_component()</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.WiringDiagram.add_link"><code class="docutils literal notranslate"><span class="pre">WiringDiagram.add_link()</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.WiringDiagram.check_component_names"><code class="docutils literal notranslate"><span class="pre">WiringDiagram.check_component_names()</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.WiringDiagram.check_link_names"><code class="docutils literal notranslate"><span class="pre">WiringDiagram.check_link_names()</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.WiringDiagram.clean_model"><code class="docutils literal notranslate"><span class="pre">WiringDiagram.clean_model()</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.WiringDiagram.components"><code class="docutils literal notranslate"><span class="pre">WiringDiagram.components</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.WiringDiagram.empty"><code class="docutils literal notranslate"><span class="pre">WiringDiagram.empty()</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.WiringDiagram.links"><code class="docutils literal notranslate"><span class="pre">WiringDiagram.links</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.WiringDiagram.model_config"><code class="docutils literal notranslate"><span class="pre">WiringDiagram.model_config</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.WiringDiagram.name"><code class="docutils literal notranslate"><span class="pre">WiringDiagram.name</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.bad_compatability_checker"><code class="docutils literal notranslate"><span class="pre">bad_compatability_checker()</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.generate_runner_config"><code class="docutils literal notranslate"><span class="pre">generate_runner_config()</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.get_federates_conn_info"><code class="docutils literal notranslate"><span class="pre">get_federates_conn_info()</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.get_link_map"><code class="docutils literal notranslate"><span class="pre">get_link_map()</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.system_configuration.initialize_federates"><code class="docutils literal notranslate"><span class="pre">initialize_federates()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-oedisi.componentframework.wiring_diagram_utils">oedisi.componentframework.wiring_diagram_utils module</a><ul>
+<li><a class="reference internal" href="#oedisi.componentframework.wiring_diagram_utils.get_graph"><code class="docutils literal notranslate"><span class="pre">get_graph()</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.wiring_diagram_utils.get_graph_renderer"><code class="docutils literal notranslate"><span class="pre">get_graph_renderer()</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.wiring_diagram_utils.plot_graph_bokeh"><code class="docutils literal notranslate"><span class="pre">plot_graph_bokeh()</span></code></a></li>
+<li><a class="reference internal" href="#oedisi.componentframework.wiring_diagram_utils.plot_graph_matplotlib"><code class="docutils literal notranslate"><span class="pre">plot_graph_matplotlib()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-oedisi.componentframework">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>
