@@ -114,7 +114,7 @@ class HELICSFederateConfig(BaseModel):
     def from_multicontainer(
         cls,
         broker_config: BrokerConfig,
-        name: str,
+        params: dict | None = None,
         core_type: str = "zmq",
         **kwargs,
     ) -> HELICSFederateConfig:
@@ -122,41 +122,55 @@ class HELICSFederateConfig(BaseModel):
 
         This is a convenience method for components running in Docker/Kubernetes
         that receive BrokerConfig from the broker service's /run endpoint.
+        Supports subclasses of HELICSFederateConfig with additional parameters.
 
         Parameters
         ----------
         broker_config :
             REST API broker configuration from /run endpoint.
-        name :
-            Federate name (typically from static_inputs.json).
+        params :
+            Component parameters from static_inputs.json. If provided,
+            must contain 'name' key. All other keys are passed to the config.
         core_type :
             HELICS core type, defaults to "zmq".
         **kwargs :
-            Additional federate config options (core_name, core_init_string, etc).
+            Additional config options (overrides params dict if both provided).
 
         Returns
         -------
         HELICSFederateConfig
-            Complete federate configuration ready to apply.
+            Complete federate configuration ready to apply. If called on a
+            subclass, returns an instance of that subclass.
 
         Examples
         --------
-        >>> # In component server.py /run endpoint
+        >>> # Basic usage with params dict
         >>> with open("static_inputs.json") as f:
         ...     params = json.load(f)
         >>> config = HELICSFederateConfig.from_multicontainer(
         ...     broker_config=broker_config,
-        ...     name=params["name"]
+        ...     params=params
         ... )
         >>> fedinfo = h.helicsCreateFederateInfo()
         >>> config.apply_to_federate_info(fedinfo)
+
+        >>> # With custom subclass
+        >>> class MyComponentConfig(HELICSFederateConfig):
+        ...     my_param: str
+        >>> config = MyComponentConfig.from_multicontainer(
+        ...     broker_config=broker_config,
+        ...     params={"name": "comp1", "my_param": "value"}
+        ... )
         """
-        return cls(
-            name=name,
-            core_type=core_type,
-            broker=HELICSBrokerConfig.from_rest_config(broker_config),
-            **kwargs,
-        )
+        if params is not None:
+            # Merge params with kwargs, kwargs take precedence
+            merged = {**params, **kwargs}
+            merged.setdefault("core_type", core_type)
+        else:
+            merged = {"core_type": core_type, **kwargs}
+
+        merged["broker"] = HELICSBrokerConfig.from_rest_config(broker_config)
+        return cls(**merged)
 
 
 class SharedFederateConfig(BaseModel):
