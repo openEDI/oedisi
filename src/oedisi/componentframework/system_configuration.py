@@ -81,25 +81,31 @@ class ComponentType(ABC):
 
     @abstractmethod
     def generate_input_mapping(self, links: dict[str, str]):
+        """Generate input mapping from link target ports to HELICS subscription keys."""
         pass
 
     @property
     @abstractmethod
     def execute_function(self):
+        """Command to execute the component federate."""
         pass
 
     @property
     @abstractmethod
     def dynamic_inputs(self):
+        """Dictionary of dynamic input port names to types."""
         pass
 
     @property
     @abstractmethod
     def dynamic_outputs(self):
+        """Dictionary of dynamic output port names to types."""
         pass
 
 
 class Link(BaseModel):
+    """Connection between component ports in wiring diagram."""
+
     source: str
     source_port: str
     target: str
@@ -107,10 +113,13 @@ class Link(BaseModel):
 
 
 class Port(BaseModel):
+    """Port identifier for creating links between components."""
+
     name: str
     port_name: str
 
     def connect(self, port: "Port"):
+        """Create link from this port to target port."""
         return Link(
             source=self.name,
             source_port=self.port_name,
@@ -130,6 +139,7 @@ class Component(BaseModel):
     parameters: dict[str, Any]
 
     def port(self, port_name: str):
+        """Create Port object for connecting this component."""
         return Port(name=self.name, port_name=port_name)
 
     @field_validator("image", mode="before")
@@ -142,6 +152,8 @@ class Component(BaseModel):
 
 
 class ComponentStruct(BaseModel):
+    """Component with its associated links for multi-container configuration."""
+
     component: Component
     links: list[Link]
 
@@ -154,6 +166,7 @@ class WiringDiagram(BaseModel):
     links: list[Link]
 
     def clean_model(self, target_directory="."):
+        """Remove component directories, log files, and stray broker processes."""
         for component in self.components:
             to_delete = os.path.join(target_directory, component.name)
             log_file = os.path.join(target_directory, component.name + ".log")
@@ -170,7 +183,6 @@ class WiringDiagram(BaseModel):
             else:
                 os.remove(log_file)
 
-        # TODO: Check for any processes using the HELICS port and kill them too
         for proc in psutil.process_iter():
             if proc.name() == "helics_broker":
                 proc.kill()
@@ -186,6 +198,7 @@ class WiringDiagram(BaseModel):
     @field_validator("links")
     @classmethod
     def check_link_names(cls, links, info: ValidationInfo):
+        """Validate that link source and target components exist."""
         if "components" in info.data:
             components = info.data["components"]
             names = set(map(lambda c: c.name, components))
@@ -194,13 +207,16 @@ class WiringDiagram(BaseModel):
         return links
 
     def add_component(self, c: Component):
+        """Add component to wiring diagram."""
         self.components.append(c)
 
     def add_link(self, link: Link):
+        """Add link to wiring diagram."""
         self.links.append(link)
 
     @classmethod
     def empty(cls, name="unnamed"):
+        """Create empty wiring diagram with no components or links."""
         return cls(name=name, components=[], links=[])
 
 
@@ -214,6 +230,7 @@ class Federate(BaseModel):
 
 
 def get_federates_conn_info(wiring_diagram: WiringDiagram):
+    """Get connection information string for all federates."""
     data = ""
     for component in wiring_diagram.components:
         data += f" {component.host} {component.port}"
@@ -274,6 +291,7 @@ def initialize_federates(
 
 
 def get_link_map(wiring_diagram: WiringDiagram):
+    """Create mapping from component names to their incoming links."""
     link_map = defaultdict(list)
     for link in wiring_diagram.links:
         link_map[link.target].append(link)
@@ -300,7 +318,7 @@ class RunnerConfig(BaseModel):
 
 
 def bad_compatability_checker(type1, type2):
-    """Basic compatability checker that says all types are compatible."""
+    """Return True for all type pairs (no type checking)."""
     return True
 
 
@@ -310,8 +328,7 @@ def generate_runner_config(
     compatibility_checker=bad_compatability_checker,
     target_directory=".",
 ):
-    """Brings together a `WiringDiagram` and a dictionary of `ComponentTypes`
-    to create a helics run configuration.
+    """Create HELICS run configuration from wiring diagram and component types.
 
     Parameters
     ----------

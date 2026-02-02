@@ -1,17 +1,18 @@
+"""Power system data types for OEDISI measurements and control."""
+
 from __future__ import annotations
 import datetime
 from enum import Enum
 from pydantic import model_validator, BaseModel, RootModel, Field
 
 ### Supporting Functions ###
-# TODO: Connect with CIM values
-
 
 Complex = tuple[float, float]
 
 
 class StateArray(BaseModel):
-    """
+    """Base class for power system equipment state arrays.
+
     Extended by classes:
         "SwitchStates",
         "CapacitorStates",
@@ -25,19 +26,26 @@ class StateArray(BaseModel):
 
 
 class SwitchStates(StateArray):
+    """Switch state data for power system equipment."""
+
     pass
 
 
 class CapacitorStates(StateArray):
+    """Capacitor state data for power system equipment."""
+
     pass
 
 
 class RegulatorStates(StateArray):
+    """Voltage regulator state data for power system equipment."""
+
     pass
 
 
 class CostArray(BaseModel):
-    """
+    """Base class for cost-related data arrays.
+
     Extended by classes:
         "RealCostFunctions",
         "ReactiveCostFunctions",
@@ -54,27 +62,38 @@ class CostArray(BaseModel):
 
 
 class RealCostFunctions(CostArray):
+    """Real power cost functions for equipment."""
+
     pass
 
 
 class ReactiveCostFunctions(CostArray):
+    """Reactive power cost functions for equipment."""
+
     pass
 
 
 class RealWholesalePrices(CostArray):
+    """Real power wholesale price data for equipment."""
+
     pass
 
 
 class ReactiveWholesalePrices(CostArray):
+    """Reactive power wholesale price data for equipment."""
+
     pass
 
 
 class OperationalCosts(CostArray):
+    """Operational cost data for equipment."""
+
     pass
 
 
 class MeasurementArray(BaseModel):
-    """
+    """Base class for measurement data arrays.
+
     Extended by classes:
         "BusArray",
         "EquipmentArray",
@@ -90,136 +109,151 @@ class MeasurementArray(BaseModel):
 
 
 class BusArray(MeasurementArray):
-    """
-    Extended by classes:
-        "VoltagesMagnitude",
-        "VoltagesAngle",
-        "VoltagesReal",
-        "VoltagesImaginary".
-    """
+    """Measurements for or at power system buses (primarily voltages)."""
 
     pass
 
 
 class EquipmentArray(MeasurementArray):
-    """
-    Extended by classes:
-        "SolarIrradiances",
-        "Temperatures",
-        "WindSpeeds",
-        "StatesOfCharge",
-        "CurrentsMagnitude",
-        "CurrentsAngle",
-        "CurrentsReal",
-        "CurrentsImaginary",
-        "ImpedanceMagnitude",
-        "ImpedanceAngle",
-        "ImpedanceReal",
-        "ImpedanceImaginary",.
-    """
+    """Measurements at equipment nodes (currents, impedances, environmental)."""
 
     pass
 
 
 class EquipmentNodeArray(MeasurementArray):
-    """
-    Primary key is ids + equipment_ids.
+    """Power measurements at equipment nodes (primary key: ids + equipment_ids).
 
-    - ids corresponding node id, so "113.1", "113.2", "113.3"
-    - equipment_id corresponds to PVSystem.113
-
-    Extended by classes:
-        "PowersMagnitude",
-        "PowersAngle",
-        "PowersReal",
-        "PowersImaginary",
-
+    Primary key is ids + equipment_ids where ids correspond to node ids
+    (e.g., "113.1", "113.2", "113.3") and equipment_ids correspond to
+    equipment identifiers (e.g., PVSystem.113).
     """
 
     equipment_ids: list[str]
 
 
 class VoltagesMagnitude(BusArray):
+    """Voltage magnitude measurements at buses."""
+
     units: str = "V"
 
 
 class VoltagesAngle(BusArray):
+    """Voltage angle measurements at buses."""
+
     units: str = "radians"
 
 
 class VoltagesReal(BusArray):
+    """Real component of voltage measurements at buses."""
+
     units: str = "V"
 
 
 class VoltagesImaginary(BusArray):
+    """Imaginary component of voltage measurements at buses."""
+
     units: str = "V"
 
 
 class CurrentsMagnitude(EquipmentArray):
+    """Current magnitude measurements at equipment."""
+
     units: str = "A"
 
 
 class CurrentsAngle(EquipmentArray):
+    """Current angle measurements at equipment."""
+
     units: str = "radians"
 
 
 class CurrentsReal(EquipmentArray):
+    """Real component of current measurements at equipment."""
+
     units: str = "A"
 
 
 class CurrentsImaginary(EquipmentArray):
+    """Imaginary component of current measurements at equipment."""
+
     units: str = "A"
 
 
 class ImpedanceReal(EquipmentArray):
+    """Real component of impedance measurements at equipment."""
+
     units: str = "Ohm"
 
 
 class ImpedanceImaginary(EquipmentArray):
+    """Imaginary component of impedance measurements at equipment."""
+
     units: str = "Ohm"
 
 
 class ImpedanceMagnitude(EquipmentArray):
+    """Impedance magnitude measurements at equipment."""
+
     units: str = "Ohm"
 
 
 class ImpedanceAngle(EquipmentArray):
+    """Impedance angle measurements at equipment."""
+
     units: str = "radians"
 
 
 class PowersMagnitude(EquipmentNodeArray):
+    """Power magnitude (apparent power) measurements at equipment nodes."""
+
     units: str = "kVA"
 
 
 class PowersAngle(EquipmentNodeArray):
+    """Power angle measurements at equipment nodes."""
+
     units: str = "radians"
 
 
 class PowersReal(EquipmentNodeArray):
+    """Real power measurements at equipment nodes."""
+
     units: str = "kW"
 
 
 class PowersImaginary(EquipmentNodeArray):
+    """Reactive power measurements at equipment nodes."""
+
     units: str = "kVAR"
 
 
 class SolarIrradiances(EquipmentArray):
+    """Solar irradiance measurements at equipment."""
+
     units: str = "kW/m^2"
 
 
 class Temperatures(EquipmentArray):
+    """Temperature measurements at equipment."""
+
     units: str = "C"
 
 
 class WindSpeeds(EquipmentArray):
+    """Wind speed measurements at equipment."""
+
     units: str = "m/s"
 
 
 class StatesOfCharge(EquipmentArray):
+    """State of charge measurements for energy storage equipment."""
+
     units: str = "percent"
 
 
 class Topology(BaseModel):
+    """Power system network topology with admittance and injection data."""
+
     admittance: AdmittanceSparse | AdmittanceMatrix
     injections: Injection
     incidences: IncidenceList | None = None
@@ -229,27 +263,37 @@ class Topology(BaseModel):
 
 
 class Incidence(BaseModel):
+    """Incidence relationships between equipment in the power system."""
+
     from_equipment: list[str]
     to_equipment: list[str]
     equipment_type: list[str] | None = None
 
 
 class IncidenceList(Incidence):
+    """Incidence relationships with associated identifiers."""
+
     ids: list[str]
 
 
 class AdmittanceSparse(Incidence):
+    """Sparse representation of network admittance matrix."""
+
     admittance_list: list[Complex]
     units: str = "S"
 
 
 class AdmittanceMatrix(BaseModel):
+    """Dense representation of network admittance matrix."""
+
     admittance_matrix: list[list[Complex]]
     ids: list[str]
     units: str = "S"
 
 
 class Injection(BaseModel):
+    """Current and power injections at network nodes."""
+
     # Shouldn't these be equipment arrays?
     current_real: CurrentsReal = Field(
         default_factory=lambda: CurrentsReal(values=[], ids=[], units="A")

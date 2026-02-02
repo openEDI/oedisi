@@ -1,3 +1,5 @@
+"""Common types and constants for OEDISI components."""
+
 from pydantic import BaseModel
 from enum import Enum
 import warnings
@@ -10,11 +12,15 @@ KUBERNETES_SERVICE_PREFIX = "svc"
 
 
 class DefaultFileNames(str, Enum):
+    """Standard filenames for component configuration files."""
+
     INPUT_MAPPING = "input_mapping.json"
     STATIC_INPUTS = "static_inputs.json"
 
 
 class BrokerConfig(BaseModel):
+    """Configuration for HELICS broker connection."""
+
     broker_port: int = 23404
     broker_ip: str = "127.0.0.1"
     api_port: int = 12345
@@ -23,6 +29,8 @@ class BrokerConfig(BaseModel):
 
 
 class HealthCheck(BaseModel):
+    """Health check response for component status."""
+
     hostname: str
     host_ip: str
 
@@ -41,5 +49,7 @@ class HeathCheck(HealthCheck):
 
 
 class ServerReply(BaseModel):
+    """Standard server response message."""
+
     detail: str
     action: str | None = None

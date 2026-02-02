@@ -1,4 +1,4 @@
-"""Metrics for comparing voltages and power flows from algorithms:
+"""Metrics for comparing voltages and power flows from algorithms.
 
 For voltages:
 - Mean absolute relative error.
