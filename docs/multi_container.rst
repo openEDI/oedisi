@@ -37,7 +37,7 @@ A minimal example is provided below
     import os
 
     from oedisi.componentframework.system_configuration import ComponentStruct
-    from oedisi.types.common import ServerReply, HeathCheck, DefaultFileNames
+    from oedisi.types.common import ServerReply, HealthCheck, DefaultFileNames
 
     app = FastAPI()
 
@@ -46,7 +46,7 @@ A minimal example is provided below
     def read_root():
         hostname = socket.gethostname()
         host_ip = socket.gethostbyname(hostname)
-        response = HeathCheck(
+        response = HealthCheck(
             hostname=hostname,
             host_ip=host_ip
         ).dict()

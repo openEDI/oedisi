@@ -9,7 +9,7 @@ from fastapi import FastAPI, BackgroundTasks, HTTPException
 from fastapi.responses import JSONResponse
 
 from oedisi.componentframework.system_configuration import ComponentStruct
-from oedisi.types.common import ServerReply, HeathCheck, DefaultFileNames
+from oedisi.types.common import ServerReply, HealthCheck, DefaultFileNames
 from oedisi.types.common import BrokerConfig
 
 from component2 import TestFederate
@@ -32,7 +32,7 @@ def read_root():
     finally:
         s.close()
 
-    response = HeathCheck(hostname=hostname, host_ip=host_ip).model_dump()
+    response = HealthCheck(hostname=hostname, host_ip=host_ip).model_dump()
     return JSONResponse(response, 200)
 
 
