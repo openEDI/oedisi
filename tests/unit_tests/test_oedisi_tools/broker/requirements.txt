@@ -1,6 +1,6 @@
 helics
 # helics-apps
-oedisi>=2.0.2,<3
+oedisi>=3,<4
 pyyaml
 fastapi
 uvicorn
