@@ -110,6 +110,54 @@ class HELICSFederateConfig(BaseModel):
             if self.broker.key is not None:
                 info.broker_key = self.broker.key
 
+    @classmethod
+    def from_multicontainer(
+        cls,
+        broker_config: BrokerConfig,
+        name: str,
+        core_type: str = "zmq",
+        **kwargs,
+    ) -> HELICSFederateConfig:
+        """Create federate config for multicontainer deployments.
+
+        This is a convenience method for components running in Docker/Kubernetes
+        that receive BrokerConfig from the broker service's /run endpoint.
+
+        Parameters
+        ----------
+        broker_config :
+            REST API broker configuration from /run endpoint.
+        name :
+            Federate name (typically from static_inputs.json).
+        core_type :
+            HELICS core type, defaults to "zmq".
+        **kwargs :
+            Additional federate config options (core_name, core_init_string, etc).
+
+        Returns
+        -------
+        HELICSFederateConfig
+            Complete federate configuration ready to apply.
+
+        Examples
+        --------
+        >>> # In component server.py /run endpoint
+        >>> with open("static_inputs.json") as f:
+        ...     params = json.load(f)
+        >>> config = HELICSFederateConfig.from_multicontainer(
+        ...     broker_config=broker_config,
+        ...     name=params["name"]
+        ... )
+        >>> fedinfo = h.helicsCreateFederateInfo()
+        >>> config.apply_to_federate_info(fedinfo)
+        """
+        return cls(
+            name=name,
+            core_type=core_type,
+            broker=HELICSBrokerConfig.from_rest_config(broker_config),
+            **kwargs,
+        )
+
 
 class SharedFederateConfig(BaseModel):
     """Shared federate settings at the WiringDiagram level.
