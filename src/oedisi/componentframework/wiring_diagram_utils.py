@@ -26,6 +26,7 @@ def get_graph(wiring_diagram: WiringDiagram):
 
 
 def plot_graph_matplotlib(wiring_diagram: WiringDiagram):
+    """Plot wiring diagram using matplotlib with spring layout."""
     import matplotlib.pyplot as plt
     import networkx as nx
 
@@ -53,6 +54,7 @@ def plot_graph_matplotlib(wiring_diagram: WiringDiagram):
 
 
 def get_graph_renderer(G):  # noqa: N803
+    """Create bokeh graph renderer with styling for interactive visualization."""
     import networkx as nx
     from bokeh.plotting import from_networkx
     from bokeh.models import Circle, EdgesOnly, MultiLine
@@ -80,6 +82,7 @@ def get_graph_renderer(G):  # noqa: N803
 
 
 def plot_graph_bokeh(wiring_diagram: WiringDiagram):
+    """Plot wiring diagram using bokeh for interactive visualization."""
     from bokeh.models import (
         BoxSelectTool,
         HoverTool,

@@ -34,17 +34,19 @@ class ComponentDescription(BaseModel):
 
 
 def types_to_dict(types: list[AnnotatedType]):
+    """Convert list of annotated types to dictionary keyed by port name."""
     return {t.port_name: t for t in types}
 
 
 def component_from_json(filepath, type_checker):
+    """Load component description from JSON file and create component type."""
     with open(filepath) as f:
         comp_desc = ComponentDescription.model_validate(json.load(f))
     return basic_component(comp_desc, type_checker)
 
 
 def basic_component(comp_desc: ComponentDescription, type_checker):
-    """Uses data in component_definition to create a new component type.
+    """Create a new component type from component definition data.
 
     Parameters
     ----------
