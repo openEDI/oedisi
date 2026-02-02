@@ -1,6 +1,4 @@
-"""
-Generate basic component from description JSON
-"""
+"""Generate basic component from description JSON."""
 
 import json
 import os
@@ -8,11 +6,11 @@ from shutil import copytree
 from . import system_configuration
 from .system_configuration import AnnotatedType
 from pydantic import BaseModel
-from typing import List, Any, Dict
+from typing import Any
 
 
 class ComponentDescription(BaseModel):
-    """Component description for simple ComponentType
+    """Component description for simple ComponentType.
 
     Parameters
     ----------
@@ -30,12 +28,12 @@ class ComponentDescription(BaseModel):
 
     directory: str
     execute_function: str
-    static_inputs: List[AnnotatedType]
-    dynamic_inputs: List[AnnotatedType]
-    dynamic_outputs: List[AnnotatedType]
+    static_inputs: list[AnnotatedType]
+    dynamic_inputs: list[AnnotatedType]
+    dynamic_outputs: list[AnnotatedType]
 
 
-def types_to_dict(types: List[AnnotatedType]):
+def types_to_dict(types: list[AnnotatedType]):
     return {t.port_name: t for t in types}
 
 
@@ -46,7 +44,7 @@ def component_from_json(filepath, type_checker):
 
 
 def basic_component(comp_desc: ComponentDescription, type_checker):
-    """Uses data in component_definition to create a new component type
+    """Uses data in component_definition to create a new component type.
 
     Parameters
     ----------
@@ -70,7 +68,7 @@ def basic_component(comp_desc: ComponentDescription, type_checker):
         def __init__(
             self,
             name,
-            parameters: Dict[str, Any],
+            parameters: dict[str, Any],
             directory: str,
             host: str,
             port: int,

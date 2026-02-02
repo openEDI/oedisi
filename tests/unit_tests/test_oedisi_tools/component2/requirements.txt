@@ -3,4 +3,3 @@ oedisi>=2.0.2,<3
 pydantic
 fastapi
 uvicorn
-

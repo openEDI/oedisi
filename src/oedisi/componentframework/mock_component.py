@@ -11,7 +11,6 @@ MockFederate defines the corresponding implementation.
 
 import helics as h
 import logging
-from typing import Dict
 import json
 import os
 from . import system_configuration
@@ -27,11 +26,11 @@ class MockComponent(system_configuration.ComponentType):
     def __init__(
         self,
         name,
-        parameters: Dict[str, Dict[str, str]],
+        parameters: dict[str, dict[str, str]],
         directory: str,
-        host: str = None,
-        port: int = None,
-        comp_type: str = None,
+        host: str | None = None,
+        port: int | None = None,
+        comp_type: str | None = None,
     ):
         self._name = name
         self._directory = directory
@@ -57,9 +56,7 @@ class MockComponent(system_configuration.ComponentType):
             "period": 1,
             "log_level": "warning",
             "terminate_on_error": True,
-            "publications": [
-                {"key": key, "type": value} for key, value in outputs.items()
-            ],
+            "publications": [{"key": key, "type": value} for key, value in outputs.items()],
         }
 
         with open(os.path.join(self._directory, "helics_config.json"), "w") as f:
@@ -99,7 +96,7 @@ class MockFederate:
         self.fed = h.helicsCreateValueFederateFromConfig("helics_config.json")
         logger.info(f"Created federate {self.fed.name}")
 
-        with open("input_mapping.json", "r") as f:
+        with open("input_mapping.json") as f:
             port_mapping = json.load(f)
             self.subscriptions = {}
             for name, key in port_mapping.items():
@@ -127,9 +124,7 @@ class MockFederate:
 
             for name, sub in self.subscriptions.items():
                 if sub.is_updated():
-                    logger.info(
-                        f"From subscription {name}: {sub.bytes} of type {sub.type}"
-                    )
+                    logger.info(f"From subscription {name}: {sub.bytes} of type {sub.type}")
 
         destroy_federate(self.fed)
 

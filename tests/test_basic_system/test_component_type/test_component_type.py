@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-"""
+""" """
 
 import helics as h
 import logging
@@ -34,7 +32,7 @@ class TestFederate:
         self.fed = h.helicsCreateValueFederate(self.parameters["name"], fedinfo)
         logger.info(f"Created federate {self.fed.name}")
 
-        with open("input_mapping.json", "r") as f:
+        with open("input_mapping.json") as f:
             port_mapping = json.load(f)
             self.subscriptions = {}
             if "test1" in port_mapping:
@@ -68,9 +66,7 @@ class TestFederate:
 
             for name, sub in self.subscriptions.items():
                 if sub.is_updated():
-                    logger.info(
-                        f"From subscription {name}: {sub.bytes} of type {sub.type}"
-                    )
+                    logger.info(f"From subscription {name}: {sub.bytes} of type {sub.type}")
 
         destroy_federate(self.fed)
 

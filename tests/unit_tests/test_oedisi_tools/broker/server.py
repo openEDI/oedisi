@@ -1,4 +1,4 @@
-from fastapi import FastAPI, BackgroundTasks, UploadFile
+from fastapi import FastAPI, BackgroundTasks
 from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
 
@@ -33,6 +33,7 @@ app = FastAPI()
 WIRING_DIAGRAM_FILENAME = "system.json"
 WIRING_DIAGRAM: WiringDiagram | None = None
 
+
 def read_settings():
     broker_host = socket.gethostname()
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -48,7 +49,11 @@ def read_settings():
         for component in WIRING_DIAGRAM.components:
             component_map[component.host] = component.container_port
     else:
-        raise HTTPException(status_code=404, detail="Use the '/configure' setpoint to setup up the WiringDiagram before making requests other enpoints")
+        raise HTTPException(
+            status_code=404,
+            detail="Use the '/configure' setpoint to setup up the WiringDiagram before "
+            "making requests other enpoints",
+        )
 
     return component_map, broker_ip, api_port
 
@@ -56,11 +61,12 @@ def read_settings():
 @cache
 def kubernetes_service():
     if "KUBERNETES_SERVICE_NAME" in os.environ:
-        return os.environ["KUBERNETES_SERVICE_NAME"] # works with kurenetes
+        return os.environ["KUBERNETES_SERVICE_NAME"]  # works with kurenetes
     elif "SERVICE_NAME" in os.environ:
-        return os.environ["SERVICE_NAME"] # works with minikube
+        return os.environ["SERVICE_NAME"]  # works with minikube
     else:
         return None
+
 
 def build_url(host: str, port: int, enpoint: list):
     if kubernetes_service():
@@ -70,11 +76,14 @@ def build_url(host: str, port: int, enpoint: list):
     url = url + "/".join(enpoint) + "/"
     return url
 
+
 async def run_simulation():
-    
     component_map, broker_ip, api_port = read_settings()
     logger.info(f"{broker_ip}, {api_port}")
-    initstring = f"-f {len(component_map)-1} --name=mainbroker --loglevel=trace --local_interface={broker_ip} --localport=23404"
+    initstring = (
+        f"-f {len(component_map) - 1} --name=mainbroker --loglevel=trace"
+        "--local_interface={broker_ip} --localport=23404"
+    )
     logger.info(f"Broker initaialization string: {initstring}")
     broker = h.helicsCreateBroker("zmq", "", initstring)
 
@@ -109,11 +118,7 @@ async def run_simulation():
                 done = {t for t in pending if t.done()}
                 for idx, t in enumerate(tasks):
                     state = (
-                        "done"
-                        if t.done()
-                        else "cancelled"
-                        if t.cancelled()
-                        else "pending"
+                        "done" if t.done() else "cancelled" if t.cancelled() else "pending"
                     )
                     info = None
                     if t.done() and not t.cancelled():
@@ -130,23 +135,27 @@ async def run_simulation():
                 if pending:
                     await asyncio.sleep(5)
                 else:
-                    # ensure exceptions are observed to avoid warnings
-                    for idx, t in enumerate(tasks):
-                        try:
-                            res = t.result()
-                            logger.info(f"Task {idx} succeeded: {getattr(res, 'status_code', 'N/A')}")
-                        except Exception as exc:
-                            logger.error(f"Task {idx} failed: {exc}")
+                    break
+            # ensure exceptions are observed to avoid warnings
+            for idx, t in enumerate(tasks):
+                try:
+                    res = t.result()
+                    logger.info(
+                        f"Task {idx} succeeded: {getattr(res, 'status_code', 'N/A')}"
+                    )
+                except Exception as exc:
+                    logger.error(f"Task {idx} failed: {exc}")
 
     while h.helicsBrokerIsConnected(broker):
-        time.sleep(1)   
+        time.sleep(1)
         query_result = broker.query("broker", "current_state")
-        logger.info(f"Federates expected: {len(component_map)-1}")
-        logger.info(f"Federates connected: {len(broker.query("broker", "federates"))}")
+        logger.info(f"Federates expected: {len(component_map) - 1}")
+        logger.info(f"Federates connected: {len(broker.query('broker', 'federates'))}")
         logger.info(f"Simulation state: {query_result['state']}")
         logger.info(f"Global time: {query_result['attributes']['parent']}")
     h.helicsCloseLibrary()
     return
+
 
 @app.get("/")
 def read_root():
@@ -161,7 +170,7 @@ async def run_feeder(background_tasks: BackgroundTasks):
     logger.info("Run Called on Broker service")
     try:
         background_tasks.add_task(run_simulation)
-    except Exception as e:
+    except Exception:
         err = traceback.format_exc()
         raise HTTPException(status_code=404, detail=str(err))
 
@@ -192,6 +201,7 @@ async def configure(wiring_diagram: WiringDiagram):
         ).model_dump(),
         200,
     )
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=int(os.environ["PORT"]))

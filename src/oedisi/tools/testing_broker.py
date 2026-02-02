@@ -1,4 +1,5 @@
 import time
+from typing import cast
 
 import helics as h
 
@@ -52,9 +53,7 @@ class TestingBroker:
         print("Waiting for initialization")
         while True:
             time.sleep(2)
-            current_state = self.broker.query("broker", "current_state")
+            current_state = cast(dict, self.broker.query("broker", "current_state"))
             cores = current_state["cores"]
-            if len(cores) == 2 and all(
-                (core["state"] == "init_requested" for core in cores)
-            ):
+            if len(cores) == 2 and all(core["state"] == "init_requested" for core in cores):
                 return

@@ -14,12 +14,12 @@ and the links between them.
 """
 
 from collections import defaultdict
-from typing import List, Dict, Type, Any, Optional
+from typing import Any
 import os
 import logging
 import shutil
 import psutil
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 
 from pydantic import field_validator, BaseModel, ValidationInfo
 from oedisi.types.common import DOCKER_HUB_USER, APP_NAME
@@ -29,9 +29,9 @@ class AnnotatedType(BaseModel):
     """Represent the types of components and their interfaces."""
 
     type: str
-    description: Optional[str] = None
-    unit: Optional[str] = None
-    port_id: Optional[str] = None
+    description: str | None = None
+    unit: str | None = None
+    port_id: str | None = None
 
     @property
     def port_name(self):
@@ -68,18 +68,33 @@ class ComponentType(ABC):
     """
 
     @abstractmethod
-    def generate_input_mapping(self, links: Dict[str, str]):
+    def __init__(
+        self,
+        name: str,
+        parameters: dict[str, dict[str, str]],
+        directory: str,
+        host: str | None = None,
+        port: int | None = None,
+        comp_type: str | None = None,
+    ):
         pass
 
-    @abstractproperty
+    @abstractmethod
+    def generate_input_mapping(self, links: dict[str, str]):
+        pass
+
+    @property
+    @abstractmethod
     def execute_function(self):
         pass
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def dynamic_inputs(self):
         pass
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def dynamic_outputs(self):
         pass
 
@@ -109,10 +124,10 @@ class Component(BaseModel):
 
     name: str
     type: str
-    host: Optional[str] = None
-    container_port: Optional[int] = None
+    host: str | None = None
+    container_port: int | None = None
     image: str = ""
-    parameters: Dict[str, Any]
+    parameters: dict[str, Any]
 
     def port(self, port_name: str):
         return Port(name=self.name, port_name=port_name)
@@ -128,15 +143,15 @@ class Component(BaseModel):
 
 class ComponentStruct(BaseModel):
     component: Component
-    links: List[Link]
+    links: list[Link]
 
 
 class WiringDiagram(BaseModel):
-    "Cosimulation configuration. This may end up wrapped in another interface"
+    """Cosimulation configuration. This may end up wrapped in another interface."""
 
     name: str
-    components: List[Component]
-    links: List[Link]
+    components: list[Component]
+    links: list[Link]
 
     def clean_model(self, target_directory="."):
         for component in self.components:
@@ -163,7 +178,7 @@ class WiringDiagram(BaseModel):
     @field_validator("components")
     @classmethod
     def check_component_names(cls, components):
-        "Check that the components all have unique names"
+        """Check that the components all have unique names."""
         names = set(map(lambda c: c.name, components))
         assert len(names) == len(components)
         return components
@@ -181,8 +196,8 @@ class WiringDiagram(BaseModel):
     def add_component(self, c: Component):
         self.components.append(c)
 
-    def add_link(self, l: Link):
-        self.links.append(l)
+    def add_link(self, link: Link):
+        self.links.append(link)
 
     @classmethod
     def empty(cls, name="unnamed"):
@@ -190,7 +205,7 @@ class WiringDiagram(BaseModel):
 
 
 class Federate(BaseModel):
-    "Federate configuration for HELICS CLI"
+    """Federate configuration for HELICS CLI."""
 
     directory: str
     hostname: str = "localhost"
@@ -207,11 +222,11 @@ def get_federates_conn_info(wiring_diagram: WiringDiagram):
 
 def initialize_federates(
     wiring_diagram: WiringDiagram,
-    component_types: Dict[str, Type[ComponentType]],
+    component_types: dict[str, type[ComponentType]],
     compatability_checker,
     target_directory=".",
-) -> List[Federate]:
-    "Initialize all the federates"
+) -> list[Federate]:
+    """Initialize all the federates."""
     components = {}
     link_map = get_link_map(wiring_diagram)
     for component in wiring_diagram.components:
@@ -224,29 +239,31 @@ def initialize_federates(
             component.parameters,
             directory,
             component.host,
-            component.port,
+            component.container_port,
             component.type,
         )
         components[component.name] = initialized_component
 
-    for l in wiring_diagram.links:
-        source_types = components[l.source].dynamic_outputs
-        target_types = components[l.target].dynamic_inputs
-        assert l.source_port in source_types, f"{l.source} does not have {l.source_port}"
-        assert l.target_port in target_types, (
-            f"{l.target} does not have dynamic input {l.target_port}"
-        )
-        source_type = source_types[l.source_port]
-        target_type = target_types[l.target_port]
-        assert compatability_checker(source_type, target_type), (
-            f"{source_type} is not compatible with {target_type}"
-        )
+    for link in wiring_diagram.links:
+        source_types = components[link.source].dynamic_outputs
+        target_types = components[link.target].dynamic_inputs
+        assert (
+            link.source_port in source_types
+        ), f"{link.source} does not have {link.source_port}"
+        assert (
+            link.target_port in target_types
+        ), f"{link.target} does not have dynamic input {link.target_port}"
+        source_type = source_types[link.source_port]
+        target_type = target_types[link.target_port]
+        assert compatability_checker(
+            source_type, target_type
+        ), f"{source_type} is not compatible with {target_type}"
 
     federates = []
     for name, component in components.items():
         links = link_map[name]
         component.generate_input_mapping(
-            {l.target_port: f"{l.source}/{l.source_port}" for l in links}
+            {link.target_port: f"{link.source}/{link.source_port}" for link in links}
         )
 
         federates.append(
@@ -264,7 +281,7 @@ def get_link_map(wiring_diagram: WiringDiagram):
 
 
 class RunnerConfig(BaseModel):
-    """HELICS running config for the full simulation
+    """HELICS running config for the full simulation.
 
     Examples
     --------
@@ -279,17 +296,17 @@ class RunnerConfig(BaseModel):
     """
 
     name: str
-    federates: List[Federate]
+    federates: list[Federate]
 
 
 def bad_compatability_checker(type1, type2):
-    "Basic compatability checker that says all types are compatible."
+    """Basic compatability checker that says all types are compatible."""
     return True
 
 
 def generate_runner_config(
     wiring_diagram: WiringDiagram,
-    component_types: Dict[str, Type[ComponentType]],
+    component_types: dict[str, type[ComponentType]],
     compatibility_checker=bad_compatability_checker,
     target_directory=".",
 ):
@@ -320,4 +337,4 @@ def generate_runner_config(
         name="broker",
         exec=f"helics_broker -f {len(federates)} --loglevel=warning",
     )
-    return RunnerConfig(name=wiring_diagram.name, federates=(federates + [broker_federate]))
+    return RunnerConfig(name=wiring_diagram.name, federates=([*federates, broker_federate]))
