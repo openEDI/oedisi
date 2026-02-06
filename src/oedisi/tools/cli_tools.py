@@ -34,6 +34,7 @@ from oedisi.types.common import (
     DOCKER_HUB_USER,
     KUBERNETES_SERVICE_PREFIX,
 )
+from oedisi.types.helics_config import SharedFederateConfig, HELICSBrokerConfig
 
 
 @click.group()
@@ -84,7 +85,25 @@ def get_basic_component(filename):
     "multi-container implementation.",
 )
 @click.option(
-    "-p", "--broker-port", default=8766, show_default=True, help="Pass the broker port."
+    "-p",
+    "--broker-port",
+    default=8766,
+    show_default=True,
+    help="REST API broker port for multi-container deployments.",
+)
+@click.option(
+    "--helics-port",
+    type=int,
+    help="HELICS broker port for local builds (overrides system.json)",
+)
+@click.option(
+    "--helics-core-type",
+    type=click.Choice(["zmq", "tcp", "udp", "ipc", "inproc"], case_sensitive=False),
+    help="HELICS core type for local builds (overrides system.json)",
+)
+@click.option(
+    "--helics-broker-key",
+    help="HELICS broker authentication key for local builds (overrides system.json)",
 )
 @click.option(
     "-i",
@@ -92,7 +111,15 @@ def get_basic_component(filename):
     help="Simulation ID for kubernetres or docker compose configurations.",
 )
 def build(
-    target_directory, system, component_dict, multi_container, broker_port, simulation_id
+    target_directory,
+    system,
+    component_dict,
+    multi_container,
+    broker_port,
+    helics_port,
+    helics_core_type,
+    helics_broker_key,
+    simulation_id,
 ):
     r"""Build to the simulation folder.
 
@@ -129,9 +156,46 @@ def build(
     with open(system) as f:
         wiring_diagram = WiringDiagram.model_validate(json.load(f))
 
+    if helics_port or helics_core_type or helics_broker_key:
+        if multi_container:
+            raise click.UsageError(
+                "HELICS broker options (--helics-port, --helics-core-type, --helics-broker-key) "
+                "are not supported for multi-container builds. Use -p/--broker-port for the REST API port."
+            )
+
+        shared_config = wiring_diagram.shared_helics_config or SharedFederateConfig()
+        broker_config = shared_config.broker or HELICSBrokerConfig()
+
+        if helics_core_type:
+            shared_config.core_type = helics_core_type
+        if helics_port:
+            broker_config.port = helics_port
+        if helics_broker_key:
+            broker_config.key = helics_broker_key
+
+        if helics_port or helics_broker_key:
+            shared_config.broker = broker_config
+
+        wiring_diagram.shared_helics_config = shared_config
+
     click.echo(f"Building system in {target_directory}")
 
     if multi_container:
+        # Validate no broker overrides in multicontainer mode
+        if wiring_diagram.shared_helics_config is not None:
+            raise ValueError(
+                "Multicontainer builds do not support 'shared_helics_config'. "
+                "Broker configuration is controlled by the broker service at runtime."
+            )
+
+        for component in wiring_diagram.components:
+            if component.helics_config_override is not None:
+                raise ValueError(
+                    f"Component '{component.name}' has 'helics_config_override'. "
+                    "Multicontainer builds do not support per-component HELICS overrides. "
+                    "Broker configuration is controlled by the broker service at runtime."
+                )
+
         if simulation_id is None:
             simulation_id = str(uuid4())
         click.echo(f"Simulation ID: {simulation_id}")
