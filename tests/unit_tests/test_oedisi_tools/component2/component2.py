@@ -2,7 +2,8 @@
 
 from pathlib import Path
 
-from oedisi.types.common import BrokerConfig, DefaultFileNames
+from oedisi.types.common import DefaultFileNames
+from oedisi.types import HELICSFederateConfig
 import helics as h
 import logging
 import json
@@ -23,16 +24,15 @@ def destroy_federate(fed):
 
 
 class TestFederate:
-    def __init__(self, broker_config: BrokerConfig = BrokerConfig()):
+    def __init__(self, config: HELICSFederateConfig):
         logger.info(f"Current Working Directory: {os.path.abspath(os.curdir)}")
         with open(BASE_PATH / DefaultFileNames.STATIC_INPUTS) as f:
             self.parameters = json.load(f)
 
         fedinfo = h.helicsCreateFederateInfo()
-        h.helicsFederateInfoSetBroker(fedinfo, broker_config.broker_ip)
-        h.helicsFederateInfoSetBrokerPort(fedinfo, broker_config.broker_port)
+        config.apply_to_federate_info(fedinfo)
         logger.info(
-            f"Federate connected to {broker_config.broker_ip}@{broker_config.broker_port}"
+            f"Federate connected to {config.broker.host}@{config.broker.port}"
         )
 
         fedinfo.core_name = self.parameters["name"]

@@ -10,6 +10,7 @@ from fastapi.responses import JSONResponse
 from oedisi.componentframework.system_configuration import ComponentStruct
 from oedisi.types.common import ServerReply, HealthCheck, DefaultFileNames
 from oedisi.types.common import BrokerConfig
+from oedisi.types import HELICSFederateConfig
 
 from component1 import TestFederate
 
@@ -37,7 +38,9 @@ async def run_model(broker_config: BrokerConfig, background_tasks: BackgroundTas
     logger.info("Running componenet 1")
     try:
         logger.info("Creating federate 1")
-        federate = TestFederate(broker_config)
+        with open(DefaultFileNames.STATIC_INPUTS) as f:
+            params = json.load(f)
+        federate = TestFederate(HELICSFederateConfig.from_multicontainer(broker_config, params))
         logger.info("Federate 1 created")
         background_tasks.add_task(federate.run)
         logger.info("Federate 1 started")

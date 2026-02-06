@@ -1,6 +1,6 @@
 """ """
 
-from oedisi.types.common import BrokerConfig
+from oedisi.types import HELICSFederateConfig
 import helics as h
 import logging
 import json
@@ -19,23 +19,17 @@ def destroy_federate(fed):
 
 
 class TestFederate:
-    def __init__(self, broker_config: BrokerConfig = BrokerConfig()):
-        logger.info(broker_config)
+    def __init__(self, config: HELICSFederateConfig):
+        logger.info(config)
         logger.info(f"Current Working Directory: {os.path.abspath(os.curdir)}")
-        with open("static_inputs.json") as f:
-            self.parameters = json.load(f)
-
         fedinfo = h.helicsCreateFederateInfo()
-        h.helicsFederateInfoSetBroker(fedinfo, broker_config.broker_ip)
-        h.helicsFederateInfoSetBrokerPort(fedinfo, broker_config.broker_port)
+        self.config = config
+        config.apply_to_federate_info(fedinfo)
         logger.info(
-            f"Federate connected to {broker_config.broker_ip}@{broker_config.broker_port}"
+            f"Federate connected to {config.broker.host}@{config.broker.port}"
         )
-        fedinfo.core_name = self.parameters["name"]
-        fedinfo.core_type = h.HELICS_CORE_TYPE_ZMQ
-        fedinfo.core_init = "--federates=1 --loglevel=trace"
 
-        self.fed = h.helicsCreateValueFederate(self.parameters["name"], fedinfo)
+        self.fed = h.helicsCreateValueFederate(config.name, fedinfo)
         logger.info(f"Created federate {self.fed.name}")
 
         with open("input_mapping.json") as f:
@@ -78,5 +72,7 @@ class TestFederate:
 
 
 if __name__ == "__main__":
-    fed = TestFederate()
+    with open("static_inputs.json") as f:
+        config = HELICSFederateConfig.model_validate_json(f.read())
+    fed = TestFederate(config)
     fed.run()
