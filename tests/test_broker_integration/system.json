@@ -1,0 +1,36 @@
+{
+    "name": "test_broker_config_system",
+    "components": [
+        {
+            "name": "sender",
+            "type": "MockComponent",
+            "parameters": {
+                "inputs": [],
+                "outputs": {"voltage": "double"}
+            }
+        },
+        {
+            "name": "receiver",
+            "type": "MockComponent",
+            "parameters": {
+                "inputs": ["voltage"],
+                "outputs": {}
+            }
+        }
+    ],
+    "links": [
+        {
+            "source": "sender",
+            "source_port": "voltage",
+            "target": "receiver",
+            "target_port": "voltage"
+        }
+    ],
+    "shared_helics_config": {
+        "coreType": "zmq",
+        "broker": {
+            "port": 23408,
+            "key": "integration_test_key"
+        }
+    }
+}
