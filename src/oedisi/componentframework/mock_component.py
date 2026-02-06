@@ -15,7 +15,7 @@ import json
 import os
 
 from . import system_configuration
-from .system_configuration import AnnotatedType
+from .system_configuration import AnnotatedType, ComponentCapabilities
 from oedisi.types.helics_config import HELICSFederateConfig
 
 
@@ -25,6 +25,7 @@ logger.setLevel(logging.DEBUG)
 
 
 class MockComponent(system_configuration.ComponentType):
+    _capabilities = ComponentCapabilities(broker_config=True)
     def __init__(
         self,
         base_config: HELICSFederateConfig,
@@ -52,14 +53,16 @@ class MockComponent(system_configuration.ComponentType):
         self.generate_helics_config(parameters["outputs"])
 
     def generate_helics_config(self, outputs):
-        helics_config = {
-            "name": self._base_config.name,
-            "core_type": "zmq",
+        # Start with base config converted to dict (with camelCase keys)
+        helics_config = self._base_config.to_dict()
+
+        # Add mock component specific settings
+        helics_config.update({
             "period": 1,
             "log_level": "warning",
             "terminate_on_error": True,
             "publications": [{"key": key, "type": value} for key, value in outputs.items()],
-        }
+        })
 
         with open(os.path.join(self._directory, "helics_config.json"), "w") as f:
             json.dump(helics_config, f)

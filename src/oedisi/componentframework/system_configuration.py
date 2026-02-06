@@ -392,9 +392,29 @@ def generate_runner_config(
     federates = initialize_federates(
         wiring_diagram, component_types, compatibility_checker, target_directory
     )
+
+    # Build broker command with SharedHELICSConfig
+    broker_cmd = f"helics_broker -f {len(federates)}"
+
+    if wiring_diagram.shared_helics_config is not None:
+        cfg = wiring_diagram.shared_helics_config
+
+        if cfg.core_type is not None:
+            broker_cmd += f" -t {cfg.core_type}"
+
+        if cfg.broker is not None:
+            if cfg.broker.port is not None:
+                broker_cmd += f" --port {cfg.broker.port}"
+            if cfg.broker.key is not None:
+                broker_cmd += f" --brokerkey {cfg.broker.key}"
+            if cfg.broker.initstring is not None:
+                broker_cmd += f" {cfg.broker.initstring}"
+
+    broker_cmd += " --loglevel=warning"
+
     broker_federate = Federate(
         directory=".",
         name="broker",
-        exec=f"helics_broker -f {len(federates)} --loglevel=warning",
+        exec=broker_cmd,
     )
     return RunnerConfig(name=wiring_diagram.name, federates=([*federates, broker_federate]))
