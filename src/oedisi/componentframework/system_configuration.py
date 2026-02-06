@@ -307,17 +307,17 @@ def initialize_federates(
     for link in wiring_diagram.links:
         source_types = components[link.source].dynamic_outputs
         target_types = components[link.target].dynamic_inputs
-        assert link.source_port in source_types, (
-            f"{link.source} does not have {link.source_port}"
-        )
-        assert link.target_port in target_types, (
-            f"{link.target} does not have dynamic input {link.target_port}"
-        )
+        assert (
+            link.source_port in source_types
+        ), f"{link.source} does not have {link.source_port}"
+        assert (
+            link.target_port in target_types
+        ), f"{link.target} does not have dynamic input {link.target_port}"
         source_type = source_types[link.source_port]
         target_type = target_types[link.target_port]
-        assert compatability_checker(source_type, target_type), (
-            f"{source_type} is not compatible with {target_type}"
-        )
+        assert compatability_checker(
+            source_type, target_type
+        ), f"{source_type} is not compatible with {target_type}"
 
     federates = []
     for name, component in components.items():
