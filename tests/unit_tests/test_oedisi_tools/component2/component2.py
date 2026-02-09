@@ -26,8 +26,6 @@ def destroy_federate(fed):
 class TestFederate:
     def __init__(self, config: HELICSFederateConfig):
         logger.info(f"Current Working Directory: {os.path.abspath(os.curdir)}")
-        with open(BASE_PATH / DefaultFileNames.STATIC_INPUTS) as f:
-            self.parameters = json.load(f)
 
         fedinfo = h.helicsCreateFederateInfo()
         config.apply_to_federate_info(fedinfo)
@@ -35,11 +33,7 @@ class TestFederate:
             f"Federate connected to {config.broker.host}@{config.broker.port}"
         )
 
-        fedinfo.core_name = self.parameters["name"]
-        fedinfo.core_type = h.HELICS_CORE_TYPE_ZMQ
-        fedinfo.core_init = "--federates=1"
-
-        self.fed = h.helicsCreateValueFederate(self.parameters["name"], fedinfo)
+        self.fed = h.helicsCreateValueFederate(config.name, fedinfo)
         logger.info(f"Created federate {self.fed.name}")
 
         with open("input_mapping.json") as f:
@@ -82,5 +76,7 @@ class TestFederate:
 
 
 if __name__ == "__main__":
-    fed = TestFederate()
+    with open("static_inputs.json") as f:
+        config = HELICSFederateConfig.model_validate_json(f.read())
+    fed = TestFederate(config)
     fed.run()
