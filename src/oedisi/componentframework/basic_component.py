@@ -120,7 +120,7 @@ def basic_component(comp_desc: ComponentDescription, type_checker):
 
         def generate_parameter_config(self):
             if self.broker_config_support:
-                config = self._base_config.to_dict().update(self._parameters)
+                config = self._base_config.to_dict() | self._parameters
             else:  # Backwards compatible behavior where we ignore extra information.
                 config = self._parameters
                 config["name"] = self._base_config.name

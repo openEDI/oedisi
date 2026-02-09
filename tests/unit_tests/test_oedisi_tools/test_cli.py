@@ -95,6 +95,9 @@ def test_build_with_helics_cli_options(base_path: Path, monkeypatch: pytest.Monk
     assert "-t zmq" in broker_cmd
     assert "--brokerkey mykey" in broker_cmd
 
+    result = runner.invoke(cli, ["run"])
+    assert result.exit_code == 0
+
 
 def test_helics_options_rejected_for_multicontainer(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     monkeypatch.chdir(base_path)

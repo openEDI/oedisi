@@ -29,12 +29,9 @@ class TestFederate:
 
         fedinfo = h.helicsCreateFederateInfo()
         config.apply_to_federate_info(fedinfo)
-        logger.info(
-            f"Federate connected to {config.broker.host}@{config.broker.port}"
-        )
 
         self.fed = h.helicsCreateValueFederate(config.name, fedinfo)
-        logger.info(f"Created federate {self.fed.name}")
+        logger.info("Created Federate")
 
         with open("input_mapping.json") as f:
             port_mapping = json.load(f)
