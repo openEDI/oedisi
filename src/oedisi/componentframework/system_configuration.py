@@ -29,27 +29,18 @@ class AnnotatedType(BaseModel):
     """Represent the type on component static input, dynamic input, and dynamic output.
 
     Currently not checked in any type checker.
-
-    Attributes
-    ----------
-    type : str
-        Name referencing oedisi Pydantic type or ""
-    description : str | None = None
-    unit : str | None = None
-    port_id : str | None = None
-        Manually set port id
-    port_name : str or type name
-        Input or output name which defaults to type name or port_id
     """
 
     type: str
+    "Name referencing oedisi Pydantic type or empty string"
     description: str | None = None
     unit: str | None = None
     port_id: str | None = None
+    "Manually set port id"
 
     @property
     def port_name(self):
-        """Get name of port (which is prepended with name in HELICS)."""
+        """Input or output name which defaults to type name or port_id."""
         if self.port_id is None:
             return self.type
         return self.port_id
@@ -118,39 +109,25 @@ class ComponentType(ABC):
 
 
 class Link(BaseModel):
-    """Connection between component ports in wiring diagram.
-
-    Attributes
-    ----------
-    source : str
-        Name of component that is publishing
-    source_port : str
-        Publication/dynamic output name
-    target : str
-        Name of component that is subscribing
-    target_port : str
-        Dynamic input name mapped to source_port
-    """
+    """Connection between component ports in wiring diagram."""
 
     source: str
+    "Name of component that is publishing"
     source_port: str
+    "Publication/dynamic output name"
     target: str
+    "Name of component that is subscribing"
     target_port: str
+    "Dynamic input name mapped to source_port"
 
 
 class Port(BaseModel):
-    """Port identifier for creating links between components.
-
-    Attributes
-    ----------
-    name : str
-        Component name
-    port_name : str
-        Dynamic input/output name
-    """
+    """Port identifier for creating links between components."""
 
     name: str
+    "Component name"
     port_name: str
+    "Dynamic input/output name"
 
     def connect(self, port: "Port") -> Link:
         """Create link from this port to target port.
@@ -175,30 +152,20 @@ class Port(BaseModel):
 
 
 class Component(BaseModel):
-    """A component configuration in WiringDiagram.
-
-    Attributes
-    ----------
-    name : str
-        Name or identifier of this component instance
-    type : str
-        Type of component referencing component type dictionary
-    host : str | None = None
-        Hostname used in Docker Compose and Kubernetes
-    container_port : int | None = None
-        Port used in Docker Compose and Kubernetes
-    image : str = ""
-        Image used in Docker Compose and Kubernetes
-    parameters : dict[str, Any]
-        Configuration passeed onto each component.
-    """
+    """A component configuration in WiringDiagram."""
 
     name: str
+    "Name or identifier of this component instance"
     type: str
+    "Type of component referencing component type dictionary"
     host: str | None = None
+    "Hostname used in Docker Compose and Kubernetes"
     container_port: int | None = None
+    "Port used in Docker Compose and Kubernetes"
     image: str = ""
+    "Image used in Docker Compose and Kubernetes"
     parameters: dict[str, Any]
+    "Configuration passed onto each component."
 
     def port(self, port_name: str) -> Port:
         """Create Port object for connecting this component at a port name."""
@@ -214,35 +181,22 @@ class Component(BaseModel):
 
 
 class ComponentStruct(BaseModel):
-    """Component with its associated links for multi-container configuration.
-
-    Attributes
-    ----------
-    component : Component
-    links : list[Link]
-        All links with the component as target
-    """
+    """Component with its associated links for multi-container configuration."""
 
     component: Component
     links: list[Link]
+    "All links with the component as target"
 
 
 class WiringDiagram(BaseModel):
-    """Cosimulation configuration. This may end up wrapped in another interface.
-
-    Attributes
-    ----------
-    name : str
-        Name of the simulation
-    components : list[Component]
-        Component configuration and types
-    links : list[Link]
-        List of links {source, source_port, target, target_port} between components
-    """
+    """Cosimulation configuration. This may end up wrapped in another interface."""
 
     name: str
+    "Name of the simulation"
     components: list[Component]
+    "Component configuration and types"
     links: list[Link]
+    "List of links {source, source_port, target, target_port} between components"
 
     def clean_model(self, target_directory=".") -> None:
         """Remove component directories, log files, and stray broker processes.
@@ -313,24 +267,16 @@ class WiringDiagram(BaseModel):
 
 
 class Federate(BaseModel):
-    """Federate configuration for HELICS CLI runner.
-
-    Attributes
-    ----------
-    directory : str
-        directory in which the execution should take place
-    hostname : str = "localhost"
-        Hostname for Docker Compose and Kubernetes
-    name : str
-        Name of component (used for logs)
-    exec : str
-        Command to start component
-    """
+    """Federate configuration for HELICS CLI runner."""
 
     directory: str
+    "Directory in which the execution should take place"
     hostname: str = "localhost"
+    "Hostname for Docker Compose and Kubernetes"
     name: str
+    "Name of component (used for logs)"
     exec: str
+    "Command to start component"
 
 
 def initialize_federates(

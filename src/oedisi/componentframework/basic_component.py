@@ -10,27 +10,18 @@ from typing import Any
 
 
 class ComponentDescription(BaseModel):
-    """Component description for simple ComponentType.
-
-    Attributes
-    ----------
-    directory :
-        where code is stored relative to where this is run
-    execute_function :
-        command to execute component
-    static_inputs :
-        List of types for the parameter
-    dynamic_inputs :
-        List of input types. Typically subscriptions.
-    dynamic_outputs :
-        List of output types. Typically publications.
-    """
+    """Component description for simple ComponentType."""
 
     directory: str
+    "Where code is stored relative to where this is run"
     execute_function: str
+    "Command to execute component"
     static_inputs: list[AnnotatedType]
+    "List of types for the parameter"
     dynamic_inputs: list[AnnotatedType]
+    "List of input types. Typically subscriptions."
     dynamic_outputs: list[AnnotatedType]
+    "List of output types. Typically publications."
 
 
 def _types_to_dict(types: list[AnnotatedType]) -> dict[str, AnnotatedType]:
