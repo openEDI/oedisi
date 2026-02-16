@@ -28,21 +28,6 @@ class MockComponent(system_configuration.ComponentType):
 
     Provides a configurable mock component with dynamic inputs and outputs
     for use in testing and validation scenarios.
-
-    Parameters
-    ----------
-    name : str
-        Name of the mock component.
-    parameters : dict[str, dict[str, str]]
-        Configuration parameters containing "inputs" and "outputs" keys.
-    directory : str
-        Working directory for component configuration files.
-    host : str, optional
-        Host address (not used in mock implementation).
-    port : int, optional
-        Port number (not used in mock implementation).
-    comp_type : str, optional
-        Component type identifier (not used in mock implementation).
     """
 
     def __init__(
@@ -54,6 +39,23 @@ class MockComponent(system_configuration.ComponentType):
         port: int | None = None,
         comp_type: str | None = None,
     ):
+        """Construct mock componenet type.
+
+        Parameters
+        ----------
+        name : str
+            Name of the mock component.
+        parameters : dict[str, dict[str, str]]
+            Configuration parameters containing "inputs" and "outputs" keys.
+        directory : str
+            Working directory for component configuration files.
+        host : str, optional
+            Host address (not used in mock implementation).
+        port : int, optional
+            Port number (not used in mock implementation).
+        comp_type : str, optional
+            Component type identifier (not used in mock implementation).
+        """
         self._name = name
         self._directory = directory
         self._execute_function = os.path.join(

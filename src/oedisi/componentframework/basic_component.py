@@ -12,7 +12,7 @@ from typing import Any
 class ComponentDescription(BaseModel):
     """Component description for simple ComponentType.
 
-    Parameters
+    Attributes
     ----------
     directory :
         where code is stored relative to where this is run
@@ -33,13 +33,23 @@ class ComponentDescription(BaseModel):
     dynamic_outputs: list[AnnotatedType]
 
 
-def types_to_dict(types: list[AnnotatedType]):
+def _types_to_dict(types: list[AnnotatedType]) -> dict[str, AnnotatedType]:
     """Convert list of annotated types to dictionary keyed by port name."""
     return {t.port_name: t for t in types}
 
 
 def component_from_json(filepath, type_checker):
-    """Load component description from JSON file and create component type."""
+    """Load component description from JSON file and create component type.
+
+    Parameters
+    ----------
+    filepath : str | Path
+    type_checker : function taking the type and value and returning a boolean
+
+    Returns
+    -------
+    BasicComponent class
+    """
     with open(filepath) as f:
         comp_desc = ComponentDescription.model_validate(json.load(f))
     return basic_component(comp_desc, type_checker)
@@ -52,7 +62,7 @@ def basic_component(comp_desc: ComponentDescription, type_checker):
     ----------
     comp_desc : ComponentDescription
          Simplified component representation usually from a JSON file
-    type_checker: function taking the type and value and returning a boolean
+    type_checker : function taking the type and value and returning a boolean
 
     Returns
     -------
@@ -63,9 +73,9 @@ def basic_component(comp_desc: ComponentDescription, type_checker):
     class BasicComponent(system_configuration.ComponentType):
         _origin_directory = comp_desc.directory
         _execute_function = comp_desc.execute_function
-        _dynamic_inputs = types_to_dict(comp_desc.dynamic_inputs)
-        _dynamic_outputs = types_to_dict(comp_desc.dynamic_outputs)
-        _static_inputs = types_to_dict(comp_desc.static_inputs)
+        _dynamic_inputs = _types_to_dict(comp_desc.dynamic_inputs)
+        _dynamic_outputs = _types_to_dict(comp_desc.dynamic_outputs)
+        _static_inputs = _types_to_dict(comp_desc.static_inputs)
 
         def __init__(
             self,
