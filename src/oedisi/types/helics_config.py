@@ -114,7 +114,7 @@ class HELICSFederateConfig(BaseModel):
     def from_multicontainer(
         cls,
         broker_config: BrokerConfig,
-        params: dict | None = None,
+        params: dict,
         core_type: str = "zmq",
         **kwargs,
     ) -> HELICSFederateConfig:
@@ -162,12 +162,12 @@ class HELICSFederateConfig(BaseModel):
         ...     params={"name": "comp1", "my_param": "value"}
         ... )
         """
-        if params is not None:
-            # Merge params with kwargs, kwargs take precedence
-            merged = {**params, **kwargs}
-            merged.setdefault("core_type", core_type)
-        else:
-            merged = {"core_type": core_type, **kwargs}
+        # Merge params with kwargs, kwargs take precedence
+        assert (
+            "name" in params
+        ), "Name must be present in params to convert to HELICSFederateConfig"
+        merged = {**params, **kwargs}
+        merged.setdefault("core_type", core_type)
 
         merged["broker"] = HELICSBrokerConfig.from_rest_config(broker_config)
         return cls(**merged)
@@ -177,7 +177,9 @@ class SharedFederateConfig(BaseModel):
     """Shared federate settings at the WiringDiagram level.
 
     This contains settings that are shared across all federates in a simulation.
-    Does NOT include name/core_name (those are per-component).
+    Does NOT include name/core_name (those are per-component). Users
+    are expected to write this as part of the wiring_diagram.json,
+    and invidual federates get passed `config.to_federate_config()`.
 
     Parameters
     ----------
@@ -209,6 +211,9 @@ class SharedFederateConfig(BaseModel):
         self, name: str, core_name: str | None = None
     ) -> HELICSFederateConfig:
         """Create a full HELICSFederateConfig for a specific component.
+
+        During building, a HELICSFederateConfig is created for each component,
+        combined with other static configuration from the wiring diagram.
 
         Parameters
         ----------
