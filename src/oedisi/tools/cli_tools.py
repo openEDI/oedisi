@@ -192,14 +192,14 @@ def build(
     if multi_container:
         # Validate no broker overrides in multicontainer mode
         if wiring_diagram.shared_helics_config is not None:
-            raise ValueError(
+            raise click.UsageError(
                 "Multicontainer builds do not support 'shared_helics_config'. "
                 "Broker configuration is controlled by the broker service at runtime."
             )
 
         for component in wiring_diagram.components:
             if component.helics_config_override is not None:
-                raise ValueError(
+                raise click.UsageError(
                     f"Component '{component.name}' has 'helics_config_override'. "
                     "Multicontainer builds do not support per-component HELICS overrides. "
                     "Broker configuration is controlled by the broker service at runtime."

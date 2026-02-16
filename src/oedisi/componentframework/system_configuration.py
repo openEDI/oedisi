@@ -353,8 +353,8 @@ def initialize_federates(
         federate_config = None
         if component.helics_config_override is not None:
             logging.warning(
-                f"Component '{component.name}' uses federate_config_override. "
-                "Per-component overrides can cause subtle timing issues."
+                f"Component '{component.name}' has helics_config_override. "
+                "Per-component overrides can cause subtle HELICS/timing issues."
             )
             federate_config = component.helics_config_override.to_federate_config(
                 name=component.name

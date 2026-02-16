@@ -232,14 +232,61 @@ def test_apply_to_federate_info():
         name="test_fed",
         core_type="zmq",
         core_name="test_core",
-        core_init_string="--federates=1",
+        core_init="--federates=1",
         broker=HELICSBrokerConfig(host="localhost", port=23456, key="testkey"),
     )
 
     fed_info = h.helicsCreateFederateInfo()
     config.apply_to_federate_info(fed_info)  # Should not raise
 
-    # FederateInfo properties are write-only. For end-to-end validation, see
-    # tests/test_broker_integration which uses helicsCreateValueFederateFromConfig
-    # to load the config file (as done in MockFederate).
+    # FederateInfo properties are write-only in the HELICS API.
     h.helicsFederateInfoFree(fed_info)
+
+
+def test_wiring_diagram_json_with_shared_helics_config(tmp_path: Path):
+    """Test that WiringDiagram deserializes shared_helics_config from JSON."""
+    system_json = {
+        "name": "test_system",
+        "components": [
+            {
+                "name": "sender",
+                "type": "MockComponent",
+                "parameters": {"inputs": [], "outputs": {"voltage": "double"}},
+            },
+            {
+                "name": "receiver",
+                "type": "MockComponent",
+                "parameters": {"inputs": ["voltage"], "outputs": {}},
+            },
+        ],
+        "links": [
+            {
+                "source": "sender",
+                "source_port": "voltage",
+                "target": "receiver",
+                "target_port": "voltage",
+            }
+        ],
+        "shared_helics_config": {
+            "core_type": "zmq",
+            "broker": {"port": 23408, "key": "test_key"},
+        },
+    }
+
+    diagram = WiringDiagram.model_validate(system_json)
+
+    assert diagram.shared_helics_config is not None
+    assert diagram.shared_helics_config.core_type == "zmq"
+    assert diagram.shared_helics_config.broker.port == 23408
+    assert diagram.shared_helics_config.broker.key == "test_key"
+
+    # Verify it generates correct broker command
+    runner_config = generate_runner_config(
+        diagram,
+        {"MockComponent": MockComponent},
+        target_directory=str(tmp_path),
+    )
+    broker_cmd = runner_config.federates[-1].exec
+    assert "-t zmq" in broker_cmd
+    assert "--port 23408" in broker_cmd
+    assert "--brokerkey test_key" in broker_cmd

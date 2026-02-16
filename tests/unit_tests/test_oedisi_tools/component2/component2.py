@@ -2,7 +2,6 @@
 
 from pathlib import Path
 
-from oedisi.types.common import DefaultFileNames
 from oedisi.types import HELICSFederateConfig
 import helics as h
 import logging

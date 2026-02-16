@@ -40,8 +40,9 @@ class HELICSBrokerConfig(BaseModel):
 class HELICSFederateConfig(BaseModel):
     """Full HELICS federate configuration.
 
-    This is what federates receive in static_inputs.json under the `federate_config` key.
-    Subtype this in your applications for custom configuration.
+    This is what federates receive in static_inputs.json, containing various HELICS
+    configuration at the top-level (name, core_type, broker, etc). Subtype this in your
+    applications for custom configuration.
 
     Parameters
     ----------
@@ -51,7 +52,7 @@ class HELICSFederateConfig(BaseModel):
         HELICS core type (e.g., "zmq", "tcp", "inproc").
     core_name :
         Core name for this federate (derived per-component).
-    core_init_string :
+    core_init :
         Core initialization string.
     broker :
         Broker connection configuration.
@@ -72,7 +73,7 @@ class HELICSFederateConfig(BaseModel):
     name: str
     core_type: str | None = Field(default=None, alias="coreType")
     core_name: str | None = Field(default=None, alias="coreName")
-    core_init_string: str | None = Field(default=None, alias="coreInitString")
+    core_init: str | None = Field(default=None, alias="coreInitString")
     broker: HELICSBrokerConfig | None = None
 
     def to_json(self) -> str:
@@ -100,8 +101,8 @@ class HELICSFederateConfig(BaseModel):
             info.core_type = self.core_type
         if self.core_name is not None:
             info.core_name = self.core_name
-        if self.core_init_string is not None:
-            info.core_init_string = self.core_init_string
+        if self.core_init is not None:
+            info.core_init = self.core_init
         if self.broker is not None:
             if self.broker.host is not None:
                 info.broker = self.broker.host
@@ -185,7 +186,7 @@ class SharedFederateConfig(BaseModel):
     ----------
     core_type :
         HELICS core type (e.g., "zmq", "tcp", "inproc").
-    core_init_string :
+    core_init :
         Core initialization string.
     broker :
         Broker connection configuration.
@@ -204,7 +205,7 @@ class SharedFederateConfig(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
     core_type: str | None = Field(default=None, alias="coreType")
-    core_init_string: str | None = Field(default=None, alias="coreInitString")
+    core_init: str | None = Field(default=None, alias="coreInitString")
     broker: HELICSBrokerConfig | None = None
 
     def to_federate_config(
@@ -231,6 +232,6 @@ class SharedFederateConfig(BaseModel):
             name=name,
             core_name=core_name,
             core_type=self.core_type,
-            core_init_string=self.core_init_string,
+            core_init=self.core_init,
             broker=self.broker,
         )
