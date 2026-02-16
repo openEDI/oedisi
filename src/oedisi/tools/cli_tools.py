@@ -152,7 +152,7 @@ def build(
         validate_optional_inputs(wiring_diagram)
         edit_docker_files(wiring_diagram, component_types)
         create_docker_compose_file(
-            wiring_diagram, simulation_dir, broker_port, component_types, simulation_id
+            wiring_diagram, simulation_dir, broker_port, component_types
         )
         create_kubernetes_deployment(
             wiring_diagram, simulation_dir, broker_port, simulation_id
