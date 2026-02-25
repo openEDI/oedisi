@@ -168,8 +168,9 @@ def build(
     if helics_port or helics_core_type or helics_broker_key:
         if multi_container:
             raise click.UsageError(
-                "HELICS broker options (--helics-port, --helics-core-type, --helics-broker-key) "
-                "are not supported for multi-container builds. Use -p/--broker-port for the REST API port."
+                "HELICS broker options (--helics-port, --helics-core-type, "
+                "--helics-broker-key) are not supported for multi-container builds. "
+                "Use -p/--broker-port for the REST API port."
             )
 
         shared_config = wiring_diagram.shared_helics_config or SharedFederateConfig()
