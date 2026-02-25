@@ -3,14 +3,33 @@
 import json
 import os
 from shutil import copytree
-from . import system_configuration
-from .system_configuration import AnnotatedType
-from pydantic import BaseModel
 from typing import Any
+
+from pydantic import BaseModel, Field
+
+from . import system_configuration
+from .system_configuration import AnnotatedType, ComponentCapabilities
+from oedisi.types.helics_config import HELICSFederateConfig
 
 
 class ComponentDescription(BaseModel):
-    """Component description for simple ComponentType."""
+    """Component description for simple ComponentType.
+
+    Parameters
+    ----------
+    directory :
+        where code is stored relative to where this is run
+    execute_function :
+        command to execute component
+    static_inputs :
+        List of types for the parameter
+    dynamic_inputs :
+        List of input types. Typically subscriptions.
+    dynamic_outputs :
+        List of output types. Typically publications.
+    capabilities :
+        Component capability declarations for build-time validation.
+    """
 
     directory: str
     "Where code is stored relative to where this is run"
@@ -22,6 +41,7 @@ class ComponentDescription(BaseModel):
     "List of input types. Typically subscriptions."
     dynamic_outputs: list[AnnotatedType]
     "List of output types. Typically publications."
+    capabilities: ComponentCapabilities = Field(default_factory=ComponentCapabilities)
 
 
 def _types_to_dict(types: list[AnnotatedType]) -> dict[str, AnnotatedType]:
@@ -67,17 +87,18 @@ def basic_component(comp_desc: ComponentDescription, type_checker):
         _dynamic_inputs = _types_to_dict(comp_desc.dynamic_inputs)
         _dynamic_outputs = _types_to_dict(comp_desc.dynamic_outputs)
         _static_inputs = _types_to_dict(comp_desc.static_inputs)
+        _capabilities = comp_desc.capabilities
 
         def __init__(
             self,
-            name,
+            base_config: HELICSFederateConfig,
             parameters: dict[str, Any],
             directory: str,
             host: str,
             port: int,
             comp_type: str,
         ):
-            self._name = name
+            self._base_config = base_config
             self._directory = directory
             self._parameters = parameters
             self.check_parameters(parameters)
@@ -98,9 +119,13 @@ def basic_component(comp_desc: ComponentDescription, type_checker):
             copytree(self._origin_directory, self._directory, dirs_exist_ok=True)
 
         def generate_parameter_config(self):
-            self._parameters["name"] = self._name
+            if self.broker_config_support:
+                config = self._base_config.to_dict() | self._parameters
+            else:  # Backwards compatible behavior where we ignore extra information.
+                config = self._parameters
+                config["name"] = self._base_config.name
             with open(os.path.join(self._directory, "static_inputs.json"), "w") as f:
-                json.dump(self._parameters, f)
+                json.dump(config, f)
 
         def generate_input_mapping(self, links):
             with open(os.path.join(self._directory, "input_mapping.json"), "w") as f:
@@ -117,5 +142,9 @@ def basic_component(comp_desc: ComponentDescription, type_checker):
         @property
         def execute_function(self):
             return self._execute_function
+
+        @property
+        def broker_config_support(self):
+            return self._capabilities.broker_config
 
     return BasicComponent

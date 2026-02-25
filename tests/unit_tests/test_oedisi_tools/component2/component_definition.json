@@ -8,5 +8,8 @@
     "dynamic_outputs": [
         {"type": "", "port_id": "test2"}
     ],
+    "capabilities": {
+        "broker_config": true
+    },
     "apiversion": "1.0.0"
 }

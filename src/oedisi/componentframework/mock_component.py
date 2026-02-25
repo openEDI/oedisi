@@ -14,8 +14,10 @@ import helics as h
 import logging
 import json
 import os
+
 from . import system_configuration
-from .system_configuration import AnnotatedType
+from .system_configuration import AnnotatedType, ComponentCapabilities
+from oedisi.types.helics_config import HELICSFederateConfig
 
 
 logger = logging.getLogger(__name__)
@@ -30,21 +32,23 @@ class MockComponent(system_configuration.ComponentType):
     for use in testing and validation scenarios.
     """
 
+    _capabilities = ComponentCapabilities(broker_config=True)
+
     def __init__(
         self,
-        name,
+        base_config: HELICSFederateConfig,
         parameters: dict[str, dict[str, str]],
         directory: str,
         host: str | None = None,
         port: int | None = None,
         comp_type: str | None = None,
     ):
-        """Construct mock componenet type.
+        """Construct mock component type.
 
         Parameters
         ----------
-        name : str
-            Name of the mock component.
+        base_config : HELICSFederateConfig
+            HELICS federate configuration containing name and broker settings.
         parameters : dict[str, dict[str, str]]
             Configuration parameters containing "inputs" and "outputs" keys.
         directory : str
@@ -56,7 +60,7 @@ class MockComponent(system_configuration.ComponentType):
         comp_type : str, optional
             Component type identifier (not used in mock implementation).
         """
-        self._name = name
+        self._base_config = base_config
         self._directory = directory
         self._execute_function = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "mock_component.sh"
@@ -88,14 +92,20 @@ class MockComponent(system_configuration.ComponentType):
         outputs : dict[str, str]
             Mapping of output port names to HELICS data types.
         """
-        helics_config = {
-            "name": self._name,
-            "core_type": "zmq",
-            "period": 1,
-            "log_level": "warning",
-            "terminate_on_error": True,
-            "publications": [{"key": key, "type": value} for key, value in outputs.items()],
-        }
+        # Start with base config converted to dict (with camelCase keys)
+        helics_config = self._base_config.to_dict()
+
+        # Add mock component specific settings
+        helics_config.update(
+            {
+                "period": 1,
+                "log_level": "warning",
+                "terminate_on_error": True,
+                "publications": [
+                    {"key": key, "type": value} for key, value in outputs.items()
+                ],
+            }
+        )
 
         with open(os.path.join(self._directory, "helics_config.json"), "w") as f:
             json.dump(helics_config, f)

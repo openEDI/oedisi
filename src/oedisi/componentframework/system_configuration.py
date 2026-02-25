@@ -23,6 +23,23 @@ from abc import ABC, abstractmethod
 
 from pydantic import field_validator, BaseModel, ValidationInfo
 from oedisi.types.common import DOCKER_HUB_USER, APP_NAME
+from oedisi.types.helics_config import HELICSFederateConfig, SharedFederateConfig
+
+
+class ComponentCapabilities(BaseModel):
+    """Component capability declarations for build-time validation.
+
+    Parameters
+    ----------
+    version :
+        Capabilities schema version.
+    broker_config :
+        Whether this component supports receiving federate_config in static_inputs.json.
+        If True, the component can be used with WiringDiagram.shared_helics_config.
+    """
+
+    version: str = "1.0"
+    broker_config: bool = False
 
 
 class AnnotatedType(BaseModel):
@@ -72,10 +89,12 @@ class ComponentType(ABC):
     to run the component.
     """
 
+    _capabilities: ComponentCapabilities = ComponentCapabilities()
+
     @abstractmethod
     def __init__(
         self,
-        name: str,
+        base_config: HELICSFederateConfig,
         parameters: dict[str, dict[str, str]],
         directory: str,
         host: str | None = None,
@@ -166,6 +185,7 @@ class Component(BaseModel):
     "Image used in Docker Compose and Kubernetes"
     parameters: dict[str, Any]
     "Configuration passed onto each component."
+    helics_config_override: SharedFederateConfig | None = None
 
     def port(self, port_name: str) -> Port:
         """Create Port object for connecting this component at a port name."""
@@ -189,7 +209,20 @@ class ComponentStruct(BaseModel):
 
 
 class WiringDiagram(BaseModel):
-    """Cosimulation configuration. This may end up wrapped in another interface."""
+    """Cosimulation configuration. This may end up wrapped in another interface.
+
+    Parameters
+    ----------
+    name :
+        Name of the simulation.
+    components :
+        List of components in the simulation.
+    links :
+        List of links connecting component ports.
+    shared_helics_config :
+        Optional shared federate configuration applied to all components.
+        Per-component values (name, core_name) are derived automatically.
+    """
 
     name: str
     "Name of the simulation"
@@ -197,6 +230,7 @@ class WiringDiagram(BaseModel):
     "Component configuration and types"
     links: list[Link]
     "List of links {source, source_port, target, target_port} between components"
+    shared_helics_config: SharedFederateConfig | None = None
 
     def clean_model(self, target_directory=".") -> None:
         """Remove component directories, log files, and stray broker processes.
@@ -263,7 +297,7 @@ class WiringDiagram(BaseModel):
     @classmethod
     def empty(cls, name="unnamed"):
         """Create empty wiring diagram with no components or links."""
-        return cls(name=name, components=[], links=[])
+        return cls(name=name, components=[], links=[], shared_helics_config=None)
 
 
 class Federate(BaseModel):
@@ -314,8 +348,34 @@ def initialize_federates(
         if not os.path.exists(directory):
             os.makedirs(directory)
         component_type = component_types[component.type]
+
+        # Generate per-component federate config
+        federate_config = None
+        if component.helics_config_override is not None:
+            logging.warning(
+                f"Component '{component.name}' has helics_config_override. "
+                "Per-component overrides can cause subtle HELICS/timing issues."
+            )
+            federate_config = component.helics_config_override.to_federate_config(
+                name=component.name
+            )
+        elif wiring_diagram.shared_helics_config is not None:
+            federate_config = wiring_diagram.shared_helics_config.to_federate_config(
+                name=component.name
+            )
+
+        # Validate broker config support
+        if federate_config is not None and not component_type._capabilities.broker_config:
+            raise ValueError(
+                f"Component '{component.name}' (type: {component.type}) does not support "
+                'HELICS configuration. Add \'"capabilities": {"broker_config": true}\' '
+                "to the component's component_definition.json file."
+            )
+        elif federate_config is None:
+            federate_config = HELICSFederateConfig(name=component.name)
+
         initialized_component = component_type(
-            component.name,
+            federate_config,
             component.parameters,
             directory,
             component.host,
@@ -408,9 +468,29 @@ def generate_runner_config(
     federates = initialize_federates(
         wiring_diagram, component_types, compatibility_checker, target_directory
     )
+
+    # Build broker command with SharedHELICSConfig
+    broker_cmd = f"helics_broker -f {len(federates)}"
+
+    if wiring_diagram.shared_helics_config is not None:
+        cfg = wiring_diagram.shared_helics_config
+
+        if cfg.core_type is not None:
+            broker_cmd += f" -t {cfg.core_type}"
+
+        if cfg.broker is not None:
+            if cfg.broker.port is not None:
+                broker_cmd += f" --port {cfg.broker.port}"
+            if cfg.broker.key is not None:
+                broker_cmd += f" --brokerkey {cfg.broker.key}"
+            if cfg.broker.initstring is not None:
+                broker_cmd += f" {cfg.broker.initstring}"
+
+    broker_cmd += " --loglevel=warning"
+
     broker_federate = Federate(
         directory=".",
         name="broker",
-        exec=f"helics_broker -f {len(federates)} --loglevel=warning",
+        exec=broker_cmd,
     )
     return RunnerConfig(name=wiring_diagram.name, federates=([*federates, broker_federate]))
