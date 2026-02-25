@@ -1,3 +1,5 @@
+"""CLI tools for building and running OEDISI simulations."""
+
 from typing import Any
 from pathlib import Path
 from uuid import uuid4
@@ -38,21 +40,28 @@ from oedisi.types.common import (
 
 @click.group()
 def cli():
+    """OEDISI CLI for building and running simulations."""
     pass
 
 
-def bad_type_checker(type, x):
-    """Does not check types."""
+def _bad_type_checker(type, x):
+    """Return True for all types (no type checking)."""
     return True
 
 
-def get_basic_component(filename):
+def _get_basic_component(filename):
+    """Load basic component from component definition file while setting directory.
+
+    Returns
+    -------
+    BasicComponent class with directory at the filename with no type checking
+    """
     # before, the runner would use the directory given _in_ the component description
     # which may be inaccurate
     with open(filename) as f:
         comp_desc = ComponentDescription.model_validate(json.load(f))
     comp_desc.directory = os.path.dirname(filename)
-    return basic_component(comp_desc, bad_type_checker)
+    return basic_component(comp_desc, _bad_type_checker)
 
 
 @cli.command()
@@ -121,7 +130,7 @@ def build(
     with open(component_dict) as f:
         component_dict_of_files = json.load(f)
         component_types = {
-            name: get_basic_component(component_file)
+            name: _get_basic_component(component_file)
             for name, component_file in component_dict_of_files.items()
         }
 
@@ -140,10 +149,10 @@ def build(
         if not Path(simulation_dir).exists():
             os.makedirs(simulation_dir, exist_ok=True)
 
-        validate_optional_inputs(wiring_diagram, component_dict_of_files)
+        validate_optional_inputs(wiring_diagram)
         edit_docker_files(wiring_diagram, component_types)
         create_docker_compose_file(
-            wiring_diagram, simulation_dir, broker_port, component_types, simulation_id
+            wiring_diagram, simulation_dir, broker_port, component_types
         )
         create_kubernetes_deployment(
             wiring_diagram, simulation_dir, broker_port, simulation_id
@@ -158,7 +167,8 @@ def build(
             f.write(runner_config.model_dump_json(indent=2))
 
 
-def validate_optional_inputs(wiring_diagram: WiringDiagram, component_dict_of_files: dict):
+def validate_optional_inputs(wiring_diagram: WiringDiagram):
+    """Validate required host and container_port for multi-container."""
     for component in wiring_diagram.components:
         assert hasattr(component, "host"), (
             f"host parameter required for component {component.name} "
@@ -170,7 +180,11 @@ def validate_optional_inputs(wiring_diagram: WiringDiagram, component_dict_of_fi
         )
 
 
-def drop_null_values(model: Any) -> dict:
+def drop_null_values(model: dict) -> dict:
+    """Recursively remove null values and convert snake_case keys to camelCase.
+
+    This is necessary for generating Kubernetes yaml files.
+    """
     clean_model = {}
     assert isinstance(model, dict), "input to this function should be a dict"
     for k, v in model.items():
@@ -201,7 +215,20 @@ def create_kubernetes_deployment(
     target_directory: Path | str,
     broker_port: int,
     simulation_id: str,
-):
+) -> None:
+    """Create Kubernetes deployment YAML files for wiring diagram components.
+
+    Saves deployment to yamls under `target_directory`/kubernetes.
+
+    Parameters
+    ----------
+    wiring_diagram : WiringDiagram
+    target_directory : Path or str
+    broker_port : int
+        HTTP port to be exposed in Kubernetes deployment.
+    simulation_id : str
+        UUID to create a unique Kubernetes service and pod deployment
+    """
     kube_folder = os.path.join(target_directory, "kubernetes")
     if not os.path.exists(kube_folder):
         os.makedirs(kube_folder, exist_ok=True)
@@ -232,14 +259,15 @@ def create_kubernetes_deployment(
     broker_component = Component(
         name=BROKER_SERVICE, container_port=broker_port, type=BROKER_SERVICE, parameters={}
     )
-    create_single_kubernetes_deyployment(broker_component, kube_folder, simulation_id)
+    _create_single_kubernetes_deyployment(broker_component, kube_folder, simulation_id)
     for component in wiring_diagram.components:
-        create_single_kubernetes_deyployment(component, kube_folder, simulation_id)
+        _create_single_kubernetes_deyployment(component, kube_folder, simulation_id)
 
 
-def create_single_kubernetes_deyployment(
+def _create_single_kubernetes_deyployment(
     component: Component, kube_folder: Path | str, simulation_id: str
 ):
+    """Create Kubernetes pod YAML file for a single component."""
     kube_network_svc = f"{KUBERNETES_SERVICE_PREFIX}-{simulation_id}".lower()
     fixed_container_name = component.name.replace("_", "-")
     my_container = client.V1Container(
@@ -274,7 +302,19 @@ def create_single_kubernetes_deyployment(
         yaml.dump(pod_dict, f)
 
 
-def edit_docker_file(file_path, component: Component):
+def edit_docker_file(file_path: str | Path, component: Component):
+    """Generate Dockerfile for component with OEDISI and component dependencies.
+
+    The docker container installs oedisi, the requirements.txt, and run server.py
+    Although this is fine in a hurry, it should generally be avoided for all
+    components.
+
+    Parameters
+    ----------
+    file_path : str | Path
+        File path of Dockerfile to write for.
+    component : type information
+    """
     dir_path = os.path.abspath(os.path.join(file_path, os.pardir))
     server_file = os.path.join(dir_path, "server.py")
     assert os.path.exists(server_file), (
@@ -287,9 +327,7 @@ def edit_docker_file(file_path, component: Component):
         f.write("RUN apt-get update\n")
         f.write("RUN apt-get install -y git ssh\n")
 
-        # TODO: This works for now. Should be removed when a tagged release is available
-        f.write("RUN git clone https://github.com/openEDI/oedisi.git /oedisi\n")
-        f.write("RUN pip install /oedisi \n")
+        f.write("RUN pip install oedisi \n")
 
         f.write(f"RUN mkdir {component.type}\n")
         f.write(f"COPY  . ./{component.type}\n")
@@ -299,10 +337,19 @@ def edit_docker_file(file_path, component: Component):
         cmd = f"CMD {['python', 'server.py']}\n"
         cmd = cmd.replace("'", '"')
         f.write(cmd)
-    pass
 
 
-def edit_docker_files(wiring_diagram: WiringDiagram, component_types: dict):
+def edit_docker_files(wiring_diagram: WiringDiagram, component_types: dict[str, Any]):
+    """Generate Dockerfiles for all unique component types in wiring diagram.
+
+    This only works for BasicComponent types, i.e. only types with
+    "component_definition.json".
+
+    Parameter
+    ---------
+    wiring_diagram : WiringDiagram
+    component_types : dict from component types to "BasicComponent" types.
+    """
     parsed_components = []
     for component in wiring_diagram.components:
         if component.type not in parsed_components:
@@ -317,8 +364,19 @@ def create_docker_compose_file(
     target_directory: str,
     broker_port: int,
     component_types: dict,
-    simulation_id: str,
 ):
+    """Create docker-compose.yml configuration for multi-container simulation.
+
+    Writes to `target_directory`/docker-compose.yml. This only works for BasicComponent
+    types, i.e. only types with "component_definition.json".
+
+    Parameters
+    ----------
+    wiring_diagram
+    target_directory : str
+    broker_port : int
+    component_types : dict from str to BasicComponent classes
+    """
     config = {"services": {}, "networks": {}}
 
     config["services"][f"{APP_NAME}_{BROKER_SERVICE}"] = {
@@ -369,7 +427,7 @@ def create_docker_compose_file(
     help="Location of helics run json. Usually build/system_runner.json",
 )
 def run(runner):
-    """Calls out to helics run command.
+    """Run HELICS simulation using helics run command.
 
     Examples::
 
@@ -386,7 +444,9 @@ def run(runner):
     help="Location of helics run json. Usually build/system_runner.json",
 )
 def run_with_pause(runner):
-    """Helics broker is run in the foreground, and we allow user input
+    """Run HELICS simulation with interactive time barrier control.
+
+    Helics broker is run in the foreground, and we allow user input
     to block time.
 
     Examples::
@@ -438,6 +498,7 @@ def run_with_pause(runner):
     help="Use the flag to launch in a kubernetes pod. ",
 )
 def run_mc(runner, kubernetes, docker_compose):
+    """Run multi-container simulation using docker-compose or Kubernetes."""
     assert os.path.exists(runner), f"The provied path {runner} does not exist."
     file_name = Path(runner).name.lower()
     os.system("docker system prune --all")
@@ -542,7 +603,7 @@ def test_description(target_directory, component_desc, parameters):
 
     component_types = {
         "MockComponent": MockComponent,
-        "UserComponent": basic_component(comp_desc, bad_type_checker),
+        "UserComponent": basic_component(comp_desc, _bad_type_checker),
     }
     runner_config = generate_runner_config(
         w, component_types, target_directory=target_directory

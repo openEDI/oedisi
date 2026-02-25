@@ -1,3 +1,5 @@
+"""Utilities for HELICS broker time data management."""
+
 from pydantic import BaseModel
 
 
@@ -10,7 +12,7 @@ class TimeData(BaseModel):
 
 
 def pprint_time_data(time_data):
-    """A table would be better somehow, but which should be the columns."""
+    """Pretty print time data for a federate."""
     print(
         f"""
     Name         : {time_data.name}
@@ -21,6 +23,7 @@ def pprint_time_data(time_data):
 
 
 def parse_time_data(response):
+    """Parse broker response into list of TimeData objects."""
     time_data = []
     for core in response["cores"]:
         for fed in core["federates"]:
@@ -36,5 +39,6 @@ def parse_time_data(response):
 
 
 def get_time_data(broker):
+    """Query broker for global time data and parse into TimeData objects."""
     # Use global time debugging?
     return parse_time_data(broker.query("broker", "global_time"))

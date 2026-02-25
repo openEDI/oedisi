@@ -1,3 +1,5 @@
+"""Generate JSON schemas for all OEDISI data types."""
+
 from .data_types import *
 import os
 import logging

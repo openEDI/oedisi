@@ -26,16 +26,21 @@ from oedisi.types.common import DOCKER_HUB_USER, APP_NAME
 
 
 class AnnotatedType(BaseModel):
-    """Represent the types of components and their interfaces."""
+    """Represent the type on component static input, dynamic input, and dynamic output.
+
+    Currently not checked in any type checker.
+    """
 
     type: str
+    "Name referencing oedisi Pydantic type or empty string"
     description: str | None = None
     unit: str | None = None
     port_id: str | None = None
+    "Manually set port id"
 
     @property
     def port_name(self):
-        """Get name of port (which is prepended with name in HELICS)."""
+        """Input or output name which defaults to type name or port_id."""
         if self.port_id is None:
             return self.type
         return self.port_id
@@ -81,36 +86,63 @@ class ComponentType(ABC):
 
     @abstractmethod
     def generate_input_mapping(self, links: dict[str, str]):
+        """Generate input mapping from link target ports to HELICS subscription keys."""
         pass
 
     @property
     @abstractmethod
-    def execute_function(self):
+    def execute_function(self) -> str:
+        """Command to execute the component federate."""
         pass
 
     @property
     @abstractmethod
-    def dynamic_inputs(self):
+    def dynamic_inputs(self) -> dict[str, AnnotatedType]:
+        """Dictionary of dynamic input port names to types."""
         pass
 
     @property
     @abstractmethod
-    def dynamic_outputs(self):
+    def dynamic_outputs(self) -> dict[str, AnnotatedType]:
+        """Dictionary of dynamic output port names to types."""
         pass
 
 
 class Link(BaseModel):
+    """Connection between component ports in wiring diagram."""
+
     source: str
+    "Name of component that is publishing"
     source_port: str
+    "Publication/dynamic output name"
     target: str
+    "Name of component that is subscribing"
     target_port: str
+    "Dynamic input name mapped to source_port"
 
 
 class Port(BaseModel):
-    name: str
-    port_name: str
+    """Port identifier for creating links between components."""
 
-    def connect(self, port: "Port"):
+    name: str
+    "Component name"
+    port_name: str
+    "Dynamic input/output name"
+
+    def connect(self, port: "Port") -> Link:
+        """Create link from this port to target port.
+
+        Parameters
+        ----------
+        self : Port
+            Source port
+        port : Port
+            Target port
+
+        Returns
+        -------
+        Link connecting self and port.
+        """
         return Link(
             source=self.name,
             source_port=self.port_name,
@@ -120,40 +152,60 @@ class Port(BaseModel):
 
 
 class Component(BaseModel):
-    """A component type in WiringDiagram, includes name, type, and initial parameters."""
+    """A component configuration in WiringDiagram."""
 
     name: str
+    "Name or identifier of this component instance"
     type: str
+    "Type of component referencing component type dictionary"
     host: str | None = None
+    "Hostname used in Docker Compose and Kubernetes"
     container_port: int | None = None
+    "Port used in Docker Compose and Kubernetes"
     image: str = ""
+    "Image used in Docker Compose and Kubernetes"
     parameters: dict[str, Any]
+    "Configuration passed onto each component."
 
-    def port(self, port_name: str):
+    def port(self, port_name: str) -> Port:
+        """Create Port object for connecting this component at a port name."""
         return Port(name=self.name, port_name=port_name)
 
     @field_validator("image", mode="before")
     @classmethod
-    def validate_image(cls, v, info: ValidationInfo):
+    def validate_image(cls, image: str, info: ValidationInfo) -> str:
         """Add latest tag to name if not specified."""
-        if not v:
+        if not image:
             return f"{DOCKER_HUB_USER}/{APP_NAME}_{info.data['type']}:latest"
-        return v
+        return image
 
 
 class ComponentStruct(BaseModel):
+    """Component with its associated links for multi-container configuration."""
+
     component: Component
     links: list[Link]
+    "All links with the component as target"
 
 
 class WiringDiagram(BaseModel):
     """Cosimulation configuration. This may end up wrapped in another interface."""
 
     name: str
+    "Name of the simulation"
     components: list[Component]
+    "Component configuration and types"
     links: list[Link]
+    "List of links {source, source_port, target, target_port} between components"
 
-    def clean_model(self, target_directory="."):
+    def clean_model(self, target_directory=".") -> None:
+        """Remove component directories, log files, and stray broker processes.
+
+        Parameters
+        ----------
+        target_directory : str = "."
+            Build folder with component directories and logs.
+        """
         for component in self.components:
             to_delete = os.path.join(target_directory, component.name)
             log_file = os.path.join(target_directory, component.name + ".log")
@@ -170,7 +222,6 @@ class WiringDiagram(BaseModel):
             else:
                 os.remove(log_file)
 
-        # TODO: Check for any processes using the HELICS port and kill them too
         for proc in psutil.process_iter():
             if proc.name() == "helics_broker":
                 proc.kill()
@@ -186,6 +237,7 @@ class WiringDiagram(BaseModel):
     @field_validator("links")
     @classmethod
     def check_link_names(cls, links, info: ValidationInfo):
+        """Validate that link source and target components exist."""
         if "components" in info.data:
             components = info.data["components"]
             names = set(map(lambda c: c.name, components))
@@ -193,31 +245,38 @@ class WiringDiagram(BaseModel):
                 assert link.source in names and link.target in names
         return links
 
-    def add_component(self, c: Component):
+    def add_component(self, c: Component) -> None:
+        """Add component to wiring diagram."""
         self.components.append(c)
 
-    def add_link(self, link: Link):
+    def add_link(self, link: Link) -> None:
+        """Add link to wiring diagram."""
         self.links.append(link)
+
+    def get_link_map(self) -> dict[str, Link]:
+        """Create mapping from component names to their incoming links."""
+        link_map = defaultdict(list)
+        for link in self.links:
+            link_map[link.target].append(link)
+        return link_map
 
     @classmethod
     def empty(cls, name="unnamed"):
+        """Create empty wiring diagram with no components or links."""
         return cls(name=name, components=[], links=[])
 
 
 class Federate(BaseModel):
-    """Federate configuration for HELICS CLI."""
+    """Federate configuration for HELICS CLI runner."""
 
     directory: str
+    "Directory in which the execution should take place"
     hostname: str = "localhost"
+    "Hostname for Docker Compose and Kubernetes"
     name: str
+    "Name of component (used for logs)"
     exec: str
-
-
-def get_federates_conn_info(wiring_diagram: WiringDiagram):
-    data = ""
-    for component in wiring_diagram.components:
-        data += f" {component.host} {component.port}"
-    return data
+    "Command to start component"
 
 
 def initialize_federates(
@@ -226,9 +285,30 @@ def initialize_federates(
     compatability_checker,
     target_directory=".",
 ) -> list[Federate]:
-    """Initialize all the federates."""
+    """Initialize all the federates.
+
+    Extracts config and sends it to each Component in an initalization step,
+    then finds all dynamic inputs and outputs and sends input mappings.
+
+    Parameters
+    ----------
+    wiring_diagram
+    component_types : dictionary of component type names to ComponentType class
+    compatibility_checker : function from types to bool
+        Check if source type is compatible with target_type
+    target_directory : str | Path = "."
+        Directory where all components should be initialized.
+
+    Returns
+    -------
+    List of `Federate` run configuration
+
+    Raises
+    ------
+    ComponentType classes may return errors on configuration.
+    """
     components = {}
-    link_map = get_link_map(wiring_diagram)
+    link_map = wiring_diagram.get_link_map()
     for component in wiring_diagram.components:
         directory = os.path.join(target_directory, component.name)
         if not os.path.exists(directory):
@@ -273,13 +353,6 @@ def initialize_federates(
     return federates
 
 
-def get_link_map(wiring_diagram: WiringDiagram):
-    link_map = defaultdict(list)
-    for link in wiring_diagram.links:
-        link_map[link.target].append(link)
-    return link_map
-
-
 class RunnerConfig(BaseModel):
     """HELICS running config for the full simulation.
 
@@ -299,19 +372,18 @@ class RunnerConfig(BaseModel):
     federates: list[Federate]
 
 
-def bad_compatability_checker(type1, type2):
-    """Basic compatability checker that says all types are compatible."""
+def _bad_compatability_checker(type1, type2):
+    """Return True for all type pairs (no type checking)."""
     return True
 
 
 def generate_runner_config(
     wiring_diagram: WiringDiagram,
     component_types: dict[str, type[ComponentType]],
-    compatibility_checker=bad_compatability_checker,
+    compatibility_checker=_bad_compatability_checker,
     target_directory=".",
 ):
-    """Brings together a `WiringDiagram` and a dictionary of `ComponentTypes`
-    to create a helics run configuration.
+    """Create HELICS run configuration from wiring diagram and component types.
 
     Parameters
     ----------
@@ -320,14 +392,18 @@ def generate_runner_config(
     component_types : Dict[str, Type[ComponentType]]
         Dictionary for the wiring diagram component types
         to Python component types
-    compatibility_checker: function of two types to the booleans
-        Each link uses the compatability_checker to ensure the link
-        is between compatible types.
+    compatibility_checker: function of two types to a bool
+        Each link uses the compatability_checker to ensure the link types are
+        compatible.
 
     Returns
     -------
     RunnerConfig
         Configuration which can be used to run the cosimulation
+
+    Raises
+    ------
+    Can raise any exception from component type initialization
     """
     federates = initialize_federates(
         wiring_diagram, component_types, compatibility_checker, target_directory

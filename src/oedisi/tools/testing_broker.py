@@ -1,3 +1,5 @@
+"""Testing utilities for HELICS broker and federate graph management."""
+
 import time
 from typing import cast
 
@@ -5,6 +7,7 @@ import helics as h
 
 
 def get_inputs_outputs(graph_dict):
+    """Extract input and output mappings from federate graph dictionary."""
     federate_inputs = {}
     federate_outputs = {}
     federate_id_handle2key = {}
@@ -34,10 +37,14 @@ def get_inputs_outputs(graph_dict):
 
 
 class TestingBroker:
+    """HELICS broker for testing federate graph connections."""
+
     def __init__(self, n):
+        """Initialize testing broker with n federates."""
         self.initstring = f"-f {n} --name=mainbroker"
 
     def run(self):
+        """Run broker and extract data flow graph."""
         time.sleep(2)
         self.broker = h.helicsCreateBroker("zmq", "", self.initstring)
         h.helicsBrokerSetTimeBarrier(self.broker, 0.0)
@@ -50,6 +57,7 @@ class TestingBroker:
         return get_inputs_outputs(graph_dict)
 
     def wait_until_connected(self):
+        """Wait until all federates have initialized and connected."""
         print("Waiting for initialization")
         while True:
             time.sleep(2)
