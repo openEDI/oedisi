@@ -1,0 +1,4 @@
+# Requirements for docs/tools/generate.py (run with the `oedisi` package installed).
+# The generator introspects the installed oedisi package, so install oedisi too:
+#   pip install oedisi
+griffe>=0.45

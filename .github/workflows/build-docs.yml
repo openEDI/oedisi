@@ -5,29 +5,80 @@ on:
   pull_request:
   workflow_dispatch:
 permissions:
-    contents: write
+  contents: write
 jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up uv
-      uses: astral-sh/setup-uv@v6
-    - name: Set up Python 3.12
-      uses: actions/setup-python@v6
-      with:
-        python-version: '3.12'
-    - name: Install python dependencies and build sphinx
-      run: |
-        uv sync
-        uv pip install -r docs/requirements.txt
-        cd docs
-        uv run make html
-    - name: Deploy
-      uses: peaceiris/actions-gh-pages@v3
-      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-      with:
-        publish_branch: gh-pages
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: docs/_build/html
-        force_orphan: true
+      - uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Python dependencies
+        run: |
+          uv sync
+          uv pip install -r docs/requirements.txt
+
+      - name: Install MyST (Jupyter Book)
+        run: npm install -g mystmd@^1.8
+
+      - name: Check generated reference pages are up to date
+        run: uv run python docs/tools/generate.py --check --targets cli api data-types
+
+      - name: Validate the analysis notebook executes
+        run: |
+          uv run python -m ipykernel install --user --name python3
+          cd docs/beginner
+          uv run jupyter nbconvert --to notebook --execute --output /tmp/_exec.ipynb analyze-results.ipynb
+
+      - name: Build the book
+        env:
+          # GitHub Pages serves this repo under https://openedi.github.io/oedisi/,
+          # so assets must be prefixed with the /oedisi subpath.
+          BASE_URL: /oedisi
+        run: |
+          set -eo pipefail
+          cd docs
+          myst build --html 2>&1 | tee /tmp/mystbuild.log
+          if grep -q "Cross reference target was not found" /tmp/mystbuild.log; then
+            echo "::error::Broken internal cross-references found"; exit 1
+          fi
+
+      - name: Add redirect stubs for old URLs
+        run: uv run python docs/tools/make_redirects.py docs/_build/html
+
+      - name: Build PDF (best effort)
+        continue-on-error: true
+        run: |
+          curl -fsSL https://github.com/typst/typst/releases/latest/download/typst-x86_64-unknown-linux-musl.tar.xz -o /tmp/typst.tar.xz
+          tar -xf /tmp/typst.tar.xz -C /tmp
+          sudo cp /tmp/typst-x86_64-unknown-linux-musl/typst /usr/local/bin/typst
+          cd docs && myst build --pdf
+
+      - name: Upload PDF artifact
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: oedisi-docs-pdf
+          path: docs/_build/exports/*.pdf
+          if-no-files-found: ignore
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        with:
+          publish_branch: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/_build/html
+          force_orphan: true

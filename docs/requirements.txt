@@ -1,8 +1,13 @@
-sphinx>=7,<8
-helics==3.2.0
-helics-apps==3.2.0
-pydantic>=1.7,<2
-sphinx-click
-sphinxcontrib-youtube
-psutil
-furo
+# Python dependencies for building the docs (in addition to the `oedisi` package
+# itself, which the generators and notebook import).
+#
+#   pip install -e .            # the oedisi package
+#   pip install -r docs/requirements.txt
+#
+# The site itself is built with the MyST CLI (`mystmd`), installed via npm.
+griffe>=0.45          # API reference generation (docs/tools/generate.py)
+nbconvert             # execute the analysis notebook in CI
+ipykernel             # kernel for notebook execution
+matplotlib            # analysis notebook plots
+pandas                # analysis notebook data handling
+pyarrow               # read the sample recorder Feather files
