@@ -166,6 +166,24 @@ def _clean_cli_help(cmd) -> str:
     return inspect.cleandoc(text).strip()
 
 
+def _is_click_unset(value) -> bool:
+    """True for Click's internal 'no default' sentinel (None in <8.4, Sentinel in >=8.4)."""
+    t = type(value)
+    return getattr(t, "__module__", "").startswith("click") and (
+        t.__name__ == "Sentinel" or repr(value).endswith("UNSET")
+    )
+
+
+def _option_default_cell(p) -> str:
+    """Render an option's default cell, treating unset defaults uniformly."""
+    if p.required:
+        return "**required**"
+    d = p.default
+    if d is None or _is_click_unset(d) or d == ():
+        return "—"
+    return f"`{d!r}`"
+
+
 def render_cli() -> str:
     import click
 
@@ -224,12 +242,7 @@ def render_cli() -> str:
                     typ = "flag"
                 else:
                     typ = getattr(p.type, "name", "") or ""
-                if p.required:
-                    default = "**required**"
-                elif p.default is not None and p.default != ():
-                    default = f"`{p.default!r}`"
-                else:
-                    default = "—"
+                default = _option_default_cell(p)
                 desc = md_escape(p.help or "")
                 lines.append(f"| {flags} | {typ} | {default} | {desc} |")
             lines.append("")
