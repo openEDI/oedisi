@@ -152,6 +152,20 @@ def render_field_table(rows: list[tuple[str, str, str, str]]) -> str:
 # --------------------------------------------------------------------------- #
 # Page: CLI
 # --------------------------------------------------------------------------- #
+def _clean_cli_help(cmd) -> str:
+    """User-facing help for a Click command, without the autodoc tail.
+
+    Click hides everything after a form-feed in help output; some docstrings
+    encode it literally as ``\f``. We also drop any trailing numpydoc
+    ``Parameters`` section so the page is deterministic across Click versions.
+    """
+    text = cmd.help or ""
+    for sep in ("\x0c", "\\f"):
+        text = text.split(sep, 1)[0]
+    text = re.split(r"\n[ \t]*Parameters[ \t]*\n[ \t]*-{3,}", text)[0]
+    return inspect.cleandoc(text).strip()
+
+
 def render_cli() -> str:
     import click
 
@@ -178,30 +192,28 @@ def render_cli() -> str:
         "",
     ]
 
-    root = click.Context(cli, info_name="oedisi")
     # Summary table
     lines.append("| Command | Summary |")
     lines.append("| --- | --- |")
     for name, cmd in sorted(cli.commands.items()):
-        summary = md_escape(cmd.get_short_help_str(limit=120))
+        summary = md_escape(_clean_cli_help(cmd).split("\n", 1)[0])
         lines.append(f"| [`oedisi {name}`](#cli-{slug(name)}) | {summary} |")
     lines.append("")
 
     for name, cmd in sorted(cli.commands.items()):
-        ctx = click.Context(cmd, info_name=name, parent=root)
         lines.append(f"(cli-{slug(name)})=")
         lines.append(f"### `oedisi {name}`")
         lines.append("")
-        help_full = (cmd.help or "").split("\f")[0].strip()
-        if help_full:
-            lines.append(inspect.cleandoc(help_full))
+        help_body = _clean_cli_help(cmd)
+        if help_body:
+            lines.append(help_body)
             lines.append("")
         lines.append("```text")
-        lines.append(cmd.get_usage(ctx).strip())
+        lines.append(f"Usage: oedisi {name} [OPTIONS]")
         lines.append("```")
         lines.append("")
 
-        opts = [p for p in cmd.get_params(ctx) if isinstance(p, click.Option)]
+        opts = [p for p in cmd.params if isinstance(p, click.Option)]
         opts = [p for p in opts if p.name != "help"]
         if opts:
             lines.append("| Option | Type | Default | Description |")

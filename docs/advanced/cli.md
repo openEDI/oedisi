@@ -40,21 +40,6 @@ Examples::
 
     oedisi build --component-dict components.json --system scenario.json
 
-\f
-
-Parameters
-----------
-target_directory : str (default="build")
-    build path
-system : str (default="system.json")
-    path to wiring diagram json
-component_dict : str (default="components.json")
-    path to JSON dictionary of component folders
-multi_container: bool
-    A boolean specifying whether or not we're using the multi-container approach
-broker_port: float
-    The port of the broker. If using kubernetes, is internal to k8s
-
 ```text
 Usage: oedisi build [OPTIONS]
 ```
@@ -79,16 +64,6 @@ Run system runner json with one component in the JSON.
 We remove one component from system_runner.json
 and then call helics run in the background with our new json.
 and then run our debugging component in standard in / standard out.
-
-\f
-
-Parameters
-----------
-runner : str
-    filepath to system runner json
-
-foreground : str
-    name of component
 
 ```text
 Usage: oedisi debug-component [OPTIONS]
@@ -121,16 +96,6 @@ Metrics:
 - MARE: Mean absolute relative error.
 - RMSRE: Root mean squared relative error.
 - MAAE: Mean absolute angle error.
-
-\f
-
-Parameters
-----------
-path : Path
-    Path to the folder containing the measurement files.
-
-metric : str
-    Metric to be used for evaluation. The options are:
 
 ```text
 Usage: oedisi evaluate-estimate [OPTIONS]
@@ -223,29 +188,6 @@ Examples::
     ✓
     Testing dynamic output names
     ✓
-
-
-\f
-
-Parameters
-----------
-target_directory : str
-    build location
-
-component_desc : str
-    filepath to component_description.json to test
-
-parameters : str
-    filepath to parameters json (default is parameters={})
-
-Process
--------
-
-Get inputs and outputs from component_desc
-Create a wiring diagram for component
-    and a "do-nothing" component with parameters for the corresponding
-    inputs and outputs (basically recorder federate?)
-Create and run system with wiring diagram
 
 ```text
 Usage: oedisi test-description [OPTIONS]
