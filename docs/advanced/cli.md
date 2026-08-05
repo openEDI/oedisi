@@ -21,24 +21,39 @@ Usage: oedisi [OPTIONS] COMMAND [ARGS]...
 
 | Command | Summary |
 | --- | --- |
-| [`oedisi build`](#cli-build) | Build to the simulation folder |
-| [`oedisi debug-component`](#cli-debug-component) | Run system runner json with one component in the JSON |
+| [`oedisi build`](#cli-build) | Build to the simulation folder. |
+| [`oedisi debug-component`](#cli-debug-component) | Run system runner json with one component in the JSON. |
 | [`oedisi evaluate-estimate`](#cli-evaluate-estimate) | Evaluate the estimate of the algorithm against the measurements. |
-| [`oedisi run`](#cli-run) | Calls out to helics run command |
-| [`oedisi run-mc`](#cli-run-mc) |  |
-| [`oedisi run-with-pause`](#cli-run-with-pause) | Helics broker is run in the foreground, and we allow user input to block time. |
-| [`oedisi test-description`](#cli-test-description) | Test component intialization from component description |
+| [`oedisi run`](#cli-run) | Run HELICS simulation using helics run command. |
+| [`oedisi run-mc`](#cli-run-mc) | Run multi-container simulation using docker-compose or Kubernetes. |
+| [`oedisi run-with-pause`](#cli-run-with-pause) | Run HELICS simulation with interactive time barrier control. |
+| [`oedisi test-description`](#cli-test-description) | Test component intialization from component description. |
 
 (cli-build)=
 ### `oedisi build`
 
-Build to the simulation folder
+Build to the simulation folder.
 
 Examples::
 
     oedisi build
 
     oedisi build --component-dict components.json --system scenario.json
+
+\f
+
+Parameters
+----------
+target_directory : str (default="build")
+    build path
+system : str (default="system.json")
+    path to wiring diagram json
+component_dict : str (default="components.json")
+    path to JSON dictionary of component folders
+multi_container: bool
+    A boolean specifying whether or not we're using the multi-container approach
+broker_port: float
+    The port of the broker. If using kubernetes, is internal to k8s
 
 ```text
 Usage: oedisi build [OPTIONS]
@@ -50,17 +65,30 @@ Usage: oedisi build [OPTIONS]
 | `--system` | path | `'system.json'` | Wiring diagram json to build |
 | `--component-dict` | path | `'components.json'` | path to JSON Dictionary of component folders |
 | `-m`, `--multi-container` | flag | `False` | Use the flag to create docker-compose config files for a multi-container implementation. |
-| `-p`, `--broker-port` | integer | `8766` | Pass the broker port. |
+| `-p`, `--broker-port` | integer | `8766` | REST API broker port for multi-container deployments. |
+| `--helics-port` | integer | — | HELICS broker port for local builds (overrides system.json) |
+| `--helics-core-type` | choice | — | HELICS core type for local builds (overrides system.json) |
+| `--helics-broker-key` | text | — | HELICS broker authentication key for local builds (overrides system.json) |
 | `-i`, `--simulation-id` | text | — | Simulation ID for kubernetres or docker compose configurations. |
 
 (cli-debug-component)=
 ### `oedisi debug-component`
 
-Run system runner json with one component in the JSON
+Run system runner json with one component in the JSON.
 
 We remove one component from system_runner.json
 and then call helics run in the background with our new json.
 and then run our debugging component in standard in / standard out.
+
+\f
+
+Parameters
+----------
+runner : str
+    filepath to system runner json
+
+foreground : str
+    name of component
 
 ```text
 Usage: oedisi debug-component [OPTIONS]
@@ -78,21 +106,31 @@ Evaluate the estimate of the algorithm against the measurements.
 
 The measurements are assumed to be in the form of .feather files.
 
-
+\b
 True voltages:
 - voltage_real.feather
 - voltage_imag.feather
 
-
+\b
 Estimated voltages
 - voltage_mag.feather
 - voltage_angle.feather
 
-
+\b
 Metrics:
 - MARE: Mean absolute relative error.
 - RMSRE: Root mean squared relative error.
 - MAAE: Mean absolute angle error.
+
+\f
+
+Parameters
+----------
+path : Path
+    Path to the folder containing the measurement files.
+
+metric : str
+    Metric to be used for evaluation. The options are:
 
 ```text
 Usage: oedisi evaluate-estimate [OPTIONS]
@@ -107,7 +145,7 @@ Usage: oedisi evaluate-estimate [OPTIONS]
 (cli-run)=
 ### `oedisi run`
 
-Calls out to helics run command
+Run HELICS simulation using helics run command.
 
 Examples::
 
@@ -124,6 +162,8 @@ Usage: oedisi run [OPTIONS]
 (cli-run-mc)=
 ### `oedisi run-mc`
 
+Run multi-container simulation using docker-compose or Kubernetes.
+
 ```text
 Usage: oedisi run-mc [OPTIONS]
 ```
@@ -136,6 +176,8 @@ Usage: oedisi run-mc [OPTIONS]
 
 (cli-run-with-pause)=
 ### `oedisi run-with-pause`
+
+Run HELICS simulation with interactive time barrier control.
 
 Helics broker is run in the foreground, and we allow user input
 to block time.
@@ -168,11 +210,12 @@ Usage: oedisi run-with-pause [OPTIONS]
 (cli-test-description)=
 ### `oedisi test-description`
 
-Test component intialization from component description
+Test component intialization from component description.
 
 Examples::
 
-    oedisi test-description --component-desc component/component_definition.json --parameters inputs.json
+    oedisi test-description --component-desc component/component_definition.json \\
+        --parameters inputs.json
 
     Initialized broker
     Waiting for initialization
@@ -180,6 +223,29 @@ Examples::
     ✓
     Testing dynamic output names
     ✓
+
+
+\f
+
+Parameters
+----------
+target_directory : str
+    build location
+
+component_desc : str
+    filepath to component_description.json to test
+
+parameters : str
+    filepath to parameters json (default is parameters={})
+
+Process
+-------
+
+Get inputs and outputs from component_desc
+Create a wiring diagram for component
+    and a "do-nothing" component with parameters for the corresponding
+    inputs and outputs (basically recorder federate?)
+Create and run system with wiring diagram
 
 ```text
 Usage: oedisi test-description [OPTIONS]

@@ -22,20 +22,35 @@ Module: `oedisi.componentframework.system_configuration`
 (api-wiringdiagram)=
 ### `WiringDiagram` (class)
 
-Cosimulation configuration. This may end up wrapped in another interface
+```text
+Cosimulation configuration. This may end up wrapped in another interface.
+
+Parameters
+----------
+name :
+    Name of the simulation.
+components :
+    List of components in the simulation.
+links :
+    List of links connecting component ports.
+shared_helics_config :
+    Optional shared federate configuration applied to all components.
+    Per-component values (name, core_name) are derived automatically.
+```
 
 **Fields**
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
 | `name` | `str` | **required** |  |
-| `components` | `List[Component]` | **required** |  |
-| `links` | `List[Link]` | **required** |  |
+| `components` | `list[Component]` | **required** |  |
+| `links` | `list[Link]` | **required** |  |
+| `shared_helics_config` | `SharedFederateConfig | None` | `None` |  |
 
 (api-component)=
 ### `Component` (class)
 
-A component type in WiringDiagram, includes name, type, and initial parameters.
+A component configuration in WiringDiagram.
 
 **Fields**
 
@@ -43,13 +58,16 @@ A component type in WiringDiagram, includes name, type, and initial parameters.
 | --- | --- | --- | --- |
 | `name` | `str` | **required** |  |
 | `type` | `str` | **required** |  |
-| `host` | `Optional[str]` | `None` |  |
-| `container_port` | `Optional[int]` | `None` |  |
+| `host` | `str | None` | `None` |  |
+| `container_port` | `int | None` | `None` |  |
 | `image` | `str` | `''` |  |
-| `parameters` | `Dict[str, Any]` | **required** |  |
+| `parameters` | `dict[str, Any]` | **required** |  |
+| `helics_config_override` | `SharedFederateConfig | None` | `None` |  |
 
 (api-link)=
 ### `Link` (class)
+
+Connection between component ports in wiring diagram.
 
 **Fields**
 
@@ -63,6 +81,8 @@ A component type in WiringDiagram, includes name, type, and initial parameters.
 (api-port)=
 ### `Port` (class)
 
+Port identifier for creating links between components.
+
 **Fields**
 
 | Field | Type | Default | Description |
@@ -73,26 +93,30 @@ A component type in WiringDiagram, includes name, type, and initial parameters.
 (api-annotatedtype)=
 ### `AnnotatedType` (class)
 
-Represent the types of components and their interfaces.
+Represent the type on component static input, dynamic input, and dynamic output.
+
+Currently not checked in any type checker.
 
 **Fields**
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
 | `type` | `str` | **required** |  |
-| `description` | `Optional[str]` | `None` |  |
-| `unit` | `Optional[str]` | `None` |  |
-| `port_id` | `Optional[str]` | `None` |  |
+| `description` | `str | None` | `None` |  |
+| `unit` | `str | None` | `None` |  |
+| `port_id` | `str | None` | `None` |  |
 
 (api-componentstruct)=
 ### `ComponentStruct` (class)
+
+Component with its associated links for multi-container configuration.
 
 **Fields**
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
 | `component` | `Component` | **required** |  |
-| `links` | `List[Link]` | **required** |  |
+| `links` | `list[Link]` | **required** |  |
 
 (api-componenttype)=
 ### `ComponentType` (class)
@@ -121,10 +145,32 @@ This can also be used for endpoint targets less often.
 Finally, the execute_function property defines the command
 to run the component.
 
+(api-componentcapabilities)=
+### `ComponentCapabilities` (class)
+
+```text
+Component capability declarations for build-time validation.
+
+Parameters
+----------
+version :
+    Capabilities schema version.
+broker_config :
+    Whether this component supports receiving federate_config in static_inputs.json.
+    If True, the component can be used with WiringDiagram.shared_helics_config.
+```
+
+**Fields**
+
+| Field | Type | Default | Description |
+| --- | --- | --- | --- |
+| `version` | `str` | `'1.0'` |  |
+| `broker_config` | `bool` | `False` |  |
+
 (api-federate)=
 ### `Federate` (class)
 
-Federate configuration for HELICS CLI
+Federate configuration for HELICS CLI runner.
 
 **Fields**
 
@@ -139,7 +185,7 @@ Federate configuration for HELICS CLI
 ### `RunnerConfig` (class)
 
 ```text
-HELICS running config for the full simulation
+HELICS running config for the full simulation.
 
 Examples
 --------
@@ -158,18 +204,17 @@ Run Simulation
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
 | `name` | `str` | **required** |  |
-| `federates` | `List[Federate]` | **required** |  |
+| `federates` | `list[Federate]` | **required** |  |
 
 (api-generate-runner-config)=
 ### `generate_runner_config` (function)
 
 ```python
-generate_runner_config(wiring_diagram: WiringDiagram, component_types: Dict[str, Type[ComponentType]], compatibility_checker=bad_compatability_checker, target_directory='.')
+generate_runner_config(wiring_diagram: WiringDiagram, component_types: dict[str, type[ComponentType]], compatibility_checker=_bad_compatability_checker, target_directory='.')
 ```
 
 ```text
-Brings together a `WiringDiagram` and a dictionary of `ComponentTypes`
-to create a helics run configuration.
+Create HELICS run configuration from wiring diagram and component types.
 
 Parameters
 ----------
@@ -178,30 +223,49 @@ wiring_diagram : WiringDiagram
 component_types : Dict[str, Type[ComponentType]]
     Dictionary for the wiring diagram component types
     to Python component types
-compatibility_checker: function of two types to the booleans
-    Each link uses the compatability_checker to ensure the link
-    is between compatible types.
+compatibility_checker: function of two types to a bool
+    Each link uses the compatability_checker to ensure the link types are
+    compatible.
 
 Returns
 -------
 RunnerConfig
     Configuration which can be used to run the cosimulation
+
+Raises
+------
+Can raise any exception from component type initialization
 ```
 
 (api-initialize-federates)=
 ### `initialize_federates` (function)
 
 ```python
-initialize_federates(wiring_diagram: WiringDiagram, component_types: Dict[str, Type[ComponentType]], compatability_checker, target_directory='.') -> List[Federate]
+initialize_federates(wiring_diagram: WiringDiagram, component_types: dict[str, type[ComponentType]], compatability_checker, target_directory='.') -> list[Federate]
 ```
 
-Initialize all the federates
+```text
+Initialize all the federates.
 
-(api-get-link-map)=
-### `get_link_map` (function)
+Extracts config and sends it to each Component in an initalization step,
+then finds all dynamic inputs and outputs and sends input mappings.
 
-```python
-get_link_map(wiring_diagram: WiringDiagram)
+Parameters
+----------
+wiring_diagram
+component_types : dictionary of component type names to ComponentType class
+compatibility_checker : function from types to bool
+    Check if source type is compatible with target_type
+target_directory : str | Path = "."
+    Directory where all components should be initialized.
+
+Returns
+-------
+List of `Federate` run configuration
+
+Raises
+------
+ComponentType classes may return errors on configuration.
 ```
 
 ## Basic components
@@ -212,7 +276,7 @@ Module: `oedisi.componentframework.basic_component`
 ### `ComponentDescription` (class)
 
 ```text
-Component description for simple ComponentType
+Component description for simple ComponentType.
 
 Parameters
 ----------
@@ -226,6 +290,8 @@ dynamic_inputs :
     List of input types. Typically subscriptions.
 dynamic_outputs :
     List of output types. Typically publications.
+capabilities :
+    Component capability declarations for build-time validation.
 ```
 
 **Fields**
@@ -234,9 +300,30 @@ dynamic_outputs :
 | --- | --- | --- | --- |
 | `directory` | `str` | **required** |  |
 | `execute_function` | `str` | **required** |  |
-| `static_inputs` | `List[AnnotatedType]` | **required** |  |
-| `dynamic_inputs` | `List[AnnotatedType]` | **required** |  |
-| `dynamic_outputs` | `List[AnnotatedType]` | **required** |  |
+| `static_inputs` | `list[AnnotatedType]` | **required** |  |
+| `dynamic_inputs` | `list[AnnotatedType]` | **required** |  |
+| `dynamic_outputs` | `list[AnnotatedType]` | **required** |  |
+| `capabilities` | `ComponentCapabilities` | `PydanticUndefined` |  |
+
+(api-component-from-json)=
+### `component_from_json` (function)
+
+```python
+component_from_json(filepath, type_checker)
+```
+
+```text
+Load component description from JSON file and create component type.
+
+Parameters
+----------
+filepath : str | Path
+type_checker : function taking the type and value and returning a boolean
+
+Returns
+-------
+BasicComponent class
+```
 
 (api-basic-component)=
 ### `basic_component` (function)
@@ -246,13 +333,13 @@ basic_component(comp_desc: ComponentDescription, type_checker)
 ```
 
 ```text
-Uses data in component_definition to create a new component type
+Create a new component type from component definition data.
 
 Parameters
 ----------
 comp_desc : ComponentDescription
      Simplified component representation usually from a JSON file
-type_checker: function taking the type and value and returning a boolean
+type_checker : function taking the type and value and returning a boolean
 
 Returns
 -------

@@ -246,18 +246,18 @@ API_SECTIONS = [
             "AnnotatedType",
             "ComponentStruct",
             "ComponentType",
+            "ComponentCapabilities",
             "Federate",
             "RunnerConfig",
             "generate_runner_config",
             "initialize_federates",
-            "get_link_map",
         ],
     ),
     (
         "Basic components",
         "oedisi.componentframework.basic_component",
         "componentframework.basic_component",
-        ["ComponentDescription", "basic_component"],
+        ["ComponentDescription", "component_from_json", "basic_component"],
     ),
 ]
 
@@ -289,7 +289,10 @@ def render_api() -> str:
         lines.append(f"Module: `{module_path}`")
         lines.append("")
         for objname in names:
-            obj = getattr(module, objname)
+            obj = getattr(module, objname, None)
+            if obj is None:
+                print(f"[skip] {module_path}.{objname} not found", file=sys.stderr)
+                continue
             anchor = slug(objname)
             lines.append(f"(api-{anchor})=")
             kind = "class" if isinstance(obj, type) else "function"

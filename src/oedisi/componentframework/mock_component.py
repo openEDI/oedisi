@@ -1,4 +1,5 @@
-"""
+"""Mock component and federate for testing HELICS simulations.
+
 MockComponent and MockFederate allow you to instantiate a mock component
 with a specified set of inputs and outputs. The parameters dictionary
 should contain a list under "inputs" and "outputs". During implementation,
@@ -11,11 +12,12 @@ MockFederate defines the corresponding implementation.
 
 import helics as h
 import logging
-from typing import Dict
 import json
 import os
+
 from . import system_configuration
-from .system_configuration import AnnotatedType
+from .system_configuration import AnnotatedType, ComponentCapabilities
+from oedisi.types.helics_config import HELICSFederateConfig
 
 
 logger = logging.getLogger(__name__)
@@ -24,16 +26,41 @@ logger.setLevel(logging.DEBUG)
 
 
 class MockComponent(system_configuration.ComponentType):
+    """Mock component for testing HELICS-based simulations.
+
+    Provides a configurable mock component with dynamic inputs and outputs
+    for use in testing and validation scenarios.
+    """
+
+    _capabilities = ComponentCapabilities(broker_config=True)
+
     def __init__(
         self,
-        name,
-        parameters: Dict[str, Dict[str, str]],
+        base_config: HELICSFederateConfig,
+        parameters: dict[str, dict[str, str]],
         directory: str,
-        host: str = None,
-        port: int = None,
-        comp_type: str = None,
+        host: str | None = None,
+        port: int | None = None,
+        comp_type: str | None = None,
     ):
-        self._name = name
+        """Construct mock component type.
+
+        Parameters
+        ----------
+        base_config : HELICSFederateConfig
+            HELICS federate configuration containing name and broker settings.
+        parameters : dict[str, dict[str, str]]
+            Configuration parameters containing "inputs" and "outputs" keys.
+        directory : str
+            Working directory for component configuration files.
+        host : str, optional
+            Host address (not used in mock implementation).
+        port : int, optional
+            Port number (not used in mock implementation).
+        comp_type : str, optional
+            Component type identifier (not used in mock implementation).
+        """
+        self._base_config = base_config
         self._directory = directory
         self._execute_function = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "mock_component.sh"
@@ -41,6 +68,13 @@ class MockComponent(system_configuration.ComponentType):
         self.process_parameters(parameters)
 
     def process_parameters(self, parameters):
+        """Process and configure component parameters.
+
+        Parameters
+        ----------
+        parameters : dict[str, dict[str, str]]
+            Configuration dictionary with "inputs" and "outputs" keys.
+        """
         self._dynamic_inputs = {
             name: AnnotatedType(type="", port_id=name) for name in parameters["inputs"]
         }
@@ -51,42 +85,65 @@ class MockComponent(system_configuration.ComponentType):
         self.generate_helics_config(parameters["outputs"])
 
     def generate_helics_config(self, outputs):
-        helics_config = {
-            "name": self._name,
-            "core_type": "zmq",
-            "period": 1,
-            "log_level": "warning",
-            "terminate_on_error": True,
-            "publications": [
-                {"key": key, "type": value} for key, value in outputs.items()
-            ],
-        }
+        """Generate HELICS configuration file for the mock component.
+
+        Parameters
+        ----------
+        outputs : dict[str, str]
+            Mapping of output port names to HELICS data types.
+        """
+        # Start with base config converted to dict (with camelCase keys)
+        helics_config = self._base_config.to_dict()
+
+        # Add mock component specific settings
+        helics_config.update(
+            {
+                "period": 1,
+                "log_level": "warning",
+                "terminate_on_error": True,
+                "publications": [
+                    {"key": key, "type": value} for key, value in outputs.items()
+                ],
+            }
+        )
 
         with open(os.path.join(self._directory, "helics_config.json"), "w") as f:
             json.dump(helics_config, f)
 
     def generate_input_mapping(self, links):
+        """Generate input mapping file for subscriptions.
+
+        Parameters
+        ----------
+        links : dict
+            Mapping of local input port names to HELICS subscription keys.
+        """
         with open(os.path.join(self._directory, "input_mapping.json"), "w") as f:
             json.dump(links, f)
 
     @property
     def dynamic_inputs(self):
+        """Dynamic input ports."""
         return self._dynamic_inputs
 
     @property
     def dynamic_outputs(self):
+        """Dynamic output ports."""
         return self._dynamic_outputs
 
     @property
     def execute_function(self):
+        """Path to mock component execution script."""
         return self._execute_function
 
 
 def get_default_value(date_type: h.HelicsDataType):
+    """Return pi value for mock publications."""
     return 3.1415926536
 
 
 def destroy_federate(fed):
+    """Disconnect and free a HELICS federate."""
     _ = h.helicsFederateDisconnect(fed)
     h.helicsFederateFree(fed)
     h.helicsCloseLibrary()
@@ -94,12 +151,19 @@ def destroy_federate(fed):
 
 
 class MockFederate:
+    """Mock HELICS federate for testing simulations.
+
+    Loads configuration and subscriptions from files, then publishes
+    test values during simulation.
+    """
+
     def __init__(self):
+        """Initialize mock federate from HELICS and input mapping configs."""
         logger.info(f"Current Working Directory: {os.path.abspath(os.curdir)}")
         self.fed = h.helicsCreateValueFederateFromConfig("helics_config.json")
         logger.info(f"Created federate {self.fed.name}")
 
-        with open("input_mapping.json", "r") as f:
+        with open("input_mapping.json") as f:
             port_mapping = json.load(f)
             self.subscriptions = {}
             for name, key in port_mapping.items():
@@ -108,6 +172,7 @@ class MockFederate:
             logging.info("Loaded all subscriptions from file")
 
     def run(self):
+        """Execute simulation, publishing values for 100 seconds."""
         self.fed.enter_executing_mode()
         logger.info("Entered HELICS execution mode")
 
@@ -127,9 +192,7 @@ class MockFederate:
 
             for name, sub in self.subscriptions.items():
                 if sub.is_updated():
-                    logger.info(
-                        f"From subscription {name}: {sub.bytes} of type {sub.type}"
-                    )
+                    logger.info(f"From subscription {name}: {sub.bytes} of type {sub.type}")
 
         destroy_federate(self.fed)
 

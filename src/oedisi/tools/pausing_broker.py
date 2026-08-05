@@ -1,3 +1,5 @@
+"""Pausing broker for interactive HELICS simulations."""
+
 import time
 
 import click
@@ -6,10 +8,14 @@ from .broker_utils import pprint_time_data, get_time_data
 
 
 class PausingBroker:
+    """Interactive HELICS broker with user-controlled time barriers."""
+
     def __init__(self, n):
+        """Initialize pausing broker with n federates."""
         self.initstring = f"-f {n} --name=mainbroker"
 
     def run(self):
+        """Run broker with interactive time barrier control."""
         self.broker = h.helicsCreateBroker("zmq", "", self.initstring)
         print("Setting time barrier to 0.0")
         h.helicsBrokerSetTimeBarrier(self.broker, 0.0)

@@ -70,303 +70,355 @@ types are thin subclasses that inherit their fields from a base array type.
 
 Inherits `BaseModel`.
 
+Base class for power system equipment state arrays.
+
 Extended by classes:
     "SwitchStates",
     "CapacitorStates",
-    "RegulatorStates"
+    "RegulatorStates".
 
 **Fields**
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
-| `values` | `List[int]` | **required** |  |
-| `ids` | `List[str]` | **required** |  |
-| `time` | `Optional[datetime]` | `None` |  |
+| `values` | `list[int]` | **required** |  |
+| `ids` | `list[str]` | **required** |  |
+| `time` | `datetime | None` | `None` |  |
 
 (datatype-switchstates)=
 ### SwitchStates
 
 Inherits [`StateArray`](#datatype-statearray).
 
+Switch state data for power system equipment.
+
 (datatype-capacitorstates)=
 ### CapacitorStates
 
 Inherits [`StateArray`](#datatype-statearray).
+
+Capacitor state data for power system equipment.
 
 (datatype-regulatorstates)=
 ### RegulatorStates
 
 Inherits [`StateArray`](#datatype-statearray).
 
+Voltage regulator state data for power system equipment.
+
 (datatype-costarray)=
 ### CostArray
 
 Inherits `BaseModel`.
+
+Base class for cost-related data arrays.
 
 Extended by classes:
     "RealCostFunctions",
     "ReactiveCostFunctions",
     "RealWholesalePrices",
     "ReactiveWholesalePrices",
-    "OperationalCosts"
+    "OperationalCosts".
 
 **Fields**
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
-| `values` | `List[List[float]]` | **required** |  |
-| `ids` | `List[str]` | **required** |  |
+| `values` | `list[list[float]]` | **required** |  |
+| `ids` | `list[str]` | **required** |  |
 | `units` | `str` | `'$'` |  |
-| `time` | `Optional[datetime]` | `None` |  |
+| `time` | `datetime | None` | `None` |  |
 
 (datatype-realcostfunctions)=
 ### RealCostFunctions
 
 Inherits [`CostArray`](#datatype-costarray).
 
+Real power cost functions for equipment.
+
 (datatype-reactivecostfunctions)=
 ### ReactiveCostFunctions
 
 Inherits [`CostArray`](#datatype-costarray).
+
+Reactive power cost functions for equipment.
 
 (datatype-realwholesaleprices)=
 ### RealWholesalePrices
 
 Inherits [`CostArray`](#datatype-costarray).
 
+Real power wholesale price data for equipment.
+
 (datatype-reactivewholesaleprices)=
 ### ReactiveWholesalePrices
 
 Inherits [`CostArray`](#datatype-costarray).
+
+Reactive power wholesale price data for equipment.
 
 (datatype-operationalcosts)=
 ### OperationalCosts
 
 Inherits [`CostArray`](#datatype-costarray).
 
+Operational cost data for equipment.
+
 (datatype-measurementarray)=
 ### MeasurementArray
 
 Inherits `BaseModel`.
 
+Base class for measurement data arrays.
+
 Extended by classes:
     "BusArray",
     "EquipmentArray",
-    "EquipmentNodeArray"
+    "EquipmentNodeArray".
 
 **Fields**
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
-| `values` | `List[float]` | **required** |  |
-| `ids` | `List[str]` | **required** |  |
+| `values` | `list[float]` | **required** |  |
+| `ids` | `list[str]` | **required** |  |
 | `units` | `str` | **required** |  |
-| `accuracy` | `Optional[List[float]]` | `None` |  |
-| `bad_data_threshold` | `Optional[List[float]]` | `None` |  |
-| `time` | `Optional[datetime]` | `None` |  |
+| `accuracy` | `list[float] | None` | `None` |  |
+| `bad_data_threshold` | `list[float] | None` | `None` |  |
+| `time` | `datetime | None` | `None` |  |
 
 (datatype-busarray)=
 ### BusArray
 
 Inherits [`MeasurementArray`](#datatype-measurementarray).
 
-Extended by classes:
-    "VoltagesMagnitude",
-    "VoltagesAngle",
-    "VoltagesReal",
-    "VoltagesImaginary"
+Measurements for or at power system buses (primarily voltages).
 
 (datatype-equipmentarray)=
 ### EquipmentArray
 
 Inherits [`MeasurementArray`](#datatype-measurementarray).
 
-Extended by classes:
-    "SolarIrradiances",
-    "Temperatures",
-    "WindSpeeds",
-    "StatesOfCharge",
-    "CurrentsMagnitude",
-    "CurrentsAngle",
-    "CurrentsReal",
-    "CurrentsImaginary",
-    "ImpedanceMagnitude",
-    "ImpedanceAngle",
-    "ImpedanceReal",
-    "ImpedanceImaginary",
+Measurements at equipment nodes (currents, impedances, environmental).
 
 (datatype-equipmentnodearray)=
 ### EquipmentNodeArray
 
 Inherits [`MeasurementArray`](#datatype-measurementarray).
 
-Primary key is ids + equipment_ids.
+Power measurements at equipment nodes (primary key: ids + equipment_ids).
 
-- ids corresponding node id, so "113.1", "113.2", "113.3"
-- equipment_id corresponds to PVSystem.113
-
-Extended by classes:
-    "PowersMagnitude",
-    "PowersAngle",
-    "PowersReal",
-    "PowersImaginary",
+Primary key is ids + equipment_ids where ids correspond to node ids
+(e.g., "113.1", "113.2", "113.3") and equipment_ids correspond to
+equipment identifiers (e.g., PVSystem.113).
 
 **Fields**
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
-| `equipment_ids` | `List[str]` | **required** |  |
+| `equipment_ids` | `list[str]` | **required** |  |
 
 (datatype-voltagesmagnitude)=
 ### VoltagesMagnitude
 
 Inherits [`BusArray`](#datatype-busarray).
 
+Voltage magnitude measurements at buses.
+
 (datatype-voltagesangle)=
 ### VoltagesAngle
 
 Inherits [`BusArray`](#datatype-busarray).
+
+Voltage angle measurements at buses.
 
 (datatype-voltagesreal)=
 ### VoltagesReal
 
 Inherits [`BusArray`](#datatype-busarray).
 
+Real component of voltage measurements at buses.
+
 (datatype-voltagesimaginary)=
 ### VoltagesImaginary
 
 Inherits [`BusArray`](#datatype-busarray).
+
+Imaginary component of voltage measurements at buses.
 
 (datatype-currentsmagnitude)=
 ### CurrentsMagnitude
 
 Inherits [`EquipmentArray`](#datatype-equipmentarray).
 
+Current magnitude measurements at equipment.
+
 (datatype-currentsangle)=
 ### CurrentsAngle
 
 Inherits [`EquipmentArray`](#datatype-equipmentarray).
+
+Current angle measurements at equipment.
 
 (datatype-currentsreal)=
 ### CurrentsReal
 
 Inherits [`EquipmentArray`](#datatype-equipmentarray).
 
+Real component of current measurements at equipment.
+
 (datatype-currentsimaginary)=
 ### CurrentsImaginary
 
 Inherits [`EquipmentArray`](#datatype-equipmentarray).
+
+Imaginary component of current measurements at equipment.
 
 (datatype-impedancereal)=
 ### ImpedanceReal
 
 Inherits [`EquipmentArray`](#datatype-equipmentarray).
 
+Real component of impedance measurements at equipment.
+
 (datatype-impedanceimaginary)=
 ### ImpedanceImaginary
 
 Inherits [`EquipmentArray`](#datatype-equipmentarray).
+
+Imaginary component of impedance measurements at equipment.
 
 (datatype-impedancemagnitude)=
 ### ImpedanceMagnitude
 
 Inherits [`EquipmentArray`](#datatype-equipmentarray).
 
+Impedance magnitude measurements at equipment.
+
 (datatype-impedanceangle)=
 ### ImpedanceAngle
 
 Inherits [`EquipmentArray`](#datatype-equipmentarray).
+
+Impedance angle measurements at equipment.
 
 (datatype-powersmagnitude)=
 ### PowersMagnitude
 
 Inherits [`EquipmentNodeArray`](#datatype-equipmentnodearray).
 
+Power magnitude (apparent power) measurements at equipment nodes.
+
 (datatype-powersangle)=
 ### PowersAngle
 
 Inherits [`EquipmentNodeArray`](#datatype-equipmentnodearray).
+
+Power angle measurements at equipment nodes.
 
 (datatype-powersreal)=
 ### PowersReal
 
 Inherits [`EquipmentNodeArray`](#datatype-equipmentnodearray).
 
+Real power measurements at equipment nodes.
+
 (datatype-powersimaginary)=
 ### PowersImaginary
 
 Inherits [`EquipmentNodeArray`](#datatype-equipmentnodearray).
+
+Reactive power measurements at equipment nodes.
 
 (datatype-solarirradiances)=
 ### SolarIrradiances
 
 Inherits [`EquipmentArray`](#datatype-equipmentarray).
 
+Solar irradiance measurements at equipment.
+
 (datatype-temperatures)=
 ### Temperatures
 
 Inherits [`EquipmentArray`](#datatype-equipmentarray).
+
+Temperature measurements at equipment.
 
 (datatype-windspeeds)=
 ### WindSpeeds
 
 Inherits [`EquipmentArray`](#datatype-equipmentarray).
 
+Wind speed measurements at equipment.
+
 (datatype-statesofcharge)=
 ### StatesOfCharge
 
 Inherits [`EquipmentArray`](#datatype-equipmentarray).
+
+State of charge measurements for energy storage equipment.
 
 (datatype-topology)=
 ### Topology
 
 Inherits `BaseModel`.
 
+Power system network topology with admittance and injection data.
+
 **Fields**
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
-| `admittance` | `Union[AdmittanceSparse, AdmittanceMatrix]` | **required** |  |
+| `admittance` | `AdmittanceSparse | AdmittanceMatrix` | **required** |  |
 | `injections` | `Injection` | **required** |  |
-| `incidences` | `Optional[IncidenceList]` | `None` |  |
-| `base_voltage_angles` | `Optional[VoltagesAngle]` | `None` |  |
-| `base_voltage_magnitudes` | `Optional[VoltagesMagnitude]` | `None` |  |
-| `slack_bus` | `List[str]` | `[]` |  |
+| `incidences` | `IncidenceList | None` | `None` |  |
+| `base_voltage_angles` | `VoltagesAngle | None` | `None` |  |
+| `base_voltage_magnitudes` | `VoltagesMagnitude | None` | `None` |  |
+| `slack_bus` | `list[str]` | `[]` |  |
 
 (datatype-incidence)=
 ### Incidence
 
 Inherits `BaseModel`.
 
+Incidence relationships between equipment in the power system.
+
+Each list should have the same length. 3W transformers are transformed
+into 2 separate edges.
+
 **Fields**
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
-| `from_equipment` | `List[str]` | **required** |  |
-| `to_equipment` | `List[str]` | **required** |  |
-| `equipment_type` | `Optional[List[str]]` | `None` |  |
+| `from_equipment` | `list[str]` | **required** |  |
+| `to_equipment` | `list[str]` | **required** |  |
+| `equipment_type` | `list[str] | None` | `None` |  |
 
 (datatype-incidencelist)=
 ### IncidenceList
 
 Inherits [`Incidence`](#datatype-incidence).
 
+Incidence relationships with associated identifiers.
+
 **Fields**
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
-| `ids` | `List[str]` | **required** |  |
+| `ids` | `list[str]` | **required** |  |
 
 (datatype-admittancesparse)=
 ### AdmittanceSparse
 
 Inherits [`Incidence`](#datatype-incidence).
 
+Sparse representation of network admittance matrix.
+
 **Fields**
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
-| `admittance_list` | `List[Tuple[float, float]]` | **required** |  |
+| `admittance_list` | `list[tuple[float, float]]` | **required** |  |
 | `units` | `str` | `'S'` |  |
 
 (datatype-admittancematrix)=
@@ -374,12 +426,14 @@ Inherits [`Incidence`](#datatype-incidence).
 
 Inherits `BaseModel`.
 
+Dense representation of network admittance matrix.
+
 **Fields**
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
-| `admittance_matrix` | `List[List[Tuple[float, float]]]` | **required** |  |
-| `ids` | `List[str]` | **required** |  |
+| `admittance_matrix` | `list[list[tuple[float, float]]]` | **required** |  |
+| `ids` | `list[str]` | **required** |  |
 | `units` | `str` | `'S'` |  |
 
 (datatype-injection)=
@@ -387,27 +441,25 @@ Inherits `BaseModel`.
 
 Inherits `BaseModel`.
 
+Current and power injections at network nodes.
+
 **Fields**
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
-| `current_real` | `CurrentsReal` | `{'values': [], 'ids': [], 'node_ids': []}` |  |
-| `current_imaginary` | `CurrentsImaginary` | `{'values': [], 'ids': [], 'node_ids': []}` |  |
-| `power_real` | `PowersReal` | `{'values': [], 'ids': [], 'node_ids': []}` |  |
-| `power_imaginary` | `PowersImaginary` | `{'values': [], 'ids': [], 'node_ids': []}` |  |
-| `impedance_real` | `ImpedanceReal` | `{'values': [], 'ids': [], 'node_ids': []}` |  |
-| `impedance_imaginary` | `ImpedanceImaginary` | `{'values': [], 'ids': [], 'node_ids': []}` |  |
+| `current_real` | `CurrentsReal` | `PydanticUndefined` | Fixed real current injections |
+| `current_imaginary` | `CurrentsImaginary` | `PydanticUndefined` | Fixed imaginary current injections |
+| `power_real` | `PowersReal` | `PydanticUndefined` | Fixed real power injections |
+| `power_imaginary` | `PowersImaginary` | `PydanticUndefined` | Fixed imaginary power injections |
+| `impedance_real` | `ImpedanceReal` | `PydanticUndefined` | Fixed real impedances |
+| `impedance_imaginary` | `ImpedanceImaginary` | `PydanticUndefined` | Fixed imaginary impedances |
 
 (datatype-command)=
 ### Command
 
 Inherits `BaseModel`.
 
-JSON Configuration for external object commands.
-
-obj_name -- name of the object.
-obj_prop -- name of the property.
-obj_val -- val of the property.
+JSON Configuration for external object commands for OpenDSS.
 
 **Fields**
 
@@ -422,7 +474,7 @@ obj_val -- val of the property.
 
 Inherits `RootModel`.
 
-A list wrapper around `List[Command]`.
+A list wrapper around `list[Command]`.
 
 (datatype-vvcontrol)=
 ### VVControl
@@ -439,8 +491,8 @@ OpenDSS setting for volt-var control.
 | `varchangetolerance` | `float` | `0.025` |  |
 | `voltagechangetolerance` | `float` | `0.0001` |  |
 | `vv_refreactivepower` | `<enum 'ReactivePowerSetting'>` | `<ReactivePowerSetting.VARAVAL_WATTS: 'VARAVAL_WATTS'>` |  |
-| `voltage` | `List[float]` | **required** |  |
-| `reactive_response` | `List[float]` | **required** |  |
+| `voltage` | `list[float]` | **required** |  |
+| `reactive_response` | `list[float]` | **required** |  |
 
 (datatype-vwcontrol)=
 ### VWControl
@@ -449,13 +501,15 @@ Inherits `BaseModel`.
 
 OpenDSS setting for volt-watt control.
 
+See https://dss-extensions.org/dss-format/InvControl.html.
+
 **Fields**
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
 | `deltap_factor` | `float` | `-1.0` |  |
-| `voltage` | `List[float]` | **required** |  |
-| `power_response` | `List[float]` | **required** |  |
+| `voltage` | `list[float]` | **required** |  |
+| `power_response` | `list[float]` | **required** |  |
 
 (datatype-invertercontrol)=
 ### InverterControl
@@ -464,13 +518,15 @@ Inherits `BaseModel`.
 
 InverterControl with volt-var control and/or volt-watt control.
 
+See https://dss-extensions.org/dss-format/InvControl.html.
+
 **Fields**
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
-| `pvsystem_list` | `Optional[List[str]]` | `None` |  |
-| `vvcontrol` | `Optional[VVControl]` | `None` |  |
-| `vwcontrol` | `Optional[VWControl]` | `None` |  |
+| `pvsystem_list` | `list[str] | None` | `None` |  |
+| `vvcontrol` | `VVControl | None` | `None` |  |
+| `vwcontrol` | `VWControl | None` | `None` |  |
 | `mode` | `<enum 'InverterControlMode'>` | `<InverterControlMode.voltvar: 'VOLTVAR'>` |  |
 
 (datatype-invertercontrollist)=
@@ -478,4 +534,4 @@ InverterControl with volt-var control and/or volt-watt control.
 
 Inherits `RootModel`.
 
-A list wrapper around `List[InverterControl]`.
+A list wrapper around `list[InverterControl]`.

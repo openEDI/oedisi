@@ -67,7 +67,7 @@ import uvicorn
 from fastapi import BackgroundTasks, FastAPI
 from fastapi.responses import JSONResponse
 from oedisi.componentframework.system_configuration import ComponentStruct
-from oedisi.types.common import BrokerConfig, DefaultFileNames, HeathCheck, ServerReply
+from oedisi.types.common import BrokerConfig, DefaultFileNames, HealthCheck, ServerReply
 
 from .my_federate import run_simulator
 
@@ -81,7 +81,7 @@ async def read_root():
         host_ip = socket.gethostbyname(hostname)
     except socket.gaierror:
         host_ip = "127.0.0.1"
-    return JSONResponse(HeathCheck(hostname=hostname, host_ip=host_ip).model_dump(), 200)
+    return JSONResponse(HealthCheck(hostname=hostname, host_ip=host_ip).model_dump(), 200)
 
 @app.post("/configure")
 async def configure(component_struct: ComponentStruct):

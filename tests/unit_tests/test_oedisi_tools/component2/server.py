@@ -9,8 +9,9 @@ from fastapi import FastAPI, BackgroundTasks, HTTPException
 from fastapi.responses import JSONResponse
 
 from oedisi.componentframework.system_configuration import ComponentStruct
-from oedisi.types.common import ServerReply, HeathCheck, DefaultFileNames
+from oedisi.types.common import ServerReply, HealthCheck, DefaultFileNames
 from oedisi.types.common import BrokerConfig
+from oedisi.types import HELICSFederateConfig
 
 from component2 import TestFederate
 
@@ -32,9 +33,8 @@ def read_root():
     finally:
         s.close()
 
-    response = HeathCheck(hostname=hostname, host_ip=host_ip).model_dump()
+    response = HealthCheck(hostname=hostname, host_ip=host_ip).model_dump()
     return JSONResponse(response, 200)
-
 
 
 @app.post("/run")
@@ -42,31 +42,31 @@ async def run_model(broker_config: BrokerConfig, background_tasks: BackgroundTas
     logger.info("Running componenet 2")
     try:
         logger.info("Creating federate 2")
-        federate = TestFederate(broker_config)
+        with open(DefaultFileNames.STATIC_INPUTS) as f:
+            params = json.load(f)
+        federate = TestFederate(HELICSFederateConfig.from_multicontainer(broker_config, params))
         logger.info("Federate 2 created")
         background_tasks.add_task(federate.run)
         logger.info("Federate 2 started")
         return {"reply": "success", "error": False}
-    except Exception as e:
+    except Exception:
         err = traceback.format_exc()
-        raise HTTPException(500,str(err))
+        raise HTTPException(500, str(err))
 
 
 @app.post("/configure/")
-async def configure(component_struct:ComponentStruct): 
+async def configure(component_struct: ComponentStruct):
     component = component_struct.component
     params = component.parameters
     params["name"] = component.name
     links = {}
     for link in component_struct.links:
         links[link.target_port] = f"{link.source}/{link.source_port}"
-    with open(DefaultFileNames.INPUT_MAPPING.value, "w") as f: 
+    with open(DefaultFileNames.INPUT_MAPPING.value, "w") as f:
         json.dump(links, f)
     with open(DefaultFileNames.STATIC_INPUTS.value, "w") as f:
         json.dump(params, f)
-    response = ServerReply(
-            detail = f"Sucessfully updated configuration files."
-        ).model_dump() 
+    response = ServerReply(detail="Sucessfully updated configuration files.").model_dump()
     return JSONResponse(response, 200)
 
 
