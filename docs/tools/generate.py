@@ -4,10 +4,10 @@
 This script produces four MyST pages directly from the live code so they can
 never drift from the implementation:
 
-* ``advanced/cli.md``          — from Click introspection of the ``oedisi`` CLI
-* ``advanced/api.md``          — from griffe docstrings + Pydantic model fields
-* ``advanced/data-types.md``   — from ``oedisi.types.data_types``
-* ``beginner/component-catalog.md`` — from the frontend registry + each
+* ``reference/cli.md``          — from Click introspection of the ``oedisi`` CLI
+* ``reference/api.md``          — from griffe docstrings + Pydantic model fields
+* ``reference/data-types.md``   — from ``oedisi.types.data_types``
+* ``reference/component-catalog.md`` — from the frontend registry + each
   component's ``component_definition.json``
 
 Run it from anywhere::
@@ -249,7 +249,7 @@ def render_cli() -> str:
 
     lines.append(":::{seealso}")
     lines.append("Building blocks these commands operate on: the")
-    lines.append("[Python API](api.md) and the [multi-container workflow](multicontainer.md).")
+    lines.append("[Python API](api.md) and the [multi-container workflow](../advanced/multicontainer.md).")
     lines.append(":::")
     lines.append("")
     return "\n".join(lines)
@@ -500,7 +500,7 @@ def render_catalog(registry: Path, components: Path) -> str:
         if not t:
             return "—"
         if t in known_types:
-            return f"[`{t}`](../advanced/data-types.md#datatype-{slug(t)})"
+            return f"[`{t}`](data-types.md#datatype-{slug(t)})"
         return f"`{t}`"
 
     lines = [
@@ -514,7 +514,7 @@ def render_catalog(registry: Path, components: Path) -> str:
         "",
         "These are the components registered with the web app. Each is a HELICS",
         "federate that consumes (`subscribes`) and produces (`publishes`) the typed",
-        "[data types](../advanced/data-types.md) listed below. The **name** is what you",
+        "[data types](data-types.md) listed below. The **name** is what you",
         "see in the designer palette; the **folder** is where its code lives in",
         "`oedisi-components`.",
         "",
@@ -594,14 +594,14 @@ def render_catalog(registry: Path, components: Path) -> str:
 def build_pages(registry: Path, components: Path, targets: list[str]) -> dict[Path, str]:
     pages: dict[Path, str] = {}
     if "cli" in targets:
-        pages[DOCS / "advanced" / "cli.md"] = render_cli()
+        pages[DOCS / "reference" / "cli.md"] = render_cli()
     if "api" in targets:
-        pages[DOCS / "advanced" / "api.md"] = render_api()
+        pages[DOCS / "reference" / "api.md"] = render_api()
     if "data-types" in targets:
-        pages[DOCS / "advanced" / "data-types.md"] = render_data_types()
+        pages[DOCS / "reference" / "data-types.md"] = render_data_types()
     if "catalog" in targets:
         if registry.exists() and components.exists():
-            pages[DOCS / "beginner" / "component-catalog.md"] = render_catalog(
+            pages[DOCS / "reference" / "component-catalog.md"] = render_catalog(
                 registry, components
             )
         else:

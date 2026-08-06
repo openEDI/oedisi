@@ -28,7 +28,7 @@ oedisi build --system system.json --component-dict components.json
 oedisi run --runner build/system_runner.json
 ```
 
-See the **[CLI reference](../advanced/cli.md)** for every option, and
+See the **[CLI reference](../reference/cli.md)** for every option, and
 **[Architecture](../advanced/architecture.md)** for what `build` produces.
 
 ## Troubleshooting

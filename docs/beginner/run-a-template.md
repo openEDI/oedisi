@@ -61,6 +61,13 @@ Voltage magnitudes recorded across the feeder.
 Click **Notebook** to open JupyterLab on the run's output, or reproduce the analysis right
 here in the docs with the **[executable results notebook](analyze-results.ipynb)**.
 
+:::{note} Read-only notebooks in cloud/server deployments
+For security reasons, notebooks are **read-only** in cloud or server deployments. You can
+view results and execute cells, but cannot save changes or create new notebooks. Local
+deployments (running `npm run dev:all` on your machine) allow full read-write access to
+notebooks.
+:::
+
 ## What just happened?
 
 Behind the button click, the backend converted your template to a `WiringDiagram`, called

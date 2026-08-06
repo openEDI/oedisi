@@ -39,7 +39,7 @@ my_component/
 This file is the contract: the configuration the component reads once
 (`static_inputs`), the values it subscribes to (`dynamic_inputs`), and the values it
 publishes (`dynamic_outputs`). Each port has a `type` — one of the
-[OEDISI data types](../advanced/data-types.md) — and a `port_id`.
+[OEDISI data types](../reference/data-types.md) — and a `port_id`.
 
 ```json
 {
@@ -158,7 +158,7 @@ The key ideas:
 
 - Subscriptions are keyed by `input_mapping.json`, which `/configure` wrote from the
   wiring diagram's links.
-- Values are exchanged as JSON-serialized [OEDISI data types](../advanced/data-types.md),
+- Values are exchanged as JSON-serialized [OEDISI data types](../reference/data-types.md),
   so `sub.json` parses straight into a Pydantic model with `model_validate`.
 - `helicsFederateRequestTime` drives the co-simulation clock until `HELICS_TIME_MAXTIME`.
 
@@ -191,7 +191,7 @@ ports you declared:
 oedisi test-description --component-desc my_component/component_definition.json
 ```
 
-See [`oedisi test-description`](../advanced/cli.md#cli-test-description) for details.
+See [`oedisi test-description`](../reference/cli.md#cli-test-description) for details.
 
 ## Next step
 

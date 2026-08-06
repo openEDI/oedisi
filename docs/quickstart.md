@@ -48,7 +48,7 @@ npm run dev:all
 | ---------------- | ----------------------- | ------------------------------ |
 | Frontend (Vite)  | <http://localhost:5173> | The web UI                     |
 | Backend (FastAPI)| <http://localhost:3001> | Builds and runs simulations    |
-| JupyterLab       | <http://localhost:8888> | Embedded result notebooks      |
+| JupyterLab       | <http://localhost:8888> | Embedded result notebooks (full read-write access in local mode) |
 
 ## 4. Run a template
 

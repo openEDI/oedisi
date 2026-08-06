@@ -20,10 +20,10 @@ REDIRECTS = {
     "getting_started.html": "./quickstart/",
     "examples.html": "./beginner/",
     "design.html": "./advanced/architecture/",
-    "oedisi_cli.html": "./advanced/cli/",
+    "oedisi_cli.html": "./reference/cli/",
     "multi_container.html": "./advanced/multicontainer/",
-    "source/oedisi.html": "../advanced/api/",
-    "source/modules.html": "../advanced/api/",
+    "source/oedisi.html": "../reference/api/",
+    "source/modules.html": "../reference/api/",
 }
 
 STUB = """<!doctype html>

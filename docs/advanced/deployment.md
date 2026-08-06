@@ -73,3 +73,11 @@ Do not weaken these:
 
 The `JupyterLab` server is proxied under `/jupyter/` (with WebSocket upgrade for kernels)
 and its port is configurable via `OEDISI_JUPYTER_PORT` (default `8888`).
+
+:::{important} Notebook security in production
+For cloud and server deployments, configure JupyterLab in **read-only mode** to prevent
+users from modifying or creating notebooks, which could pose security risks. This restricts
+notebook access to viewing results and executing cells against read-only data. Local
+deployments (`npm run dev:all`) allow full read-write notebook access for development and
+analysis workflows.
+:::

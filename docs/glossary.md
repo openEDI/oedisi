@@ -62,7 +62,7 @@ Dynamic inputs / outputs
 OEDISI data types
 : The Pydantic models in `oedisi.types.data_types` (for example `VoltagesMagnitude`,
   `PowersReal`, `Topology`) that give ports a shared, typed meaning. See
-  [Data types](advanced/data-types.md).
+  [Data types](reference/data-types.md).
 
 Feeder
 : A distribution-network simulator (for example the OpenDSS-based `LocalFeeder`) that

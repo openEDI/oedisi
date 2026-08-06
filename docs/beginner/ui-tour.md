@@ -88,6 +88,12 @@ Opening a run shows its live status (`running` → `done`/`failed`), the exit co
 per-federate **logs**. When a run finishes, the **Results** and **Notebook** buttons
 appear.
 
+:::{note} Notebook access
+The **Notebook** button opens an embedded JupyterLab environment for analyzing run results.
+In cloud or server deployments, notebooks are read-only for security. Local deployments
+enable full read-write access.
+:::
+
 :::{figure} ../images/ui/run-detail.png
 :alt: The run detail page for the NLR DSSE IEEE 123 run, showing a Done status, exit code 0, and collapsible per-federate logs.
 :width: 100%

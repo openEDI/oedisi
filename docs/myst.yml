@@ -28,7 +28,6 @@ project:
         - file: beginner/ui-tour.md
         - file: beginner/run-a-template.md
         - file: beginner/analyze-results.ipynb
-        - file: beginner/component-catalog.md
     - title: Intermediate — build a component
       children:
         - file: intermediate/index.md
@@ -39,13 +38,15 @@ project:
       children:
         - file: advanced/index.md
         - file: advanced/architecture.md
-        - file: advanced/cli.md
-        - file: advanced/api.md
-        - file: advanced/data-types.md
         - file: advanced/multicontainer.md
         - file: advanced/deployment.md
     - title: Reference
       children:
+        - file: reference/index.md
+        - file: reference/component-catalog.md
+        - file: reference/data-types.md
+        - file: reference/api.md
+        - file: reference/cli.md
         - file: glossary.md
         - file: troubleshooting.md
         - file: contributing.md

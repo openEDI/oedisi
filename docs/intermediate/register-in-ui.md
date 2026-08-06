@@ -42,7 +42,7 @@ appears in the designer's **Components** palette, typed by the ports you declare
 `component_definition.json`.
 
 :::{seealso}
-The [component catalog](../beginner/component-catalog.md) is generated from exactly this
+The [component catalog](../reference/component-catalog.md) is generated from exactly this
 registry — once registered, your component belongs there too.
 :::
 
