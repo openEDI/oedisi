@@ -2,7 +2,7 @@
 
 import json
 import os
-from shutil import copytree
+from shutil import copytree, ignore_patterns
 from typing import Any
 
 from pydantic import BaseModel, Field
@@ -116,7 +116,12 @@ def basic_component(comp_desc: ComponentDescription, type_checker):
             return True
 
         def copy_code_into_directory(self):
-            copytree(self._origin_directory, self._directory, dirs_exist_ok=True)
+            copytree(
+                self._origin_directory,
+                self._directory,
+                dirs_exist_ok=True,
+                ignore=ignore_patterns(".*"),
+            )
 
         def generate_parameter_config(self):
             if self.broker_config_support:
