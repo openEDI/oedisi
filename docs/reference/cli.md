@@ -201,5 +201,5 @@ Usage: oedisi test-description [OPTIONS]
 
 :::{seealso}
 Building blocks these commands operate on: the
-[Python API](api.md) and the [multi-container workflow](multicontainer.md).
+[Python API](api.md) and the [multi-container workflow](../advanced/multicontainer.md).
 :::
