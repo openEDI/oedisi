@@ -89,9 +89,9 @@ per-federate **logs**. When a run finishes, the **Results** and **Notebook** but
 appear.
 
 :::{note} Notebook access
-The **Notebook** button opens an embedded JupyterLab environment for analyzing run results.
-In cloud or server deployments, notebooks are read-only for security. Local deployments
-enable full read-write access.
+The **Notebook** button opens the run's analysis notebook — editable JupyterLab when running
+locally, or read-only Voilà in cloud/server deployments. In cloud or server deployments,
+notebooks are read-only for security. Local deployments enable full read-write access.
 :::
 
 :::{figure} ../images/ui/run-detail.png

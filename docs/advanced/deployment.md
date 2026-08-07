@@ -37,7 +37,7 @@ flowchart LR
   User([Browser]) -->|HTTPS + Basic auth| N[nginx]
   N -->|static site| Static[Built frontend]
   N -->|api + X-Remote-User| API["backend<br/>127.0.0.1:3001"]
-  N -->|jupyter WebSocket| J["JupyterLab<br/>127.0.0.1:8888"]
+  N -->|notebook WebSocket| V["Voilà<br/>127.0.0.1:8866"]
 ```
 
 ### Multi-user mode
@@ -71,19 +71,16 @@ Do not weaken these:
 - nginx **overwrites** any `X-Remote-User` the client sends, so it cannot be spoofed.
 :::
 
-The `JupyterLab` server is proxied under `/jupyter/` (with WebSocket upgrade for kernels)
-and its port is configurable via `OEDISI_JUPYTER_PORT` (default `8888`).
+The notebook server is chosen by deployment mode:
 
-:::{important} Run notebooks are view-only by default
-`OEDISI_NOTEBOOK_BACKEND` controls how notebooks are served (default `voila`):
+- **Single-user** (default, `npm run dev:all`): the backend starts **JupyterLab** on
+  `OEDISI_JUPYTER_PORT` (default `8888`), proxied under `/jupyter/` with WebSocket upgrade
+  for kernels. Notebooks are fully editable — ideal for local analysis.
+- **Multi-user** (`OEDISI_MULTI_USER=1`, the production/cloud setup): the backend starts
+  **Voilà** on `OEDISI_VOILA_PORT` (default `8866`), proxied under `/voila/` with WebSocket
+  upgrade for kernels and widgets. Notebooks are rendered **read-only** — users can view and
+  execute cells but cannot edit or save them — which is the safe choice for shared
+  deployments. This applies to both run notebooks and template notebooks.
 
-- **`voila`** — a run's notebook is rendered **view-only** (outputs only: no editable code
-  cells and no terminals), the safest option for shared deployments. Voilà is proxied under
-  `/voila/` (port `OEDISI_VOILA_PORT`, default `8866`). Template notebooks are an authoring
-  workflow, so they always open in an editable JupyterLab.
-- **`lab`** — everything is served by JupyterLab. It is **read-only** (open and run cells,
-  but no saving or terminals) unless you set `OEDISI_JUPYTER_WRITABLE=1`. The read-only lock
-  is enforced server-side by a Jupyter `Authorizer`, so it holds even though the server is
-  token-less behind nginx.
-- **`disabled`** — no notebook servers start.
-:::
+The choice is driven entirely by `OEDISI_MULTI_USER`; there is no separate notebook-backend
+switch.

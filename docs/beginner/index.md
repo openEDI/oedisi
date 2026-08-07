@@ -29,8 +29,9 @@ Make sure the app is running (`npm run dev:all`) and reachable at
 
 :::{note} Notebook access modes
 When running locally (`npm run dev:all`), you have full read-write access to Jupyter
-notebooks for analyzing results. In cloud or server deployments, notebooks are read-only
-for security reasons — you can view and execute cells but cannot save changes.
+notebooks for analyzing results. In cloud or server deployments, notebooks are served
+**read-only** via Voilà for security reasons — you can view and execute cells but cannot
+save changes.
 :::
 
 :::{tip}

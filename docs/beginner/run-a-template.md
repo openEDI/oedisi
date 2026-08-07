@@ -58,7 +58,8 @@ Voltage magnitudes recorded across the feeder.
 
 ## 5. (Optional) Analyze in a notebook
 
-Click **Notebook** to open JupyterLab on the run's output, or reproduce the analysis right
+Click **Notebook** to open the run's analysis notebook — editable JupyterLab when running
+locally, or read-only Voilà in cloud/server deployments — or reproduce the analysis right
 here in the docs with the **[executable results notebook](analyze-results.ipynb)**.
 
 :::{note} Read-only notebooks in cloud/server deployments
