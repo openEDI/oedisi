@@ -1,0 +1,63 @@
+# MyST (Jupyter Book 2) configuration — https://mystmd.org/guide
+version: 1
+project:
+  id: oedisi
+  title: OEDISI
+  description: Orchestration interface for HELICS power-system co-simulations.
+  keywords:
+    - HELICS
+    - OEDI-SI
+    - power systems
+    - co-simulation
+    - distribution systems
+  authors:
+    - name: National Laboratory of the Rockies (NLR)
+  github: https://github.com/openEDI/oedisi
+  license: BSD-3-Clause
+  # Table of contents — three learning tracks plus reference.
+  toc:
+    - file: index.md
+    - title: Get started
+      children:
+        - file: quickstart.md
+        - file: install.md
+        - file: overview.md
+    - title: Beginner — use the UI
+      children:
+        - file: beginner/index.md
+        - file: beginner/ui-tour.md
+        - file: beginner/run-a-template.md
+        - file: beginner/analyze-results.ipynb
+    - title: Intermediate — build a component
+      children:
+        - file: intermediate/index.md
+        - file: intermediate/build-a-component.md
+        - file: intermediate/register-in-ui.md
+        - file: intermediate/run-your-simulation.md
+    - title: Advanced — API, CLI & scaling
+      children:
+        - file: advanced/index.md
+        - file: advanced/architecture.md
+        - file: advanced/multicontainer.md
+        - file: advanced/deployment.md
+    - title: Reference
+      children:
+        - file: reference/index.md
+        - file: reference/component-catalog.md
+        - file: reference/data-types.md
+        - file: reference/api.md
+        - file: reference/cli.md
+        - file: glossary.md
+        - file: troubleshooting.md
+        - file: contributing.md
+        - file: cite.md
+site:
+  template: book-theme
+  options:
+    folders: true
+    logo_text: The OEDISI Platform
+  parts:
+    primary_sidebar_footer: primary-sidebar-footer.md
+  actions:
+    - title: GitHub
+      url: https://github.com/openEDI/oedisi

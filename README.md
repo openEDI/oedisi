@@ -16,7 +16,7 @@
 
 [Main Docs](https://openedi.github.io/oedisi/)
 
-[Getting Started](https://openedi.github.io/oedisi/getting_started.html) (with example)
+[Getting Started](https://openedi.github.io/oedisi/quickstart/) (with example)
 
 ## Example
 
