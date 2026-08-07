@@ -74,10 +74,16 @@ Do not weaken these:
 The `JupyterLab` server is proxied under `/jupyter/` (with WebSocket upgrade for kernels)
 and its port is configurable via `OEDISI_JUPYTER_PORT` (default `8888`).
 
-:::{important} Notebook security in production
-For cloud and server deployments, configure JupyterLab in **read-only mode** to prevent
-users from modifying or creating notebooks, which could pose security risks. This restricts
-notebook access to viewing results and executing cells against read-only data. Local
-deployments (`npm run dev:all`) allow full read-write notebook access for development and
-analysis workflows.
+:::{important} Run notebooks are view-only by default
+`OEDISI_NOTEBOOK_BACKEND` controls how notebooks are served (default `voila`):
+
+- **`voila`** — a run's notebook is rendered **view-only** (outputs only: no editable code
+  cells and no terminals), the safest option for shared deployments. Voilà is proxied under
+  `/voila/` (port `OEDISI_VOILA_PORT`, default `8866`). Template notebooks are an authoring
+  workflow, so they always open in an editable JupyterLab.
+- **`lab`** — everything is served by JupyterLab. It is **read-only** (open and run cells,
+  but no saving or terminals) unless you set `OEDISI_JUPYTER_WRITABLE=1`. The read-only lock
+  is enforced server-side by a Jupyter `Authorizer`, so it holds even though the server is
+  token-less behind nginx.
+- **`disabled`** — no notebook servers start.
 :::
