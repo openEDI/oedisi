@@ -1,6 +1,6 @@
 ---
 title: Glossary
-description: Key terms used across OEDISI and HELICS co-simulation.
+description: Key terms used across OEDI-SI and HELICS co-simulation.
 ---
 
 # Glossary
@@ -9,7 +9,7 @@ description: Key terms used across OEDISI and HELICS co-simulation.
 HELICS
 : The *Hierarchical Engine for Large-scale Infrastructure Co-Simulation*. The runtime
   that coordinates time and message passing between the independent simulators in an
-  OEDISI system. See [helics.org](https://helics.org).
+  OEDI-SI system. See [helics.org](https://helics.org).
 
 Federate
 : A single participant in a HELICS co-simulation — one running component. Each federate
@@ -17,10 +17,10 @@ Federate
 
 Broker
 : The HELICS process that connects federates, synchronizes their time, and routes
-  messages. OEDISI adds one broker per simulation (`helics_broker`).
+  messages. OEDI-SI adds one broker per simulation (`helics_broker`).
 
 Component
-: A reusable simulator or algorithm packaged for OEDISI (a feeder, estimator, recorder,
+: A reusable simulator or algorithm packaged for OEDI-SI (a feeder, estimator, recorder,
   …). Its interface is declared in `component_definition.json`.
 
 Component definition
@@ -36,7 +36,7 @@ Link
   another component's input port (`target` / `target_port`).
 
 Port
-: A named input or output on a component. Ports are typed with {term}`OEDISI data types`.
+: A named input or output on a component. Ports are typed with {term}`OEDI-SI data types`.
 
 Publication
 : A HELICS value that a federate produces each timestep — a component's `dynamic_outputs`.
@@ -59,7 +59,7 @@ Static inputs
 Dynamic inputs / outputs
 : The typed values a component subscribes to / publishes every timestep.
 
-OEDISI data types
+OEDI-SI data types
 : The Pydantic models in `oedisi.types.data_types` (for example `VoltagesMagnitude`,
   `PowersReal`, `Topology`) that give ports a shared, typed meaning. See
   [Data types](reference/data-types.md).

@@ -1,11 +1,11 @@
 ---
 title: Advanced — API, CLI & scaling
-description: Drive OEDISI from Python and the CLI, and scale out across containers.
+description: Drive OEDI-SI from Python and the CLI, and scale out across containers.
 ---
 
 # Advanced — API, CLI & scaling
 
-This track is for engineers who want to script OEDISI, integrate it into pipelines, or
+This track is for engineers who want to script OEDI-SI, integrate it into pipelines, or
 run distributed simulations.
 
 ## What you'll learn
@@ -23,5 +23,5 @@ For API documentation, CLI commands, data types, and the component catalog, see 
 ## Prerequisites
 
 - `oedisi` installed and on your PATH (`oedisi --help`).
-- Familiarity with **[how OEDISI works](../overview.md)** and, ideally, having built a
+- Familiarity with **[how OEDI-SI works](../overview.md)** and, ideally, having built a
   component in the **[Intermediate track](../intermediate/index.md)**.

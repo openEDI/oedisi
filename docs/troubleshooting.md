@@ -1,6 +1,6 @@
 ---
 title: Troubleshooting & FAQ
-description: Common problems running OEDISI and how to fix them.
+description: Common problems running OEDI-SI and how to fix them.
 ---
 
 # Troubleshooting & FAQ
@@ -9,7 +9,7 @@ description: Common problems running OEDISI and how to fix them.
 
 ### Only one simulation runs at a time
 
-OEDISI starts a single HELICS broker on a fixed port, so the backend permits **one active
+OEDI-SI starts a single HELICS broker on a fixed port, so the backend permits **one active
 run at a time**. If a new run is rejected, cancel the current run (the **Cancel** button
 on the run detail page, or `DELETE /api/runs/{run_id}`) or wait for it to finish.
 
@@ -81,6 +81,6 @@ docker network prune -f
 
 ## Still stuck?
 
-- Re-read **[How OEDISI works](overview.md)** to confirm the mental model.
+- Re-read **[How OEDI-SI works](overview.md)** to confirm the mental model.
 - Check the component's own `README.md` in `oedisi-components`.
 - Open an issue at <https://github.com/openEDI/oedisi/issues>.

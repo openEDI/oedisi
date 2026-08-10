@@ -24,7 +24,7 @@ Each template card has a **Run** button.
 
 ## 2. Click Run
 
-Press **▶ Run**. The app converts the template into an OEDISI wiring diagram, builds the
+Press **▶ Run**. The app converts the template into an OEDI-SI wiring diagram, builds the
 HELICS runner, launches the simulation, and takes you to the run detail page.
 
 :::{important} One simulation at a time
@@ -72,6 +72,6 @@ notebooks.
 ## What just happened?
 
 Behind the button click, the backend converted your template to a `WiringDiagram`, called
-OEDISI's `generate_runner_config()` to produce a `system_runner.json`, and ran it with
+OEDI-SI's `generate_runner_config()` to produce a `system_runner.json`, and ran it with
 `helics run`. The **[overview](../overview.md)** explains this pipeline, and the
 **[Advanced track](../advanced/index.md)** shows how to drive it yourself from the CLI.

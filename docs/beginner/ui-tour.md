@@ -1,13 +1,13 @@
 ---
 title: A tour of the UI
-description: Every screen of the OEDISI web app, in the order you'll use them.
+description: Every screen of the OEDI-SI web app, in the order you'll use them.
 ---
 
 # A tour of the UI
 
 # A tour of the UI
 
-This tour walks through every screen of the OEDISI web app in the order you'll use
+This tour walks through every screen of the OEDI-SI web app in the order you'll use
 them, from the landing page to the analysis notebook. The screenshots use the built-in
 **NLR DSSE IEEE 123** example — an IEEE 123-bus feeder feeding a measurement layer and a
 weighted-least-squares state estimator, with recorders capturing the results.
@@ -23,9 +23,9 @@ The landing page is your hub. Each card is an entry point: create a new simulati
 a saved one, or check simulation status.
 
 :::{figure} ../images/ui/home.png
-:alt: The OEDISI home page showing cards for creating a new simulation, viewing saved templates, and checking simulation status.
+:alt: The OEDI-SI home page showing cards for creating a new simulation, viewing saved templates, and checking simulation status.
 :width: 100%
-The OEDISI home page.
+The OEDI-SI home page.
 :::
 
 ## The designer

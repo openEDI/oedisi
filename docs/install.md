@@ -5,7 +5,7 @@ description: Set up the framework, components, HELICS runtime, and web app acros
 
 # Install everything
 
-OEDISI spans three repositories. This page covers a full local install of all of them.
+OEDI-SI spans three repositories. This page covers a full local install of all of them.
 For the shortest path to a running app, see the **[quickstart](quickstart.md)**.
 
 ## Prerequisites

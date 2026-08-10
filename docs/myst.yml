@@ -2,7 +2,7 @@
 version: 1
 project:
   id: oedisi
-  title: OEDISI
+  title: OEDI-SI
   description: Orchestration interface for HELICS power-system co-simulations.
   keywords:
     - HELICS
@@ -55,7 +55,7 @@ site:
   template: book-theme
   options:
     folders: true
-    logo_text: The OEDISI Platform
+    logo_text: The OEDI-SI Platform
   parts:
     primary_sidebar_footer: primary-sidebar-footer.md
   actions:

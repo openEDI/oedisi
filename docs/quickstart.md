@@ -1,11 +1,11 @@
 ---
 title: 5-minute quickstart
-description: Install the OEDISI web app and run your first simulation.
+description: Install the OEDI-SI web app and run your first simulation.
 ---
 
 # 5-minute quickstart
 
-This quickstart gets the OEDISI web app running and executes a ready-made simulation
+This quickstart gets the OEDI-SI web app running and executes a ready-made simulation
 **template** end-to-end. You will run the *sample feeder* scenario used throughout the
 Beginner track: an [OpenDSS](https://www.epri.com/pages/sa/opendss) distribution feeder
 feeding a **measurement** federate and a **state estimator**, with the results captured
@@ -83,5 +83,5 @@ Recorded results, ready to explore.
 ## Next steps
 
 - New to the UI? Take the **[guided tour](beginner/ui-tour.md)**.
-- Want to understand the moving parts first? Read **[How OEDISI works](overview.md)**.
+- Want to understand the moving parts first? Read **[How OEDI-SI works](overview.md)**.
 - Ready to add your own algorithm? Go to **[Build a component](intermediate/build-a-component.md)**.

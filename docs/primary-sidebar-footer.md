@@ -1,1 +1,1 @@
-[The OEDISI Platform](https://github.com/openEDI/oedisi)
+[The OEDI-SI Platform](https://github.com/openEDI/oedisi)
