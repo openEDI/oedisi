@@ -1,0 +1,13 @@
+{
+  "directory": "constant_current_component",
+  "execute_function": "python constant_current.py",
+  "static_inputs": [
+    { "type": "", "port_id": "node_ids" },
+    { "type": "", "port_id": "equipment_ids" },
+    { "type": "", "port_id": "base_power" },
+    { "type": "", "port_id": "base_voltage" }
+  ],
+  "dynamic_inputs": [{ "type": "VoltagesMagnitude", "port_id": "voltages" }],
+  "dynamic_outputs": [{ "type": "PowersReal", "port_id": "power" }],
+  "capabilities": { "broker_config": true }
+}

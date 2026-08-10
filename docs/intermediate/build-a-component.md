@@ -5,7 +5,10 @@ description: Create a HELICS component with the required files and interface.
 
 # Build a component
 
-# Build a component
+:::{tip} Looking for a walkthrough?
+For a simpler step-by-step build of a component and simulation, follow the
+**[Tutorial](../tutorial/index.md)** instead.
+:::
 
 An OEDISI component is a **HELICS federate** wrapped in a small **FastAPI server**. The
 server exposes three standard endpoints so OEDISI (and the multi-container orchestrator)

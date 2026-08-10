@@ -1,0 +1,5 @@
+{
+  "node_ids": ["113.1"],
+  "equipment_ids": ["Load.load1"],
+  "base_power": [10.0]
+}

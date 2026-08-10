@@ -26,6 +26,12 @@ a simulation alongside the built-in ones.
 - A local clone of [`oedisi-components`](https://github.com/openEDI/oedisi-components) and
   the `OEDISI_COMPONENTS` environment variable set (see **[install](install.md)**).
 
+:::{tip} Prefer to learn by doing?
+The **[Tutorial](../tutorial/index.md)** builds two components and two simulations from
+scratch on the command line, explaining HELICS timing and Pydantic configuration. This
+track is the shorter, UI-oriented path.
+:::
+
 :::{seealso}
 The canonical component structure reference lives in the components repo:
 [`docs/component-structure.md`](https://github.com/openEDI/oedisi-components/blob/main/docs/component-structure.md).

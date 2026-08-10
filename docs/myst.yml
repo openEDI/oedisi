@@ -34,6 +34,13 @@ project:
         - file: intermediate/build-a-component.md
         - file: intermediate/register-in-ui.md
         - file: intermediate/run-your-simulation.md
+    - title: Tutorial — your algorithm as a component
+      children:
+        - file: tutorial/index.md
+        - file: tutorial/1-wrap-your-algorithm.md
+        - file: tutorial/2-describe-and-build.md
+        - file: tutorial/3-add-a-subscription.md
+        - file: tutorial/4-run-the-full-simulation.md
     - title: Advanced — API, CLI & scaling
       children:
         - file: advanced/index.md
