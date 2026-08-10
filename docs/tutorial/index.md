@@ -1,9 +1,9 @@
 ---
-title: Tutorial — your algorithm as a component
+title: Tutorial for algorithm developers
 description: Turn a plain Python function into an OEDISI component and run it in a co-simulation.
 ---
 
-# Tutorial — your algorithm as a component
+# Tutorial for algorithm developers
 
 This tutorial turns an algorithm into an OEDISI component that can exchange data with a
 feeder simulator and with federates written by other groups. The algorithm we use is

@@ -34,7 +34,7 @@ project:
         - file: intermediate/build-a-component.md
         - file: intermediate/register-in-ui.md
         - file: intermediate/run-your-simulation.md
-    - title: Tutorial — your algorithm as a component
+    - title: Tutorials
       children:
         - file: tutorial/index.md
         - file: tutorial/1-wrap-your-algorithm.md
