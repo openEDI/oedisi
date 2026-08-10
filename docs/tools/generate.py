@@ -145,7 +145,9 @@ def render_field_table(rows: list[tuple[str, str, str, str]]) -> str:
         return ""
     out = ["| Field | Type | Default | Description |", "| --- | --- | --- | --- |"]
     for name, typ, req, desc in rows:
-        out.append(f"| `{name}` | `{typ}` | {req} | {desc} |")
+        # Union types render as `str | None`; escape the pipe so it stays in one cell.
+        safe_typ = typ.replace("|", "\\|")
+        out.append(f"| `{name}` | `{safe_typ}` | {req} | {desc} |")
     return "\n".join(out) + "\n"
 
 
@@ -249,7 +251,9 @@ def render_cli() -> str:
 
     lines.append(":::{seealso}")
     lines.append("Building blocks these commands operate on: the")
-    lines.append("[Python API](api.md) and the [multi-container workflow](../advanced/multicontainer.md).")
+    lines.append(
+        "[Python API](api.md) and the [multi-container workflow](../advanced/multicontainer.md)."
+    )
     lines.append(":::")
     lines.append("")
     return "\n".join(lines)
@@ -283,6 +287,12 @@ API_SECTIONS = [
         "oedisi.componentframework.basic_component",
         "componentframework.basic_component",
         ["ComponentDescription", "component_from_json", "basic_component"],
+    ),
+    (
+        "Federate configuration",
+        "oedisi.types.helics_config",
+        "types.helics_config",
+        ["HELICSFederateConfig", "HELICSBrokerConfig", "SharedFederateConfig"],
     ),
 ]
 
@@ -412,9 +422,7 @@ def render_data_types() -> str:
     for name, m in pairs:
         base = m.__bases__[0].__name__
         base_link = (
-            f"[`{base}`](#datatype-{slug(base)})"
-            if base in module_names
-            else f"`{base}`"
+            f"[`{base}`](#datatype-{slug(base)})" if base in module_names else f"`{base}`"
         )
         lines.append(f"| [`{name}`](#datatype-{slug(name)}) | {base_link} |")
     lines.append("")

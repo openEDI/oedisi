@@ -83,7 +83,10 @@ lint.select = [
 ]
 # Allow unused variables when underscore-prefixed.
 #dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
-exclude = ["tests"]
+exclude = ["tests", "docs/tools/generate.py"]
+# Honour `exclude` even when a path is passed explicitly, so the pre-commit hook
+# (which invokes ruff with a list of changed files) skips these too.
+force-exclude = true
 
 target-version = "py310"
 

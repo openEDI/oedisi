@@ -45,7 +45,7 @@ shared_helics_config :
 | `name` | `str` | **required** |  |
 | `components` | `list[Component]` | **required** |  |
 | `links` | `list[Link]` | **required** |  |
-| `shared_helics_config` | `SharedFederateConfig | None` | `None` |  |
+| `shared_helics_config` | `SharedFederateConfig \| None` | `None` |  |
 
 (api-component)=
 ### `Component` (class)
@@ -58,11 +58,11 @@ A component configuration in WiringDiagram.
 | --- | --- | --- | --- |
 | `name` | `str` | **required** |  |
 | `type` | `str` | **required** |  |
-| `host` | `str | None` | `None` |  |
-| `container_port` | `int | None` | `None` |  |
+| `host` | `str \| None` | `None` |  |
+| `container_port` | `int \| None` | `None` |  |
 | `image` | `str` | `''` |  |
 | `parameters` | `dict[str, Any]` | **required** |  |
-| `helics_config_override` | `SharedFederateConfig | None` | `None` |  |
+| `helics_config_override` | `SharedFederateConfig \| None` | `None` |  |
 
 (api-link)=
 ### `Link` (class)
@@ -102,9 +102,9 @@ Currently not checked in any type checker.
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
 | `type` | `str` | **required** |  |
-| `description` | `str | None` | `None` |  |
-| `unit` | `str | None` | `None` |  |
-| `port_id` | `str | None` | `None` |  |
+| `description` | `str \| None` | `None` |  |
+| `unit` | `str \| None` | `None` |  |
+| `port_id` | `str \| None` | `None` |  |
 
 (api-componentstruct)=
 ### `ComponentStruct` (class)
@@ -346,3 +346,120 @@ Returns
 BasicComponent(system_configuration.ComponentType) :
      ComponentType from the description
 ```
+
+## Federate configuration
+
+Module: `oedisi.types.helics_config`
+
+(api-helicsfederateconfig)=
+### `HELICSFederateConfig` (class)
+
+```text
+Full HELICS federate configuration.
+
+This is what federates receive in static_inputs.json, containing various HELICS
+configuration at the top-level (name, core_type, broker, etc). Subtype this in your
+applications for custom configuration.
+
+Parameters
+----------
+name :
+    Federate name (derived from Component.name).
+core_type :
+    HELICS core type (e.g., "zmq", "tcp", "inproc").
+core_name :
+    Core name for this federate (derived per-component).
+core_init :
+    Core initialization string.
+broker :
+    Broker connection configuration.
+
+Examples
+--------
+>>> config = HELICSFederateConfig(
+...     name="state_estimator",
+...     core_type="zmq",
+...     broker=HELICSBrokerConfig(port=23404)
+... )
+>>> config.to_json()
+'{"name": "state_estimator", "coreType": "zmq", ...}'
+```
+
+**Fields**
+
+| Field | Type | Default | Description |
+| --- | --- | --- | --- |
+| `name` | `str` | **required** |  |
+| `core_type` | `str \| None` | `None` |  |
+| `core_name` | `str \| None` | `None` |  |
+| `core_init` | `str \| None` | `None` |  |
+| `broker` | `HELICSBrokerConfig \| None` | `None` |  |
+
+(api-helicsbrokerconfig)=
+### `HELICSBrokerConfig` (class)
+
+```text
+HELICS broker connection parameters.
+
+Parameters
+----------
+host :
+    Broker hostname or IP address.
+port :
+    Broker port number.
+key :
+    Broker key for authentication.
+auto :
+    Whether to automatically configure broker connection.
+initstring :
+    Additional initialization string for broker connection.
+```
+
+**Fields**
+
+| Field | Type | Default | Description |
+| --- | --- | --- | --- |
+| `host` | `str \| None` | `None` |  |
+| `port` | `int \| None` | `None` |  |
+| `key` | `str \| None` | `None` |  |
+| `auto` | `bool \| None` | `None` |  |
+| `initstring` | `str \| None` | `None` |  |
+
+(api-sharedfederateconfig)=
+### `SharedFederateConfig` (class)
+
+```text
+Shared federate settings at the WiringDiagram level.
+
+This contains settings that are shared across all federates in a simulation.
+Does NOT include name/core_name (those are per-component). Users
+are expected to write this as part of the wiring_diagram.json,
+and invidual federates get passed `config.to_federate_config()`.
+
+Parameters
+----------
+core_type :
+    HELICS core type (e.g., "zmq", "tcp", "inproc").
+core_init :
+    Core initialization string.
+broker :
+    Broker connection configuration.
+
+Examples
+--------
+>>> shared = SharedFederateConfig(
+...     core_type="zmq",
+...     broker=HELICSBrokerConfig(port=23404)
+... )
+>>> config = shared.to_federate_config("my_federate")
+>>> config.name
+'my_federate'
+```
+
+**Fields**
+
+| Field | Type | Default | Description |
+| --- | --- | --- | --- |
+| `core_type` | `str \| None` | `None` |  |
+| `core_init` | `str \| None` | `None` |  |
+| `broker` | `HELICSBrokerConfig \| None` | `None` |  |
