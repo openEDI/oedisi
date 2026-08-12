@@ -83,7 +83,7 @@ Extended by classes:
 | --- | --- | --- | --- |
 | `values` | `list[int]` | **required** |  |
 | `ids` | `list[str]` | **required** |  |
-| `time` | `datetime | None` | `None` |  |
+| `time` | `datetime \| None` | `None` |  |
 
 (datatype-switchstates)=
 ### SwitchStates
@@ -127,7 +127,7 @@ Extended by classes:
 | `values` | `list[list[float]]` | **required** |  |
 | `ids` | `list[str]` | **required** |  |
 | `units` | `str` | `'$'` |  |
-| `time` | `datetime | None` | `None` |  |
+| `time` | `datetime \| None` | `None` |  |
 
 (datatype-realcostfunctions)=
 ### RealCostFunctions
@@ -183,9 +183,9 @@ Extended by classes:
 | `values` | `list[float]` | **required** |  |
 | `ids` | `list[str]` | **required** |  |
 | `units` | `str` | **required** |  |
-| `accuracy` | `list[float] | None` | `None` |  |
-| `bad_data_threshold` | `list[float] | None` | `None` |  |
-| `time` | `datetime | None` | `None` |  |
+| `accuracy` | `list[float] \| None` | `None` |  |
+| `bad_data_threshold` | `list[float] \| None` | `None` |  |
+| `time` | `datetime \| None` | `None` |  |
 
 (datatype-busarray)=
 ### BusArray
@@ -369,11 +369,11 @@ Power system network topology with admittance and injection data.
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
-| `admittance` | `AdmittanceSparse | AdmittanceMatrix` | **required** |  |
+| `admittance` | `AdmittanceSparse \| AdmittanceMatrix` | **required** |  |
 | `injections` | `Injection` | **required** |  |
-| `incidences` | `IncidenceList | None` | `None` |  |
-| `base_voltage_angles` | `VoltagesAngle | None` | `None` |  |
-| `base_voltage_magnitudes` | `VoltagesMagnitude | None` | `None` |  |
+| `incidences` | `IncidenceList \| None` | `None` |  |
+| `base_voltage_angles` | `VoltagesAngle \| None` | `None` |  |
+| `base_voltage_magnitudes` | `VoltagesMagnitude \| None` | `None` |  |
 | `slack_bus` | `list[str]` | `[]` |  |
 
 (datatype-incidence)=
@@ -392,7 +392,7 @@ into 2 separate edges.
 | --- | --- | --- | --- |
 | `from_equipment` | `list[str]` | **required** |  |
 | `to_equipment` | `list[str]` | **required** |  |
-| `equipment_type` | `list[str] | None` | `None` |  |
+| `equipment_type` | `list[str] \| None` | `None` |  |
 
 (datatype-incidencelist)=
 ### IncidenceList
@@ -524,9 +524,9 @@ See https://dss-extensions.org/dss-format/InvControl.html.
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
-| `pvsystem_list` | `list[str] | None` | `None` |  |
-| `vvcontrol` | `VVControl | None` | `None` |  |
-| `vwcontrol` | `VWControl | None` | `None` |  |
+| `pvsystem_list` | `list[str] \| None` | `None` |  |
+| `vvcontrol` | `VVControl \| None` | `None` |  |
+| `vwcontrol` | `VWControl \| None` | `None` |  |
 | `mode` | `<enum 'InverterControlMode'>` | `<InverterControlMode.voltvar: 'VOLTVAR'>` |  |
 
 (datatype-invertercontrollist)=

@@ -1,0 +1,47 @@
+{
+  "name": "tutorial_constant_current",
+  "components": [
+    {
+      "name": "voltage_player",
+      "type": "Player",
+      "parameters": {
+        "filename": "../../voltages.csv",
+        "data_type": "VoltagesMagnitude",
+        "number_of_timesteps": 4,
+        "start_time_index": 0
+      }
+    },
+    {
+      "name": "constant_current_load",
+      "type": "ConstantCurrentComponent",
+      "parameters": {
+        "node_ids": ["113.1", "113.2", "114.1"],
+        "equipment_ids": ["Load.load1", "Load.load1", "Load.load2"],
+        "base_power": [10.0, 12.5, 7.5],
+        "base_voltage": 2400.0
+      }
+    },
+    {
+      "name": "power_recorder",
+      "type": "Recorder",
+      "parameters": {
+        "feather_filename": "power.feather",
+        "csv_filename": "power.csv"
+      }
+    }
+  ],
+  "links": [
+    {
+      "source": "voltage_player",
+      "source_port": "publication",
+      "target": "constant_current_load",
+      "target_port": "voltages"
+    },
+    {
+      "source": "constant_current_load",
+      "source_port": "power",
+      "target": "power_recorder",
+      "target_port": "subscription"
+    }
+  ]
+}

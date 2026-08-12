@@ -1,0 +1,6 @@
+{
+  "PowerComponent": "power_component/component_definition.json",
+  "ConstantCurrentComponent": "constant_current_component/component_definition.json",
+  "Recorder": "Components/recorder/component_definition.json",
+  "Player": "Components/player/component_definition.json"
+}
