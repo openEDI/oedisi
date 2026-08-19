@@ -7,7 +7,7 @@ description: Run each component in its own container over a REST contract.
 
 # Multi-container
 
-For isolation and distribution, OEDISI can run **each component in its own container**.
+For isolation and distribution, OEDI-SI can run **each component in its own container**.
 Instead of local processes coordinated by a local broker, the components talk to an
 orchestrator over a small **REST contract** while HELICS still handles the co-simulation
 messaging between them.

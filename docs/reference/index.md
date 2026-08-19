@@ -5,7 +5,7 @@ description: API documentation, CLI reference, data types, and component catalog
 
 # Reference
 
-Complete reference documentation for OEDISI components, APIs, and data structures.
+Complete reference documentation for OEDI-SI components, APIs, and data structures.
 
 ## Available references
 
@@ -19,5 +19,5 @@ Complete reference documentation for OEDISI components, APIs, and data structure
    (auto-generated from the CLI).
 5. **[Glossary](glossary.md)** — definitions of key terms and concepts.
 6. **[Troubleshooting](troubleshooting.md)** — common issues and solutions.
-7. **[Contributing](contributing.md)** — how to contribute to OEDISI.
-8. **[Citation](cite.md)** — how to cite OEDISI in publications.
+7. **[Contributing](contributing.md)** — how to contribute to OEDI-SI.
+8. **[Citation](cite.md)** — how to cite OEDI-SI in publications.

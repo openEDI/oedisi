@@ -5,8 +5,6 @@ description: Host the docs and run the app in multi-user mode.
 
 # Deployment
 
-# Deployment
-
 Two things get deployed: **these docs** and **the web app**.
 
 ## Publishing the docs

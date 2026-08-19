@@ -1,13 +1,13 @@
 ---
 title: Cite & license
-description: How to cite OEDISI and the terms it is distributed under.
+description: How to cite OEDI-SI and the terms it is distributed under.
 ---
 
 # Cite & license
 
-## Citing OEDISI
+## Citing OEDI-SI
 
-If you use OEDISI in your work, please cite it. The canonical metadata lives in
+If you use OEDI-SI in your work, please cite it. The canonical metadata lives in
 [`CITATION.cff`](https://github.com/openEDI/oedisi/blob/main/CITATION.cff) in the
 repository root.
 
@@ -31,6 +31,6 @@ repository root.
 
 ## License
 
-OEDISI is distributed under the **BSD 3-Clause License**. See
+OEDI-SI is distributed under the **BSD 3-Clause License**. See
 [`LICENSE.md`](https://github.com/openEDI/oedisi/blob/main/LICENSE.md) for the full text.
 This documentation is published under the same license.

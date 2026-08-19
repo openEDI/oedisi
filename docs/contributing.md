@@ -1,11 +1,11 @@
 ---
 title: Contributing
-description: How to contribute to OEDISI — code, components, and documentation.
+description: How to contribute to OEDI-SI — code, components, and documentation.
 ---
 
 # Contributing
 
-Contributions are welcome across the OEDISI project. This page covers where to contribute,
+Contributions are welcome across the OEDI-SI project. This page covers where to contribute,
 how to set up a development environment, and the checks your change should pass.
 
 ## Where to contribute

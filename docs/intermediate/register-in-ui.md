@@ -8,7 +8,7 @@ description: Make your component appear in the designer palette.
 Once your component builds and passes `oedisi test-description`, make it available in the
 designer palette.
 
-## 1. Put the component where OEDISI can find it
+## 1. Put the component where OEDI-SI can find it
 
 The backend resolves components through the `OEDISI_COMPONENTS` environment variable,
 which points at the `Components/` directory of `oedisi-components`. Place your component

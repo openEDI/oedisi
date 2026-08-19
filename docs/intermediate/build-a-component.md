@@ -10,8 +10,8 @@ For a simpler step-by-step build of a component and simulation, follow the
 **[Tutorial](../tutorial/index.md)** instead.
 :::
 
-An OEDISI component is a **HELICS federate** wrapped in a small **FastAPI server**. The
-server exposes three standard endpoints so OEDISI (and the multi-container orchestrator)
+An OEDI-SI component is a **HELICS federate** wrapped in a small **FastAPI server**. The
+server exposes three standard endpoints so OEDI-SI (and the multi-container orchestrator)
 can configure and launch it; the federate does the actual simulation work by subscribing
 to and publishing typed values each timestep.
 
@@ -42,7 +42,7 @@ my_component/
 This file is the contract: the configuration the component reads once
 (`static_inputs`), the values it subscribes to (`dynamic_inputs`), and the values it
 publishes (`dynamic_outputs`). Each port has a `type` — one of the
-[OEDISI data types](../reference/data-types.md) — and a `port_id`.
+[OEDI-SI data types](../reference/data-types.md) — and a `port_id`.
 
 ```json
 {
@@ -161,7 +161,7 @@ The key ideas:
 
 - Subscriptions are keyed by `input_mapping.json`, which `/configure` wrote from the
   wiring diagram's links.
-- Values are exchanged as JSON-serialized [OEDISI data types](../reference/data-types.md),
+- Values are exchanged as JSON-serialized [OEDI-SI data types](../reference/data-types.md),
   so `sub.json` parses straight into a Pydantic model with `model_validate`.
 - `helicsFederateRequestTime` drives the co-simulation clock until `HELICS_TIME_MAXTIME`.
 

@@ -5,7 +5,7 @@ description: Create your own HELICS component, register it in the UI, and run it
 
 # Intermediate — build a component
 
-This track is for **developers** who want to add a new algorithm or simulator to OEDISI.
+This track is for **developers** who want to add a new algorithm or simulator to OEDI-SI.
 By the end you will have a working component that appears in the UI's palette and runs in
 a simulation alongside the built-in ones.
 

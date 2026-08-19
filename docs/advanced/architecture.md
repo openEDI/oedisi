@@ -5,9 +5,7 @@ description: How a wiring diagram becomes a running HELICS co-simulation.
 
 # Architecture
 
-# Architecture
-
-OEDISI compiles a **wiring diagram** into a HELICS **runner config** and executes it.
+OEDI-SI compiles a **wiring diagram** into a HELICS **runner config** and executes it.
 This page follows that pipeline through the code in
 `oedisi.componentframework.system_configuration`.
 
@@ -66,4 +64,4 @@ contract instead of local processes — but the wiring diagram and data types ar
 
 The web app's backend calls this same machinery: it converts a saved template to a
 `WiringDiagram`, calls `generate_runner_config()`, and runs `helics run`. See
-[How OEDISI works](../overview.md) for the end-to-end view.
+[How OEDI-SI works](../overview.md) for the end-to-end view.

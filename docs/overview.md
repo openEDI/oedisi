@@ -1,11 +1,11 @@
 ---
-title: How OEDISI works
+title: How OEDI-SI works
 description: The mental model — components, wiring diagrams, runners, and the HELICS broker.
 ---
 
-# How OEDISI works
+# How OEDI-SI works
 
-OEDISI turns a **wiring diagram** — a set of components and the links between their ports —
+OEDI-SI turns a **wiring diagram** — a set of components and the links between their ports —
 into a running [HELICS](https://helics.org) co-simulation. Understanding four concepts is
 enough to use everything else in these docs.
 
@@ -23,7 +23,7 @@ Wiring diagram
   `WiringDiagram` model in `oedisi.componentframework.system_configuration`.
 
 Runner config
-: The compiled artifact (`system_runner.json`) that HELICS actually executes. OEDISI
+: The compiled artifact (`system_runner.json`) that HELICS actually executes. OEDI-SI
   produces it from a wiring diagram with `generate_runner_config()`.
 
 Broker
@@ -54,11 +54,11 @@ sequenceDiagram
   actor User
   participant UI as Web UI
   participant API as Backend
-  participant OEDISI
+  participant OEDI-SI
   participant HELICS
   User->>UI: Run a template
   UI->>API: POST /api/runs (wiring diagram)
-  API->>OEDISI: generate_runner_config()
+  API->>OEDI-SI: generate_runner_config()
   API->>HELICS: helics run --path system_runner.json
   HELICS->>HELICS: orchestrate federates over time
   HELICS-->>API: federates exit, logs written

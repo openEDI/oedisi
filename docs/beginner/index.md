@@ -6,7 +6,7 @@ description: Run existing simulations and read results from the web app, no code
 # Beginner — use the UI
 
 This track is for **users** who want to run power-system co-simulations without writing
-code. You will work entirely in the OEDISI web app: browse ready-made components, run
+code. You will work entirely in the OEDI-SI web app: browse ready-made components, run
 saved templates, and analyze results.
 
 ## What you'll learn
@@ -36,5 +36,5 @@ save changes.
 
 :::{tip}
 If you are curious *how* the UI turns your diagram into a running simulation, read
-**[How OEDISI works](overview.md)** — but it is not required for this track.
+**[How OEDI-SI works](overview.md)** — but it is not required for this track.
 :::
