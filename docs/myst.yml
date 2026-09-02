@@ -11,7 +11,7 @@ project:
     - co-simulation
     - distribution systems
   authors:
-    - name: National Laboratory of the Rockies (NLR)
+    - name: Developed by - NLR • ORNL • ANL • PNNL
   github: https://github.com/openEDI/oedisi
   license: BSD-3-Clause
   # Table of contents — three learning tracks plus reference.
