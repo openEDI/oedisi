@@ -4,6 +4,7 @@ on: [push]
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     defaults:
       run:
         shell: bash
@@ -23,6 +24,8 @@ jobs:
     - name: Install python dependencies
       run: |
         uv sync
+        # Federates run a bare `python`, which on Windows can resolve outside the venv
+        uv pip install --system -e .
     - name: Run integration tests
       run: |
         uv run bash tests/runtests.sh
