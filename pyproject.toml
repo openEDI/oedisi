@@ -7,7 +7,7 @@ name = "oedisi"
 version = "3.0.2"
 description = "Orchestration interface for HELICS power simulations"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 keywords = ["oedisi", "gadal", "helics"]
 authors = [{ name = "Joseph McKinsey", email = "joseph.mckinsey@nrel.gov" }]
 classifiers = [
@@ -15,7 +15,6 @@ classifiers = [
   "Intended Audience :: Science/Research",
   "License :: OSI Approved :: BSD License",
   "Natural Language :: English",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
@@ -88,7 +87,7 @@ exclude = ["tests", "docs/tools/generate.py"]
 # (which invokes ruff with a list of changed files) skips these too.
 force-exclude = true
 
-target-version = "py310"
+target-version = "py311"
 
 # 4. Ignore `E402` (import violations) in all `__init__.py` files, and in `path/to/file.py`.
 [tool.ruff.lint.per-file-ignores]

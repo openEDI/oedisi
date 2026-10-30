@@ -1,7 +1,7 @@
 """Common types and constants for OEDISI components."""
 
 from pydantic import BaseModel
-from enum import Enum
+from enum import StrEnum
 import warnings
 
 BASE_DOCKER_IMAGE = "python:3.12-slim-trixie"
@@ -11,7 +11,7 @@ DOCKER_HUB_USER = "aadillatif"
 KUBERNETES_SERVICE_PREFIX = "svc"
 
 
-class DefaultFileNames(str, Enum):
+class DefaultFileNames(StrEnum):
     """Standard filenames for component configuration files.
 
     `oedisi build` will create an input_mapping.json and static_inputs.json

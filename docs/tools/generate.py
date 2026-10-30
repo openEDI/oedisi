@@ -390,6 +390,9 @@ def documented_data_types() -> list[tuple[str, type]]:
             continue
         if obj in (BaseModel, RootModel) or not name[:1].isupper():
             continue
+        # pydantic also registers parametrized generics, e.g. "RootModel[list[Command]]"
+        if not name.isidentifier():
+            continue
         pairs.append((name, obj))
     return pairs
 

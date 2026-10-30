@@ -12,7 +12,7 @@ For the shortest path to a running app, see the **[quickstart](quickstart.md)**.
 
 | Tool             | Version   | Needed for                               |
 | ---------------- | --------- | ---------------------------------------- |
-| Python           | ≥ 3.10    | `oedisi`, components, backend            |
+| Python           | ≥ 3.11    | `oedisi`, components, backend            |
 | Node.js + npm    | ≥ 18      | Frontend UI                              |
 | [uv](https://docs.astral.sh/uv/) | latest | Backend dependency management |
 | HELICS runtime   | ≥ 3.4     | Running simulations                     |
