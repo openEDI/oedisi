@@ -12,4 +12,4 @@ c = MockComponent(
 )
 
 c.generate_input_mapping({})
-assert c.execute_function.endswith("componentframework/mock_component.sh")
+assert c.execute_function == "python -m oedisi.componentframework.mock_component"
