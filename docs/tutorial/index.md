@@ -48,7 +48,7 @@ need. This tutorial stays with the CLI.
 
 ## Prerequisites
 
-A Python 3.10+ environment with `oedisi` and `helics` installed:
+A Python 3.11+ environment with `oedisi` and `helics` installed:
 
 ```bash
 pip install oedisi

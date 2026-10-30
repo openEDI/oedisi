@@ -182,7 +182,7 @@ my-component-server = "my_component.server:main"
 where = ["src"]
 ```
 
-The Dockerfile follows the shared pattern (Python 3.10 slim, `pip install -e .`, `EXPOSE`
+The Dockerfile follows the shared pattern (Python 3.12 slim, `pip install -e .`, `EXPOSE`
 a unique port, `CMD ["python", "-m", "my_component.server"]`).
 
 ## 5. Test the interface
