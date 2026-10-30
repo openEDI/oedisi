@@ -4,10 +4,13 @@ on: [push]
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest]
         python-version: ['3.12']
     steps:
     - uses: actions/checkout@v2
@@ -27,7 +30,7 @@ jobs:
       uses: actions/upload-artifact@v5
       if: always()
       with:
-        name: testlogs
+        name: testlogs-${{ matrix.os }}
         path: |
           tests/test_basic_system/*.log
           tests/test_mock_system/*.log
