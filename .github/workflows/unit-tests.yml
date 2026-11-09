@@ -4,10 +4,14 @@ on: [push]
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest]
         python-version: ['3.12']
 
     steps:
@@ -21,6 +25,8 @@ jobs:
     - name: Install dependencies
       run: |
         uv sync --extra test
+        # Federates run a bare `python`, which on Windows can resolve outside the venv
+        uv pip install --system -e .
         uv pip install pytest-github-actions-annotate-failures
     - name: Run unit tests
       run: |
@@ -29,6 +35,6 @@ jobs:
       uses: actions/upload-artifact@v5
       if: always()
       with:
-        name: build-artifacts
+        name: build-artifacts-${{ matrix.os }}
         path: |
           tests/unit_tests/test_oedisi_tools/build/

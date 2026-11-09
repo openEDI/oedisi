@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from enum import Enum
 import warnings
 
-BASE_DOCKER_IMAGE = "python:3.10.6-slim-bullseye"
+BASE_DOCKER_IMAGE = "python:3.12-slim-trixie"
 BROKER_SERVICE = "broker"
 APP_NAME = "oedisi"
 DOCKER_HUB_USER = "aadillatif"

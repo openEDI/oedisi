@@ -3,6 +3,7 @@ import json
 import time
 import subprocess
 import os
+import sys
 import logging
 
 from pathlib import Path
@@ -130,6 +131,10 @@ def test_api_run(base_path: Path, monkeypatch: pytest.MonkeyPatch):
         )
 
 
+@pytest.mark.skipif(
+    IN_GITHUB_ACTIONS and sys.platform == "win32",
+    reason="GitHub Windows runners can't run Linux containers",
+)
 @pytest.mark.usefixtures("test_mc_build")
 def test_docker_compose(base_path: Path, monkeypatch: pytest.MonkeyPatch):
     build_path = base_path / "build" / TEST_SIMULATION

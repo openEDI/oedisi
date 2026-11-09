@@ -62,9 +62,7 @@ class MockComponent(system_configuration.ComponentType):
         """
         self._base_config = base_config
         self._directory = directory
-        self._execute_function = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), "mock_component.sh"
-        )
+        self._execute_function = "python -m oedisi.componentframework.mock_component"
         self.process_parameters(parameters)
 
     def process_parameters(self, parameters):
